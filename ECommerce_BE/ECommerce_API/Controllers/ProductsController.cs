@@ -52,12 +52,12 @@ public class ProductsController(ISender mediator) : ControllerBase
     public async Task<IActionResult> Create([FromBody] CreateProductReq req, CancellationToken ct)
     {
         var id = await mediator.Send(new CreateProductCommand(
-             req.Name, req.Slug, req.Description, req.Status, req.BrandId,
-             req.Skus.Select(s => new ProductSkuCreate(s.SkuCode, s.PriceMinor, s.IsActive)).ToList(),
-             req.Images.Select(i => new ProductImageUpsert(i.Url, i.IsPrimary, i.SortOrder)).ToList(),
-             req.CategoryIds,
-             req.Attributes.Select(a => new ProductAttributeUpsert(a.AttributeId, a.ValueText, a.ValueNumber, a.ValueBool)).ToList()
-         ), ct);
+            req.Name, req.Slug, req.Description, req.Status, req.BrandId,
+            req.Skus.Select(s => new ProductSkuCreate(s.SkuCode, s.PriceMinor, s.IsActive)).ToList(),
+            req.Images.Select(i => new ProductImageUpsert(i.Url, i.IsPrimary, i.SortOrder)).ToList(),
+            req.CategoryIds,
+            req.Attributes.Select(a => new ProductAttributeUpsert(a.AttributeId, a.ValueText, a.ValueNumber, a.ValueBool)).ToList()
+        ), ct);
 
         return CreatedAtAction(nameof(GetById), new { id }, new { productId = id });
     }

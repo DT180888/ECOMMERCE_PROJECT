@@ -14,14 +14,22 @@ public class UploadsController(IImageStorage storage) : ControllerBase
 {
     [HttpPost("tmp")]
     [Authorize(Roles = "Admin")]
-    [RequestSizeLimit(15_000_000)]
+    [RequestSizeLimit(15_000_000)] // giới hạn 15 MB
     [Consumes("multipart/form-data")]
-    [ProducesResponseType(typeof(UploadTempRes), StatusCodes.Status200OK)]
-    public async Task<ActionResult<UploadTempRes>> UploadTemp([FromForm] UploadTempReq req, CancellationToken ct)
+    public async Task<ActionResult<List<UploadTempRes>>> UploadTemp([FromForm] List<IFormFile> files, CancellationToken ct)
     {
-        if (req.File is null || req.File.Length == 0) return BadRequest("No file provided.");
-        var folder = $"tmp/{DateTime.UtcNow:yyyyMMdd}";
-        var res = await storage.SaveAsync(req.File, folder, ct);
-        return Ok(new UploadTempRes(res.Url, res.Path, res.ContentType, res.SizeBytes));
+        if (files is null || files.Count == 0)
+            return BadRequest("No files provided.");
+
+        var results = new List<UploadTempRes>();
+
+        foreach (var file in files)
+        {
+            var folder = $"tmp/{DateTime.UtcNow:yyyyMMdd}";
+            var res = await storage.SaveAsync(file, folder, ct);
+            results.Add(new UploadTempRes(res.Url, res.Path, res.ContentType, res.SizeBytes));
+        }
+
+        return Ok(results);  // Trả về danh sách ảnh đã upload
     }
 }
