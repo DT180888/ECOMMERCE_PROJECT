@@ -17,7 +17,6 @@ export default function MainLayout() {
     const footer = footerRef.current!;
 
     function readH(el: HTMLElement) {
-      // getBoundingClientRect chính xác hơn với sticky/transform
       return Math.round(el.getBoundingClientRect().height);
     }
 
@@ -39,8 +38,7 @@ export default function MainLayout() {
     const ro = new ResizeObserver(updateVars);
     ro.observe(header);
     ro.observe(footer);
-
-    // Phòng khi nội dung bên trong thay đổi (menu mở rộng...)
+    
     const mo = new MutationObserver(updateVars);
     mo.observe(header, { childList: true, subtree: true, attributes: true });
     mo.observe(footer, { childList: true, subtree: true, attributes: true });
@@ -56,28 +54,27 @@ export default function MainLayout() {
   }, []);
 
 
-
   return (
     <div  ref={rootRef}
-      className="min-h-dvh grid grid-rows-[auto_1fr_auto]"
+      className="min-h-dvh flex flex-col relative overflow-hidden"
       style={{ ["--hdr" as any]: "0px", ["--ftr" as any]: "0px" }} 
     >
       <NeatBackground />
 
-      <header ref={headerRef} className="sticky top-0 z-40">
+      <header ref={headerRef} className="w-full top-0 z-40">
         <AppHeader />
       </header>
       <div className="flex justify-center gap-0 md:gap-6 ">
-        {/* <aside className="hidden md:block"> kHI CẦN SIDEBAR MỚI MỞ RA
+        {/* <aside className="hidden md:block">
           <Sidebar />
         </aside> */}
 
         {/* Main content */}
-        <main  className="min-h-0 bg-transparent">
-            <Outlet />
+        <main  className="min-h-0 w-full">
+          <Outlet />
         </main>
       </div>
-      <footer ref={footerRef} className="sticky bottom-0 z-40 bg-transparent">
+      <footer ref={footerRef} className="sticky bottom-0 z-40">
         <Footer />
       </footer>
     </div>

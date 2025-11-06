@@ -9,11 +9,11 @@ export default function Hero() {
       {/* ---- Background gradient (phủ toàn màn hình Hero) ---- */}
       <div className="absolute inset-0 z-0">
         {/* Có thể thêm hình ảnh nền mờ ở đây nếu muốn, ví dụ: */}
-        {/* <img
+        <img
           src="https://images.unsplash.com/photo-1558769132-cb1ade89a862?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           alt="Abstract fashion background"
           className="absolute inset-0 h-full w-full object-cover opacity-20" // Hình ảnh nền mờ
-        /> */}
+        />
         {/* Overlay nền kính với ánh sáng mềm */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#7c3aed]/30 via-[#0ea5e9]/30 to-[#22d3ee]/20 backdrop-blur-2xl" />
         {/* Ánh sáng NEAT style */}

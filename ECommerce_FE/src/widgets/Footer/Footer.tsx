@@ -34,7 +34,7 @@ export default function Footer() {
     >
       {/* Thanh top (mảnh) luôn cao MIN_H */}
       <div
-        className="mx-auto max-w-[1200px] px-4 md:px-6 flex items-center justify-between text-xs text-gray-100/90"
+        className="mx-auto max-w-[1600px] px-4 md:px-6 flex items-center justify-between text-xs text-gray-100/90"
         style={{ height: MIN_H }}
       >
         <div className="flex items-center gap-3">
@@ -57,7 +57,7 @@ export default function Footer() {
       {/* Panel mở rộng: animate mượt bằng max-height + opacity (không đổi height của footer) */}
       <div
         id="footer-panel"
-        className="mx-auto max-w-[1200px] px-4 md:px-6 text-sm text-white/90 overflow-hidden"
+        className="mx-auto max-w-[1458px] px-4 md:px-6 text-sm text-white/90 overflow-hidden"
         style={{
           maxHeight: expanded ? PANEL_MAX : 0,
           opacity: expanded ? 1 : 0,

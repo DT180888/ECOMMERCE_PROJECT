@@ -9,8 +9,8 @@ export default function AppHeader() {
   const { data: me } = useMe({ enabled: hasToken });
 
   return (
-    <header className="sticky top-0 z-40 background-glass"> {/* THÊM BORDER */}
-      <div className="mx-auto max-w-[1200px] px-4 md:px-6 h-14 flex items-center justify-between">
+    <header className="w-full top-0 z-40 background-glass"> {/* THÊM BORDER */}
+      <div className="mx-auto w-full max-w-[1600px] px-4 md:px-6 h-14 flex items-center justify-between">
         <div className="flex items-center gap-6">
           <Link to="/" className="font-bold text-lg tracking-wide text-white">
             ECommerce
@@ -38,13 +38,13 @@ export default function AppHeader() {
             </>
           ) : (
             <div className="flex items-center gap-3 text-sm">
-              <Link to="/login" className="text-gray-200 hover:text-white transition-colors">Đăng nhập</Link>
+              <Link to="/auth/login" className="text-gray-200 hover:text-white transition-colors">Đăng nhập</Link>
               <Button
                 asChild
                 variant="primary"
                 size="sm"
               >
-                <Link to="/register">Đăng ký</Link>
+                <Link to="/auth/register">Đăng ký</Link>
               </Button>
             </div>
           )}

@@ -8,6 +8,7 @@ html, body, #root {
 html, body {
   margin: 0;
   background: transparent;
+  padding: 0;
 }
 #root {
   isolation: isolate; /* đảm bảo nền ở đúng layer */
@@ -18,4 +19,27 @@ h1, h2, h3, p { margin-block: 0; }
   background-color: rgba(255, 255, 255, 0.25);
   /* border-radius: 16px; */
   border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.page{
+    width: 100%;
+  max-width: 1600px;
+  /* padding-top và padding-bottom từ p-3 */
+  padding-top: 0.75rem; /* 12px */
+  padding-bottom: 0.75rem; /* 12px */
+
+  /* padding-left và padding-right từ px-4 (áp dụng cho mobile và nhỏ hơn md) */
+  padding-left: 1rem; /* 16px */
+  padding-right: 1rem; /* 16px */
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media (min-width: 768px) {
+  .page {
+    padding-left: 1.5rem; /* 24px */
+    padding-right: 1.5rem; /* 24px */
+  }
 }

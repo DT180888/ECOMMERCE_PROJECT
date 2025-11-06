@@ -28,7 +28,10 @@ export default function SnapDots({ ids }: Props) {
   }, [ids]);
 
   return (
-    <div className="fixed right-4 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col gap-2">
+    <div className="
+        fixed z-40
+        hidden md:flex flex-col gap-2 top-1/2 -translate-y-1/2 right-[6px] h-[200px] justify-between
+    ">
       {ids.map(id => (
         <a
           key={id}
