@@ -78,7 +78,7 @@ export default function LoginForm() {
           />
           Ghi nhớ tôi
         </label>
-        <a href="/forgot-password" className="text-sm text-gray-300 hover:underline">
+        <a href="/auth/forgot-password" className="text-sm text-gray-300 hover:underline">
           Quên mật khẩu?
         </a>
       </div>

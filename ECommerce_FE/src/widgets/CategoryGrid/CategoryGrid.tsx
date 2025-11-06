@@ -25,7 +25,7 @@ const cats = [
 export default function CategoryGrid() {
   return (
     <section className="relative w-full h-full overflow-hidden py-8 sm:py-10" aria-label="Danh mục nổi bật">
-      <div className="relative mx-auto max-w-[1200px] px-6 md:px-10 mb-10">
+      <div className="relative mx-auto max-w-[1600px] px-6 md:px-10 mb-10">
         <h2 className="text-2xl sm:text-3xl font-bold text-white">Khám phá danh mục nổi bật</h2>
         <p className="text-white/70 text-sm mt-1">Danh mục được yêu thích — trung tâm nổi bật, hai bên tinh tế.</p>
       </div>
