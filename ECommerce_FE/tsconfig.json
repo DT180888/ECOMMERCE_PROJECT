@@ -15,6 +15,7 @@
       "@widgets/*": ["widgets/*"],
       "@shared/*": ["shared/*"]
     },
+    
     "types": ["node"]
   }
 }

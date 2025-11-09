@@ -1,6 +1,6 @@
 import Hero from "@widgets/Hero/Hero";
 import CategoryGrid from "@widgets/CategoryGrid/CategoryGrid";
-import ProductGrid from "@widgets/Product/ProductGrid";
+// import ProductGrid from "@widgets/Product/ProductGrid";
 import PromoBanner from "@widgets/Promo/PromoBanner";
 import Newsletter from "@widgets/Newsletter/Newsletter";
 import FullscreenSection from "@shared/ui/FullscreenSection";
@@ -16,8 +16,8 @@ const featured = [
 export default function HomePage() {
   return (
     <div
-      className="overflow-y-auto snap-y snap-mandatory scroll-smooth 
-                  [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+      className="mx-auto w-full max-w-[1600px] overflow-y-auto snap-y snap-mandatory scroll-smooth 
+                  [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] rounded-xl"
       style={{ height: "calc(100dvh - var(--hdr,0px) - var(--ftr,0px))" }}
     >
       <FullscreenSection id="hero" center className="bg-transparent">
@@ -31,9 +31,9 @@ export default function HomePage() {
       <FullscreenSection id="featured" className="bg-transparent">
         <div className="space-y-4">
           <div className="flex items-baseline justify-between">
-            <a href="/catalog" className="text-sm text-gray-600 hover:underline">Xem tất cả →</a>
+            <a href="/catalog" className="text-sm text-color hover:underline">Xem tất cả →</a>
           </div>
-          <ProductGrid products={featured} />
+          {/* <ProductGrid products={featured} /> */}
         </div>
       </FullscreenSection>
 

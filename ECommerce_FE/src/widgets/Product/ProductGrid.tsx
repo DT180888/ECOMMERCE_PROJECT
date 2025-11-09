@@ -1,29 +1,44 @@
-import ProductCard, { ProductCardProps } from "./ProductCard";
 
-export type ProductGridProps = {
-  products: ProductCardProps[];
+import type { ProductCard as ProductCardType } from "@entities/product/types";
+import ProductCard from "./ProductCard";
+
+type Props = {
+  items?: ProductCardType[];
   isLoading?: boolean;
+  onAddToCart?: (productId: number) => void;
+  emptyText?: string;
 };
 
-export default function ProductGrid({ products, isLoading }: ProductGridProps) {
-  if (isLoading) {
-    return (
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="animate-pulse rounded-xl border bg-white p-3">
-            <div className="h-40 w-full rounded-md bg-gray-200" />
-            <div className="mt-3 h-4 w-2/3 rounded bg-gray-200" />
-            <div className="mt-2 h-4 w-1/3 rounded bg-gray-200" />
-            <div className="mt-4 h-9 w-full rounded bg-gray-200" />
-          </div>
-        ))}
+function SkeletonCard() {
+  return (
+    <div className="animate-pulse rounded-xl border border-gray-100 bg-white">
+      <div className="aspect-[4/3] rounded-xl-2xl bg-gray-100" />
+      <div className="p-3 space-y-2">
+        <div className="h-4 w-3/4 bg-gray-100 rounded" />
+        <div className="h-4 w-1/2 bg-gray-100 rounded" />
+        <div className="h-9 w-full bg-gray-100 rounded-xl" />
       </div>
-    );
+    </div>
+  );
+}
+
+export default function ProductGrid({
+  items = [],
+  isLoading,
+  onAddToCart,
+  emptyText = "Không có sản phẩm phù hợp",
+}: Props) {
+  if (!isLoading && items.length === 0) {
+    return <div className="text-center text-gray-500 py-10">{emptyText}</div>;
   }
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {products.map(p => <ProductCard key={p.id} {...p} />)}
+    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
+      {isLoading
+        ? Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
+        : items.map((p) => (
+            <ProductCard key={p.productId} item={p} onAddToCart={onAddToCart} />
+          ))}
     </div>
   );
 }

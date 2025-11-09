@@ -12,7 +12,7 @@ export const Label = forwardRef<HTMLLabelElement, LabelProps>(
       <label
         ref={ref}
         className={clsx(
-          "block text-sm font-medium text-gray-700", // Màu chữ xám đậm, dễ đọc
+          "block text-sm font-medium text-white", // Màu chữ xám đậm, dễ đọc
           className
         )}
         {...props}

@@ -31,7 +31,7 @@ export default function LoginForm() {
         onSuccess: () => {
           if (remember) localStorage.setItem("remember_email", email);
           else localStorage.removeItem("remember_email");
-          window.location.replace("/");
+          window.location.replace("/Home-page");
         },
       }
     );
@@ -78,7 +78,7 @@ export default function LoginForm() {
           />
           Ghi nhớ tôi
         </label>
-        <a href="/forgot-password" className="text-sm text-gray-300 hover:underline">
+        <a href="/auth/forgot-password" className="text-sm text-gray-300 hover:underline">
           Quên mật khẩu?
         </a>
       </div>

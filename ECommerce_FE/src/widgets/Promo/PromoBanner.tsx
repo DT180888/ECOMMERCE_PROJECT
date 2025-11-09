@@ -1,6 +1,6 @@
 export default function PromoBanner() {
   return (
-    <div className="rounded-2xl border bg-white p-6 md:p-8 flex flex-col md:flex-row items-center gap-6">
+    <div className="rounded-xl border bg-white p-6 md:p-8 flex flex-col md:flex-row items-center gap-6">
       <img
         src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200"
         alt=""

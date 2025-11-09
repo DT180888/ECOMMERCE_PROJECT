@@ -8,14 +8,42 @@ html, body, #root {
 html, body {
   margin: 0;
   background: transparent;
+  padding: 0;
 }
 #root {
   isolation: isolate; /* đảm bảo nền ở đúng layer */
 }
 h1, h2, h3, p { margin-block: 0; }
 
-.background-glass{
-  background-color: rgba(255, 255, 255, 0.25);
-  /* border-radius: 16px; */
-  border: 1px solid rgba(255, 255, 255, 0.18);
+.main-bg{
+  background-color: rgba(196, 196, 196, 0.459);
 }
+.background-glass{
+  background-color: rgba(2, 2, 2, 0.418);
+}
+
+.text-color{
+  color: whitesmoke;
+}
+
+.page{
+  width: 100%;
+  /* padding-top và padding-bottom từ p-3 */
+  padding-top: 0.75rem; /* 12px */
+  padding-bottom: 0.75rem; /* 12px */
+
+  /* padding-left và padding-right từ px-4 (áp dụng cho mobile và nhỏ hơn md) */
+  overflow-y: auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: blue;
+}
+
+/* @media (min-width: 768px) {
+  .page {
+    padding-left: 1.5rem; 
+    padding-right: 1.5rem;
+  }
+} */
