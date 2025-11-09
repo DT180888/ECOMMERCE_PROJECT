@@ -12,10 +12,11 @@ export default function FullscreenSection({
         center && "flex items-center",
         className 
       )}
-      style={{ height: "100%" }} 
+      style={{ height: "100%",
+               width: "100%"
+       }} 
     >
-      {/* Padding chuyển vào wrapper, không làm nở section */}
-      <div className="w-full max-w-[1576px] p-3 rounded-[26px] background-glass h-[100%]">
+      <div className="w-full max-w-[1576px] p-3 rounded-[12px] background-glass h-[100%]">
         {children}
       </div>
     </section>

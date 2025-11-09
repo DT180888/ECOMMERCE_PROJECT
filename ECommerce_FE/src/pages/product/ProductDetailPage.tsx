@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useProductDetail } from "@entities/product/hooks";
 import type { Id, Sku } from "@entities/product/types";
+import FullscreenSection from "@shared/ui/FullscreenSection";
 
 const formatVND = (minor: number) =>
   new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(minor / 100);
@@ -50,37 +51,71 @@ export default function ProductDetailPage() {
   }
   if (isLoading) {
     return (
-      <div className="container mx-auto p-6 space-y-4">
-        <div className="h-4 w-40 bg-gray-100 rounded animate-pulse" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="aspect-square bg-gray-100 rounded-2xl animate-pulse" />
-          <div className="space-y-3">
-            <div className="h-6 w-2/3 bg-gray-100 rounded animate-pulse" />
-            <div className="h-6 w-1/3 bg-gray-100 rounded animate-pulse" />
-            <div className="h-24 w-full bg-gray-100 rounded animate-pulse" />
+      <div className="mx-auto w-full max-w-[1600px]"
+          style={{ height: "calc(100dvh - var(--hdr,0px) - var(--ftr,0px))" }}
+      >
+        <FullscreenSection center className="bg-transparent">
+          <div className=" w-full overflow-y-auto snap-y snap-mandatory scroll-smooth 
+                      [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+                      style={{ height: "calc(100dvh - var(--hdr,0px) - var(--ftr,0px) - 48px)" }}
+              >
+              <div className="container mx-auto p-6 space-y-4">
+                <div className="h-4 w-40 bg-gray-100 rounded animate-pulse" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="aspect-square bg-gray-100 rounded-xl animate-pulse" />
+                    <div className="space-y-3">
+                      <div className="h-6 w-2/3 bg-gray-100 rounded animate-pulse" />
+                      <div className="h-6 w-1/3 bg-gray-100 rounded animate-pulse" />
+                      <div className="h-24 w-full bg-gray-100 rounded animate-pulse" />
+                    </div>
+                  </div>
+                </div>
           </div>
-        </div>
+        
+        </FullscreenSection>
       </div>
+     
     );
   }
   if (isError || !p) {
-    return <div className="container mx-auto p-6">Không tìm thấy sản phẩm.</div>;
+    
+    return (
+        <div className="mx-auto w-full max-w-[1600px]"
+          style={{ height: "calc(100dvh - var(--hdr,0px) - var(--ftr,0px))" }}
+      >
+        <FullscreenSection center className="bg-transparent">
+          <div className=" w-full overflow-y-auto snap-y snap-mandatory scroll-smooth 
+                      [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+                      style={{ height: "calc(100dvh - var(--hdr,0px) - var(--ftr,0px) - 48px)" }}
+              >
+              <div className="container mx-auto p-6">Không tìm thấy sản phẩm.</div>
+          </div>
+        </FullscreenSection>
+      </div>
+      
+    );
   }
 
   return (
-    <div className="ProductDetailPage page">
-      <div className="background-glass rounded-[16px] w-full">
-        {/* Breadcrumb */}
-        <nav className="text-sm text-gray-500 mb-3">
+    <div className="ProductDetailPage">
+      <div className="mx-auto w-full max-w-[1600px]"
+          style={{ height: "calc(100dvh - var(--hdr,0px) - var(--ftr,0px))" }}
+      >
+        <FullscreenSection center className="bg-transparent">
+          <div className=" w-full overflow-y-auto snap-y snap-mandatory scroll-smooth 
+                      [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+                      style={{ height: "calc(100dvh - var(--hdr,0px) - var(--ftr,0px) - 48px)" }}
+              >
+                 <nav className="text-sm text-color mb-3">
           <Link to="/catalog" className="hover:underline">Danh mục</Link>
           <span className="mx-2">/</span>
-          <span className="text-gray-700">{p.name}</span>
+          <span className="text-color">{p.name}</span>
         </nav>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Gallery */}
           <section>
-            <div className="max-w-[500px] aspect-square rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 flex items-center justify-center">
+            <div className="max-w-[500px] aspect-square rounded-xl overflow-hidden bg-gray-50 border border-gray-100 flex items-center justify-center">
               <img
                 src={`${baseUrl}${displayImageUrl}`}
                 alt={`Ảnh sản phẩm ${p.name}`}
@@ -119,9 +154,9 @@ export default function ProductDetailPage() {
 
           {/* Info */}
           <section className="space-y-4">
-            <h1 className="text-2xl font-semibold leading-tight">{p.name}</h1>
+            <h1 className="text-2xl text-color font-semibold leading-tight">{p.name}</h1>
 
-            <div className="text-xl font-bold">
+            <div className="text-xl font-bold text-color">
               {p.skus?.length ? (
                 selectedSku
                   ? formatVND(selectedSku.priceMinor)
@@ -134,7 +169,7 @@ export default function ProductDetailPage() {
             {/* SKU selector */}
             {p.skus && p.skus.length > 0 && (
               <div className="space-y-2">
-                <div className="text-sm text-gray-600">Phân loại</div>
+                <div className="text-sm text-color">Phân loại</div>
                 <div className="flex flex-wrap gap-2">
                   {p.skus
                     .filter((s) => s.isActive)
@@ -146,7 +181,7 @@ export default function ProductDetailPage() {
                           onClick={() => setSelectedSku(s)}
                           className={`rounded-xl border px-3 py-1.5 text-sm ${
                             active
-                              ? "border-gray-900 bg-gray-900 text-white"
+                              ? "border-gray-900 bg-gray-900 text-color"
                               : "border-gray-200 hover:bg-gray-50"
                           }`}
                           title={s.skuCode}
@@ -161,10 +196,10 @@ export default function ProductDetailPage() {
 
             {/* Actions */}
             <div className="flex gap-3">
-              <button className="rounded-xl bg-gray-900 text-white px-5 py-3 hover:opacity-90 active:scale-[0.99]">
+              <button className="rounded-xl bg-gray-900 text-color px-5 py-3 hover:opacity-80 active:scale-[0.99]">
                 Thêm vào giỏ
               </button>
-              <button className="rounded-xl border px-5 py-3 hover:bg-gray-50">
+              <button className="rounded-xl border text-color px-5 py-3 hover:bg-gray-900 hover:text-color">
                 Mua ngay
               </button>
             </div>
@@ -172,12 +207,12 @@ export default function ProductDetailPage() {
             {/* Attributes */}
             {p.attributes?.length > 0 && (
               <div className="pt-2">
-                <h2 className="font-medium mb-2">Thông tin</h2>
+                <h2 className="font-medium mb-2 text-color">Thông tin</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
                   {p.attributes.map((a) => (
                     <div key={a.attributeId} className="flex justify-between gap-6">
-                      <span className="text-gray-500">#{a.attributeId}</span>
-                      <span className="text-gray-800">
+                      <span className="text-color">#{a.attributeId}</span>
+                      <span className="text-color">
                         {a.valueText ?? a.valueNumber ?? (a.valueBool ? "Có" : "Không")}
                       </span>
                     </div>
@@ -189,12 +224,15 @@ export default function ProductDetailPage() {
             {/* Description */}
             {p.description && (
               <div className="prose max-w-none">
-                <h2 className="font-medium mb-2">Mô tả</h2>
-                <p className="text-gray-700 whitespace-pre-line">{p.description}</p>
+                <h2 className="font-medium mb-2 text-color">Mô tả</h2>
+                <p className="text-color whitespace-pre-line">{p.description}</p>
               </div>
             )}
           </section>
         </div>
+          </div>
+        
+        </FullscreenSection>
       </div>
     </div>
   );

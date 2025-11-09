@@ -41,27 +41,27 @@ const router = createBrowserRouter([
     ],
   },
     {
-    path: "/auth", // Đây là path gốc chung cho tất cả các route xác thực
-    element: <AuthLayout />, // AuthLayout sẽ bao bọc tất cả các trang con
+    path: "/auth", 
+    element: <AuthLayout />, 
     children: [
       {
-        path: "login", // Sẽ là /auth/login
+        path: "login",
         element: <LoginPage />,
       },
       {
-        path: "register", // Sẽ là /auth/register
+        path: "register", 
         element: <RegisterPage />,
       },
       {
-        path: "confirm-email", // Sẽ là /auth/confirm-email
+        path: "confirm-email", 
         element: <ConfirmEmailPage />,
       },
       {
-        path: "forgot-password", // Sẽ là /auth/forgot-password
+        path: "forgot-password", 
         element: <ForgotPasswordPage />,
       },
       {
-        path: "reset-password", // Sẽ là /auth/reset-password
+        path: "reset-password", 
         element: <ResetPasswordPage />,
       },
     ],

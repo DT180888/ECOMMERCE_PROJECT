@@ -3,7 +3,7 @@ import { Button } from "@shared/ui/Button";
 export default function Hero() {
   return (
     <section
-      className="relative w-full overflow-hidden h-full rounded-[16px] flex items-center justify-center p-6 md:p-10 lg:p-16" // Thêm padding tổng thể và flex để căn giữa nội dung
+      className="relative w-full overflow-hidden h-full rounded-[12px] flex items-center justify-center p-6 md:p-10 lg:p-16" // Thêm padding tổng thể và flex để căn giữa nội dung
       aria-label="Khám phá Phong Cách Mới"
     >
       {/* ---- Background gradient (phủ toàn màn hình Hero) ---- */}
