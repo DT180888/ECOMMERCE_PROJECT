@@ -1,18 +1,24 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import AppHeader from "@widgets/Header/AppHeader";
-import Sidebar from "@widgets/Sidebar/Sidebar";
+import Sidebar from "@widgets/Sidebar/Sidebar"; // Sidebar không còn nhận props để điều khiển
 import Footer from "@widgets/Footer/Footer";
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import NeatBackground from "@shared/ui/NeatBackground";
 
-
 export default function MainLayout() {
-
-  const rootRef   = useRef<HTMLDivElement | null>(null);
+  const rootRef = useRef<HTMLDivElement | null>(null);
   const headerRef = useRef<HTMLElement | null>(null);
   const footerRef = useRef<HTMLElement | null>(null);
-   useLayoutEffect(() => {
-    const root   = rootRef.current!;
+
+  const location = useLocation();
+  const hideSidebarPaths = ["/"];
+  const shouldShowSidebar = !hideSidebarPaths.includes(location.pathname);
+
+  // Không cần isSidebarCollapsed và toggleSidebarCollapse trong MainLayout nữa
+  // const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false); 
+
+  useLayoutEffect(() => {
+    const root = rootRef.current!;
     const header = headerRef.current!;
     const footer = footerRef.current!;
 
@@ -27,23 +33,21 @@ export default function MainLayout() {
       root.style.setProperty("--ftr", `${f}px`);
     };
 
-    // Cập nhật ngay khi mount
     updateVars();
 
-    // Cập nhật khi resize viewport
-    const onResize = () => updateVars();
+    const onResize = () => {
+      updateVars();
+    };
     window.addEventListener("resize", onResize);
 
-    // Quan sát kích thước header/footer thay đổi (responsive, font load…)
     const ro = new ResizeObserver(updateVars);
     ro.observe(header);
     ro.observe(footer);
-    
+
     const mo = new MutationObserver(updateVars);
     mo.observe(header, { childList: true, subtree: true, attributes: true });
     mo.observe(footer, { childList: true, subtree: true, attributes: true });
 
-    // Một số browser cần tick sau layout
     requestAnimationFrame(updateVars);
 
     return () => {
@@ -53,27 +57,35 @@ export default function MainLayout() {
     };
   }, []);
 
+  // Hàm toggleSidebarCollapse không còn ở đây nữa
 
   return (
-    <div  ref={rootRef}
-      className="min-h-dvh flex flex-col relative overflow-hidden"
-      style={{ ["--hdr" as any]: "0px", ["--ftr" as any]: "0px" }} 
+    <div
+      ref={rootRef}
+      className="min-h-dvh flex flex-col relative overflow-hidden main-bg"
+      style={{ ["--hdr" as any]: "0px", ["--ftr" as any]: "0px" }}
     >
-      <NeatBackground />
+      <div className="main-bg">
+        <NeatBackground /> 
+      </div>
 
       <header ref={headerRef} className="w-full top-0 z-40">
-        <AppHeader />
+        {/* AppHeader không còn nhận onToggleSidebar nữa */}
+        <AppHeader /> 
       </header>
-      <div className="flex justify-center gap-0 md:gap-6 ">
-        {/* <aside className="hidden md:block">
-          <Sidebar />
-        </aside> */}
 
-        {/* Main content */}
-        <main  className="min-h-0 w-full">
+      <div className="mx-auto w-full max-w-[1600px] px-4 md:px-6 flex items-start justify-between gap-3 flex-1">
+        {/* {shouldShowSidebar && (
+          <aside className="flex-shrink-0  transition-all duration-300 ease-in-out"> 
+            <Sidebar /> 
+          </aside>
+        )} */}  {/* Khi nào cần sidebar thì bỏ comment đoạn này */}
+
+        <main className="min-h-0 w-full flex-1">
           <Outlet />
         </main>
       </div>
+
       <footer ref={footerRef} className="sticky bottom-0 z-40">
         <Footer />
       </footer>

@@ -78,7 +78,6 @@ export default function CategoryGrid() {
         ))}
       </Swiper>
 
-      {/* TUNING TRUNG TÂM TO HƠN & HAI BÊN NHỎ/MỜ */}
       <style>
         {`
         .swiper { padding-left: min(6vw, 80px); padding-right: min(6vw, 80px); }

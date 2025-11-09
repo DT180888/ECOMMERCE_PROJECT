@@ -24,7 +24,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             : "border-gray-300 focus:ring-blue-300", // Khi không có lỗi, dùng màu xanh nhạt hoặc màu primary của bạn
 
           // Màu placeholder, dùng gray-500 nếu brown-700 không được định nghĩa
-          "placeholder:text-gray-500", // hoặc "placeholder:text-brown-700" nếu đã có màu brown
+          "placeholder:text-white", // hoặc "placeholder:text-brown-700" nếu đã có màu brown
 
           // Các class bổ sung từ `className` prop được đặt cuối cùng để ghi đè
           className

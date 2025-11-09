@@ -2,7 +2,7 @@ import { Button } from "@shared/ui/Button";
 
 export default function Newsletter() {
   return (
-    <div className="rounded-2xl border bg-white p-6 md:p-8">
+    <div className="rounded-xl border bg-white p-6 md:p-8">
       <div className="md:flex md:items-center md:justify-between gap-6">
         <div>
           <h3 className="text-lg font-semibold">Nhận ưu đãi độc quyền</h3>

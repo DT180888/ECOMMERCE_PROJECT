@@ -9,45 +9,48 @@ export default function AppHeader() {
   const { data: me } = useMe({ enabled: hasToken });
 
   return (
-    <header className="w-full top-0 z-40 background-glass"> {/* THÊM BORDER */}
-      <div className="mx-auto w-full max-w-[1600px] px-4 md:px-6 h-14 flex items-center justify-between">
-        <div className="flex items-center gap-6">
-          <Link to="/" className="font-bold text-lg tracking-wide text-white">
-            ECommerce
-          </Link>
-          <nav className="hidden md:flex items-center gap-5 text-sm text-gray-200">
-            <Link to="/catalog" className="hover:text-white transition-colors">Catalog</Link>
-            <Link to="/orders" className="hover:text-white transition-colors">Orders</Link>
-            <Link to="/profile" className="hover:text-white transition-colors">Profile</Link>
-          </nav>
-        </div>
+    <header className="w-full top-0 z-40"> {/* THÊM BORDER */}
+      <div className="mx-auto w-full max-w-[1600px] px-4 md:px-6 h-14  ">
+        <div className="background-glass w-full h-full flex items-center justify-between px-3 rounded-b-xl">
+          <div className="flex items-center gap-6">
+            <Link to="/" className="font-bold text-lg tracking-wide text-white">
+              ECommerce
+            </Link>
+            <nav className="hidden md:flex items-center gap-5 text-sm text-gray-200">
+              <Link to="/catalog" className="hover:text-white transition-colors">Catalog</Link>
+              <Link to="/orders" className="hover:text-white transition-colors">Orders</Link>
+              <Link to="/profile" className="hover:text-white transition-colors">Profile</Link>
+            </nav>
+          </div>
 
-        <div className="flex items-center gap-3">
-          {me?.email ? (
-            <>
-              <span className="text-sm text-gray-200">{me.email}</span>
-              <Button
-                variant="glass"
-                size="sm"
-                onClick={() => logout.mutate()}
-                disabled={logout.isPending}
-                className="text-gray-100 hover:text-white"
-              >
-                {logout.isPending ? "Đang thoát…" : "Đăng xuất"}
-              </Button>
-            </>
-          ) : (
-            <div className="flex items-center gap-3 text-sm">
-              <Link to="/auth/login" className="text-gray-200 hover:text-white transition-colors">Đăng nhập</Link>
-              <Button
-                asChild
-                variant="primary"
-                size="sm"
-              >
-                <Link to="/auth/register">Đăng ký</Link>
-              </Button>
-            </div>
-          )}
+          <div className="flex items-center gap-3">
+            {me?.email ? (
+              <>
+                <span className="text-sm text-gray-200">{me.email}</span>
+                <Button
+                  variant="glass"
+                  size="sm"
+                  onClick={() => logout.mutate()}
+                  disabled={logout.isPending}
+                  className="text-gray-100 hover:text-white"
+                >
+                  {logout.isPending ? "Đang thoát…" : "Đăng xuất"}
+                </Button>
+              </>
+            ) : (
+              <div className="flex items-center gap-3 text-sm">
+                <Link to="/auth/login" className="text-gray-200 hover:text-white transition-colors">Đăng nhập</Link>
+                <Button
+                  asChild
+                  variant="primary"
+                  size="sm"
+                >
+                  <Link to="/auth/register">Đăng ký</Link>
+                </Button>
+              </div>
+            )}
+          </div>
+
         </div>
       </div>
     </header>

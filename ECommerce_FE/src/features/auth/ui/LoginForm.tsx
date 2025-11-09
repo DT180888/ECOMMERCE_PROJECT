@@ -31,7 +31,7 @@ export default function LoginForm() {
         onSuccess: () => {
           if (remember) localStorage.setItem("remember_email", email);
           else localStorage.removeItem("remember_email");
-          window.location.replace("/");
+          window.location.replace("/Home-page");
         },
       }
     );
