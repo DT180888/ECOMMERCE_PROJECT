@@ -24,7 +24,7 @@ export default function ConfirmEmailPage() {
     e.preventDefault();
     await confirm.mutateAsync({ userId, token });
     alert("Xác nhận email thành công, hãy đăng nhập.");
-    window.location.replace("/login");
+    window.location.replace("/auth/login");
   }
 
   return (

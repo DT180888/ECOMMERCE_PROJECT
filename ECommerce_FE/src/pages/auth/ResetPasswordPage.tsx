@@ -13,7 +13,7 @@ export default function ResetPasswordPage() {
     e.preventDefault();
     await reset.mutateAsync({ userId, token, newPassword });
     alert("Đổi mật khẩu thành công, hãy đăng nhập.");
-    window.location.replace("/login");
+    window.location.replace("/auth/login");
   }
 
   return (

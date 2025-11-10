@@ -6,11 +6,12 @@ import { useState } from "react"; // Import useState
 // KHÔNG CẦN SidebarProps nữa nếu Sidebar tự quản lý trạng thái
 
 const items = [
-  { to: "/", label: "Dashboard", end: true, icon: <HomeIcon className="h-5 w-5" /> },
-  { to: "/catalog", label: "Catalog", icon: <ShoppingCartIcon className="h-5 w-5" /> },
-  { to: "/orders", label: "Orders", icon: <ArchiveBoxIcon className="h-5 w-5" /> },
-  { to: "/customers", label: "Customers", icon: <UserGroupIcon className="h-5 w-5" /> },
-  { to: "/reports", label: "Reports", icon: <ChartBarIcon className="h-5 w-5" /> },
+  // { to: "/admin", label: "Dashboard", end: true, icon: <HomeIcon className="h-5 w-5" /> },
+  { to: "/reports", label: "Dashboard", end: true, icon: <ChartBarIcon className="h-5 w-5" /> },
+
+  { to: "/admin/brand", label: "Brand", icon: <ShoppingCartIcon className="h-5 w-5" /> },
+  { to: "/admin/category", label: "category", icon: <ArchiveBoxIcon className="h-5 w-5" /> },
+  { to: "/admin/product", label: "product", icon: <UserGroupIcon className="h-5 w-5" /> },
 ];
 
 // Sidebar không nhận props isCollapsed hay onClose nữa

@@ -84,7 +84,7 @@ axiosClient.interceptors.response.use(
       } catch (e) {
         setAccessToken(null);
         notifyQueue(null);
-        if (window.location.pathname !== "/login") window.location.replace("/login");
+        if (window.location.pathname !== "/auth/login") window.location.replace("/auth/login");
         return Promise.reject(e);
       } finally {
         isRefreshing = false;
@@ -99,5 +99,5 @@ axiosClient.interceptors.response.use(
 // Helper logout phía FE
 export function clientSideLogout() {
   setAccessToken(null);
-  if (window.location.pathname !== "/login") window.location.replace("/login");
+  if (window.location.pathname !== "/auth/login") window.location.replace("/auth/login");
 }

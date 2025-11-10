@@ -5,7 +5,7 @@ import type { Id, Sku } from "@entities/product/types";
 import FullscreenSection from "@shared/ui/FullscreenSection";
 
 const formatVND = (minor: number) =>
-  new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(minor / 100);
+  new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(minor);
 
 function parseIdFromSlugId(slugId?: string): Id | undefined {
   if (!slugId) return;
