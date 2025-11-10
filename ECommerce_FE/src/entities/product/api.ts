@@ -13,7 +13,7 @@ import type {
   Id,
 } from "./types";
 
-const BASE_URL = "/v1/products";
+const BASE_URL = "/api/v1/products";
 
 // Build query params: bỏ undefined/ null
 const buildQuery = (params?: ProductListParams) => {
