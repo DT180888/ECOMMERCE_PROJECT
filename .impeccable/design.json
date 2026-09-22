@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-05T19:35:11+07:00",
+  "title": "Design System: Adaptive Luxury Minimalism Design System",
+  "extensions": {
+    "colorMeta": {
+      "background-light": { "role": "neutral", "displayName": "Light Gray", "canonical": "#DBDBDB" },
+      "background-dark": { "role": "primary", "displayName": "Charcoal", "canonical": "#2A2A2A" },
+      "muted": { "role": "neutral", "displayName": "Mid-Gray", "canonical": "#797979" },
+      "accent": { "role": "tertiary", "displayName": "Indigo", "canonical": "#6C63FF" },
+      "success": { "role": "success", "displayName": "Success", "canonical": "#38B2AC" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero headlines and major section titles. Large and impactful." },
+      "headline": { "displayName": "Headline", "purpose": "Primary content titles." },
+      "title": { "displayName": "Title", "purpose": "Card headings, subsections." },
+      "body": { "displayName": "Body", "purpose": "Standard reading text. Keep max line length around 65-75ch." }
+    },
+    "shadows": [
+      { "name": "neo-sm", "value": "0 2px 8px rgba(0,0,0,0.06)", "purpose": "Default state for buttons, switches, and chips." },
+      { "name": "neo", "value": "0 8px 24px rgba(0,0,0,0.06)", "purpose": "Medium elements like cards and dropdown lists." },
+      { "name": "neo-hover", "value": "0 16px 36px rgba(0,0,0,0.1)", "purpose": "Interactive elements on hover for a slight lift." },
+      { "name": "neo-inset", "value": "inset 0 2px 4px rgba(0,0,0,0.05)", "purpose": "Input fields and search bars, providing a soft inner glow." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Used for main actions.",
+      "html": "<button class=\"ds-btn-primary\">GET STARTED</button>",
+      "css": ".ds-btn-primary { background: #2A2A2A; color: #DBDBDB; padding: 8px 16px; font-weight: 500; border: 1px solid rgba(28,28,30,0.05); border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 16px 36px rgba(0,0,0,0.1); } .ds-btn-primary:active { transform: translateY(0.5px); box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Quiet Luxury through Flat Minimalism and Soft Depth",
+    "overview": "The system strictly enforces a balanced \"80% Static Flat Minimalism + 20% Soft Adaptive Depth & Glassmorphism\" visual hierarchy across both Light and Dark themes, optimized for a premium e-commerce fashion brand (Quiet Luxury). Macro layouts, section headers, lookbook imagery, and primary content sit completely flat on the canvas at rest. Generous whitespace (80px+ desktop) is utilized to evoke a high-end editorial magazine feel.",
+    "keyCharacteristics": [
+      "The 80% (Static Flat Minimalism): Layouts and imagery sit flat with zero shadows.",
+      "The 20% (Subtle Depth & Overlays): Reserved strictly for floating user interfaces like headers, dropdowns, and modals.",
+      "Typography-led: Large, clear, high-contrast headings with editorial scaling.",
+      "Warm Light / Obsidian Dark: Seamless transition between Oatmeal/Charcoal and deep Obsidian."
+    ],
+    "rules": [
+      { "name": "The One Voice Rule", "body": "The primary accent is used on ≤10% of any given screen. Its rarity is the point.", "section": "colors" },
+      { "name": "The Editorial Contrast Rule", "body": "Hierarchy is established through extreme size contrast between Display headings and Body text, rather than relying solely on color or weight.", "section": "typography" },
+      { "name": "The Flat Photography Rule", "body": "Images within product showcases sit flat with zero shadows (`shadow-none`) and minimal rounded corners (`rounded-gallery`) to preserve garment silhouettes and high-fashion aesthetics.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use flat backgrounds for product imagery and lookbook displays.",
+      "Do use glassmorphism strictly for floating elements like sticky headers or modal overlays.",
+      "Do manage section vertical padding strictly using `.client-section` to avoid double-padding.",
+      "Do constrain ultra-wide monitors (1920p+) with `max-w-7xl` or `max-w-screen-2xl` and center layouts."
+    ],
+    "donts": [
+      "Don't use thiết kế rườm rà, đổ bóng (shadow) quá dày hoặc clay neumorphism (kiểu nổi khối 3D quá đà).",
+      "Don't use màu sắc chói lọi, gradient chữ hoặc viền sọc.",
+      "Don't use giao diện thẻ bài lặp lại nhàm chán hoặc modal bật lên liên tục.",
+      "Don't apply inline vertical padding utilities (`py-20`, `pt-24`) to page wrappers wrapping section widgets."
+    ]
+  }
+}

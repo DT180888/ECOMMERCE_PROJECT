@@ -1,0 +1,758 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Premium Adaptive Luxury Minimalism Palette (Light Theme) */
+    --background: 240 6% 94%;
+    /* ~#F4F4F5 */
+    --foreground: 240 10% 12%;
+    /* ~#1C1C1E */
+
+    --card: 0 0% 99%;
+    /* ~#FCFCFC (Off-white) */
+    --card-foreground: 240 10% 12%;
+
+    --popover: 0 0% 99%;
+    --popover-foreground: 240 10% 12%;
+
+    --primary: 240 10% 12%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 0 0% 96%;
+    /* #F4F4F5 */
+    --secondary-foreground: 240 10% 12%;
+
+    --muted: 240 5% 40%;
+    /* Tăng độ đậm */
+    --muted-foreground: 240 5% 40%;
+
+    --accent: 243 100% 69%;
+    /* #6C63FF */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 359 65% 45%;
+    --destructive-foreground: 356 64% 96%;
+
+    --border: 240 10% 12% / 0.06;
+    --input: transparent;
+    --ring: 243 100% 69%;
+
+    --radius: 4px;
+    --radius-card: 6px;
+    --radius-button: 6px;
+    --radius-inner: 4px;
+
+    --surface: 240 6% 96%;
+    /* ~#F8F8F9 */
+    --success: 177 52% 46%;
+    --success-foreground: 0 0% 98%;
+    --error: 359 65% 45%;
+    --error-foreground: 356 64% 96%;
+    --error-muted: 359 30% 98%;
+
+    /* Minimalist UI Pastel Badges */
+    --badge-red-bg: 356 70% 95%;
+    --badge-red-fg: 356 55% 40%;
+    --badge-blue-bg: 204 88% 94%;
+    --badge-blue-fg: 204 67% 37%;
+    --badge-green-bg: 111 25% 94%;
+    --badge-green-fg: 125 32% 30%;
+    --badge-yellow-bg: 45 76% 92%;
+    --badge-yellow-fg: 40 100% 29%;
+
+
+    /* Shadow Colors & Variables to support legacy layout and react-select styling */
+    --shadow-light: rgba(255, 255, 255, 0.7);
+    --shadow-dark: rgba(0, 0, 0, 0.04);
+    --shadow-light-hover: rgba(255, 255, 255, 0.9);
+    --shadow-dark-hover: rgba(0, 0, 0, 0.08);
+
+    --shadow-dark-rgb: 0, 0, 0;
+    --shadow-light-rgb: 255, 255, 255;
+    --shadow-dark-opacity: 0.06;
+    --shadow-light-opacity: 0.3;
+
+    /* Glassmorphism tokens */
+    --glass-bg: 0 0% 99% / 0.65;
+    --glass-border: 240 10% 12% / 0.08;
+    --blur-strength: 16px;
+  }
+
+  .dark {
+    /* Premium Adaptive Luxury Minimalism Palette (Dark Theme) */
+    --background: 0 0% 4%;
+    /* #0A0A0A */
+    --foreground: 0 0% 98%;
+    /* #FAFAFA */
+
+    --card: 0 0% 7%;
+    /* #111111 */
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 7%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 4%;
+
+    --secondary: 0 0% 12%;
+    /* #1F1F22 */
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 240 5% 65%;
+    /* #A1A1AA Zinc 400 */
+    --muted-foreground: 240 5% 65%;
+
+    --accent: 243 100% 69%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 359 65% 55%;
+    --destructive-foreground: 356 64% 96%;
+
+    --border: 0 0% 98% / 0.1;
+    --input: transparent;
+    --ring: 243 100% 69%;
+
+    --radius: 4px;
+    --radius-card: 6px;
+    --radius-button: 6px;
+    --radius-inner: 4px;
+
+    --surface: 0 0% 7%;
+    --success: 177 52% 46%;
+    --success-foreground: 0 0% 4%;
+    --error: 359 65% 55%;
+    --error-foreground: 356 64% 96%;
+    --error-muted: 359 30% 12%;
+
+    /* Minimalist UI Pastel Badges (Dark Mode - Inverted/Dimmed) */
+    --badge-red-bg: 356 55% 15%;
+    --badge-red-fg: 356 70% 85%;
+    --badge-blue-bg: 204 67% 15%;
+    --badge-blue-fg: 204 88% 85%;
+    --badge-green-bg: 125 32% 15%;
+    --badge-green-fg: 111 25% 85%;
+    --badge-yellow-bg: 40 100% 15%;
+    --badge-yellow-fg: 45 76% 85%;
+
+
+    /* Shadow Colors (Dark Theme) */
+    --shadow-light: rgba(255, 255, 255, 0.02);
+    --shadow-dark: rgba(0, 0, 0, 0.5);
+    --shadow-light-hover: rgba(255, 255, 255, 0.04);
+    --shadow-dark-hover: rgba(0, 0, 0, 0.7);
+
+    --shadow-dark-rgb: 0, 0, 0;
+    --shadow-light-rgb: 255, 255, 255;
+    --shadow-dark-opacity: 0.3;
+    --shadow-light-opacity: 0.02;
+
+    /* Glassmorphism tokens */
+    --glass-bg: 0 0% 7% / 0.65;
+    --glass-border: 0 0% 98% / 0.12;
+    --blur-strength: 16px;
+  }
+}
+
+@layer components {
+
+  /* ─── Glassmorphism ──────────────────────────────────────────────────────
+     Dùng cho: Header khi scroll, Modal backdrop, Floating badge
+     KHÔNG dùng cho card sản phẩm hay list item thông thường
+  ─────────────────────────────────────────────────────────────────────── */
+  .glass-panel {
+    background-color: hsl(var(--background) / 0.72);
+    backdrop-filter: blur(var(--blur-strength)) saturate(1.5);
+    -webkit-backdrop-filter: blur(var(--blur-strength)) saturate(1.5);
+    border: 1px solid hsl(var(--border) / 0.4);
+  }
+
+  .glass-panel-strong {
+    background-color: hsl(var(--background) / 0.85);
+    backdrop-filter: blur(20px) saturate(1.8);
+    -webkit-backdrop-filter: blur(20px) saturate(1.8);
+    border: 1px solid hsl(var(--border) / 0.5);
+  }
+
+  /* ─── Layout & Responsive Formulas ────────────────────────────────────────
+     Công thức responsive đồng bộ cho Client-side pages và các thành phần
+  ─────────────────────────────────────────────────────────────────────── */
+  .client-page-container {
+    max-width: 1440px;
+    /* Điểm giới hạn an toàn cho mắt */
+    margin-inline: auto;
+    padding-inline: 0.75rem;
+    /* Căn giữa */
+  }
+
+  @media (min-width: 640px) {
+    .client-page-container {
+      padding-inline: 1.5rem;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .client-page-container {
+      padding-inline: 2rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .client-page-container {
+      padding-inline: 3rem;
+    }
+  }
+
+  .client-section {
+    width: 100%;
+    padding-block: 3.5rem;
+    /* 56px mobile */
+  }
+
+
+  @media (min-width: 768px) {
+    .client-section {
+      padding-block: 5rem;
+      /* 80px md */
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .client-section {
+      padding-block: 7rem;
+      /* 112px lg */
+    }
+  }
+
+  .responsive-product-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    /* 16px mobile */
+  }
+
+  @media (min-width: 640px) {
+    .responsive-product-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.5rem;
+      /* 24px sm */
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .responsive-product-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 2rem;
+      /* 32px lg */
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .responsive-product-grid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+  }
+
+  .responsive-h1 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    font-size: 2.25rem;
+    /* 36px mobile */
+  }
+
+  @media (min-width: 640px) {
+    .responsive-h1 {
+      font-size: 3rem;
+      /* 48px sm */
+    }
+  }
+
+  @media (min-width: 768px) {
+    .responsive-h1 {
+      font-size: 3.75rem;
+      /* 60px md */
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .responsive-h1 {
+      font-size: 4.5rem;
+      /* 72px lg */
+    }
+  }
+
+  .responsive-h2 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    font-size: 1.875rem;
+    /* 30px mobile */
+  }
+
+  @media (min-width: 768px) {
+    .responsive-h2 {
+      font-size: 2.5rem;
+      /* 40px md */
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .responsive-h2 {
+      font-size: 3rem;
+      /* 48px lg */
+    }
+  }
+
+  .responsive-h3 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    font-size: 1.25rem;
+    /* 20px mobile */
+  }
+
+  @media (min-width: 768px) {
+    .responsive-h3 {
+      font-size: 1.5rem;
+      /* 24px md */
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .responsive-h3 {
+      font-size: 1.75rem;
+      /* 28px lg */
+    }
+  }
+
+  .responsive-card-padding {
+    padding: 1rem;
+    /* 16px mobile */
+  }
+
+  @media (min-width: 640px) {
+    .responsive-card-padding {
+      padding: 1.5rem;
+      /* 24px sm */
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .responsive-card-padding {
+      padding: 2rem;
+      /* 32px lg */
+    }
+  }
+
+  .responsive-gap {
+    gap: 1rem;
+    /* 16px mobile */
+  }
+
+  @media (min-width: 768px) {
+    .responsive-gap {
+      gap: 1.5rem;
+      /* 24px md */
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .responsive-gap {
+      gap: 2rem;
+      /* 32px lg */
+    }
+  }
+
+  .section-container {
+    width: 100%;
+    max-width: 80rem;
+    /* 1280px */
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .section-container {
+      padding-inline: 2rem;
+    }
+  }
+
+  .page-wrapper {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ─── Skeleton Loading ───────────────────────────────────────────────────
+     Dùng thay spinner khi load dữ liệu bất đồng bộ
+  ─────────────────────────────────────────────────────────────────────── */
+  .skeleton-base {
+    background-color: hsl(var(--muted));
+    border-radius: var(--radius);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .skeleton-pulse {
+      background-color: hsl(var(--muted));
+      border-radius: var(--radius);
+      animation: skeleton-shimmer 1.6s ease-in-out infinite;
+    }
+
+    @keyframes skeleton-shimmer {
+      0% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.45;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton-pulse {
+      background-color: hsl(var(--muted));
+      border-radius: var(--radius);
+      /* Không animate — chỉ hiện màu tĩnh */
+    }
+  }
+
+  /* ─── Error Banner ───────────────────────────────────────────────────────
+     Dùng cho inline error message, form error, toast error
+  ─────────────────────────────────────────────────────────────────────── */
+  .error-banner {
+    background-color: hsl(var(--error-muted));
+    color: hsl(var(--error));
+    border: 1px solid hsl(var(--error) / 0.25);
+    border-radius: var(--radius);
+    padding: 0.625rem 0.875rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  /* ─── Divider ────────────────────────────────────────────────────────────
+     Đường phân cách section nhẹ nhàng
+  ─────────────────────────────────────────────────────────────────────── */
+  .section-divider {
+    width: 100%;
+    height: 1px;
+    background-color: hsl(var(--border));
+  }
+
+  /* ─── Admin UI Utilities ─────────────────────────────────────────────────
+     Chuẩn hoá surface, header, table cho toàn bộ admin pages
+  ─────────────────────────────────────────────────────────────────────── */
+
+  /* Alias: nhiều admin page dùng class này — giữ compatibility */
+  .background-glass {
+    background-color: hsl(var(--background) / 0.72);
+    backdrop-filter: blur(var(--blur-strength)) saturate(1.5);
+    -webkit-backdrop-filter: blur(var(--blur-strength)) saturate(1.5);
+    border: 1px solid hsl(var(--border) / 0.4);
+  }
+
+  /* Surface nhẹ cho admin sections (không blur mạnh) */
+  .admin-surface {
+    background-color: hsl(var(--card));
+    @apply shadow-neo-sm;
+    border: 1px solid hsl(var(--foreground) / 0.05);
+    border-radius: var(--radius-card);
+  }
+
+  /* Bố cục bảng phân tách kiểu Neumorphism */
+  .admin-page-shell table,
+  table:has(.admin-table-row) {
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    background-color: transparent;
+  }
+
+  /* Header sticky của table admin */
+  .admin-table-head {
+    background-color: transparent;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: hsl(var(--muted));
+  }
+
+  .admin-table-head th {
+    padding-bottom: 8px;
+    border-bottom: none;
+  }
+
+  /* Row hover state nhất quán */
+  .admin-table-row {
+    background-color: hsl(var(--card));
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    border: 1px solid hsl(var(--foreground) / 0.03);
+    transition: all 300ms ease-out;
+  }
+
+  .admin-table-row:nth-child(odd) {
+    background-color: hsl(var(--foreground) / 0.02);
+  }
+
+  .admin-table-row td {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .admin-table-row td:first-child {
+    border-top-left-radius: var(--radius-button);
+    border-bottom-left-radius: var(--radius-button);
+    padding-left: 16px;
+  }
+
+  .admin-table-row td:last-child {
+    border-top-right-radius: var(--radius-button);
+    border-bottom-right-radius: var(--radius-button);
+    padding-right: 16px;
+  }
+
+  .admin-table-row:hover {
+    transform: translateY(-2px);
+    border-radius: var(--radius-button);
+    background-color: hsl(var(--card));
+    box-shadow: 0 6px 16px rgba(var(--shadow-dark-rgb), calc(var(--shadow-dark-opacity) + 0.03));
+  }
+
+  /* ─── Tích hợp viền mảnh tối giản thay cho viền vát 3D ─── */
+  .shadow-neo-sm {
+    border: 1px solid hsl(var(--foreground) / 0.04);
+  }
+
+  .dark .shadow-neo-sm {
+    border: 1px solid hsl(var(--foreground) / 0.06);
+  }
+
+  .shadow-neo {
+    border: 1px solid hsl(var(--foreground) / 0.05);
+  }
+
+  .dark .shadow-neo {
+    border: 1px solid hsl(var(--foreground) / 0.08);
+  }
+
+  .shadow-neo-hover {
+    border: 1px solid hsl(var(--foreground) / 0.08);
+  }
+
+  .dark .shadow-neo-hover {
+    border: 1px solid hsl(var(--foreground) / 0.12);
+  }
+
+  .shadow-neo-inset-sm {
+    border: 1px solid hsl(var(--foreground) / 0.06);
+  }
+
+  .shadow-neo-inset {
+    border: 1px solid hsl(var(--foreground) / 0.06);
+  }
+
+  .shadow-neo-inset-deep {
+    border: 1px solid hsl(var(--foreground) / 0.08);
+  }
+
+  /* Tiện ích viền mảnh tối giản độc lập */
+  .border-neo-bevel {
+    border: 1px solid hsl(var(--foreground) / 0.05);
+  }
+
+  .dark .border-neo-bevel {
+    border: 1px solid hsl(var(--foreground) / 0.08);
+  }
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: 'DM Sans', sans-serif;
+  overflow-x: hidden;
+  position: relative;
+  scroll-behavior: smooth;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.font-display {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Scoped transitions should be used on components rather than a wildcard * selector to avoid layout thrashing. */
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-block: 0;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(120, 119, 116, 0.2);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(120, 119, 116, 0.4);
+}
+
+/* ─── Scroll-Driven & Clay Staggering Keyframes ──────────────────────────── */
+@keyframes reveal-lift {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes reveal-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes reveal-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ─── Scroll-Driven Classes (Compositor Thread) ─────────────────────────── */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-reveal-lift {
+      view-timeline-name: --reveal-lift-timeline;
+      view-timeline-axis: block;
+      animation-name: reveal-lift;
+      animation-timeline: --reveal-lift-timeline;
+      animation-fill-mode: both;
+      animation-range: entry 12% cover 35%;
+      animation-duration: 1s;
+    }
+
+    .scroll-reveal-fade-up {
+      view-timeline-name: --reveal-fade-timeline;
+      view-timeline-axis: block;
+      animation-name: reveal-fade-up;
+      animation-timeline: --reveal-fade-timeline;
+      animation-fill-mode: both;
+      animation-range: entry 10% cover 30%;
+      animation-duration: 1s;
+    }
+
+    .scroll-reveal-scale-in {
+      view-timeline-name: --reveal-scale-timeline;
+      view-timeline-axis: block;
+      animation-name: reveal-scale-in;
+      animation-timeline: --reveal-scale-timeline;
+      animation-fill-mode: both;
+      animation-range: entry 15% cover 38%;
+      animation-duration: 1s;
+    }
+
+    .stagger-1 {
+      animation-delay: 50ms;
+    }
+
+    .stagger-2 {
+      animation-delay: 100ms;
+    }
+
+    .stagger-3 {
+      animation-delay: 150ms;
+    }
+  }
+}
+
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  20%,
+  60% {
+    transform: translateX(-4px);
+  }
+
+  40%,
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
