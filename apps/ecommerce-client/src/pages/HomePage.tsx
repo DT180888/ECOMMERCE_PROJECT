@@ -59,7 +59,7 @@ export default function HomePage() {
         
         {/* TIER 3: IMMEDIATE MERCHANDISING GRID (Sản Phẩm Mới Về) */}
         <section id="featured-products" aria-label="Sản phẩm mới về" className="w-full">
-          <ProductGridShowcase limit={8} />
+          <ProductGridShowcase limit={12} />
         </section>
 
         {/* TIER 4: LOOKBOOK STYLING CAPSULE (Đề Xuất Phối Đồ) */}

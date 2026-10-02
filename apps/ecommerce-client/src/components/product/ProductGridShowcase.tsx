@@ -47,7 +47,7 @@ interface ProductGridShowcaseProps {
  * - Triệt tiêu 100% CLS bằng cách đồng bộ số cột Skeleton (4 cột) khớp với Grid thật.
  * - Không bao giờ nuốt lỗi (return null): hiển thị Empty State và Error Retry lịch thiệp.
  */
-export default function ProductGridShowcase({ limit = 8 }: ProductGridShowcaseProps) {
+export default function ProductGridShowcase({ limit = 12 }: ProductGridShowcaseProps) {
   // Lấy dữ liệu sản phẩm từ API
   const { data, isLoading, isError, refetch } = useProductList({ size: limit * 2 });
   const rawProducts = data?.items || [];
@@ -106,7 +106,7 @@ export default function ProductGridShowcase({ limit = 8 }: ProductGridShowcasePr
   }, [rawProducts, activeTab, limit]);
 
   // =========================================================
-  // TRẠNG THÁI LOADING (Đồng bộ số cột 4x để triệt tiêu CLS)
+  // TRẠNG THÁI LOADING (Đồng bộ số cột 6x để triệt tiêu CLS)
   // =========================================================
   if (isLoading) {
     return (
@@ -122,8 +122,8 @@ export default function ProductGridShowcase({ limit = 8 }: ProductGridShowcasePr
             </div>
           </div>
 
-          {/* Skeleton Grid: Đúng 4 cột trên Desktop khớp 100% với lưới thật */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 sm:gap-x-6 lg:gap-x-8 gap-y-10 sm:gap-y-14 lg:gap-y-16">
+          {/* Skeleton Grid: Đúng 6 cột trên Desktop khớp 100% với lưới thật */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-3 sm:gap-x-4 lg:gap-x-6 gap-y-8 sm:gap-y-12 lg:gap-y-14">
             {Array.from({ length: limit }).map((_, i) => (
               <ProductCardSkeleton key={i} />
             ))}
@@ -219,7 +219,7 @@ export default function ProductGridShowcase({ limit = 8 }: ProductGridShowcasePr
           /* =========================================================
               3. PRODUCT GRID (Chuẩn Asymmetric Gutter & 1 Dòng Cắt Cụt)
              ========================================================= */
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 sm:gap-x-6 lg:gap-x-8 gap-y-10 sm:gap-y-14 lg:gap-y-16">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-3 sm:gap-x-4 lg:gap-x-6 gap-y-8 sm:gap-y-12 lg:gap-y-14">
             {filteredProducts.map((product, index) => {
               const isLiked = !!wishlist[product.productId];
               const detailUrl = `/product/${product.slug}-${product.productId}`;
