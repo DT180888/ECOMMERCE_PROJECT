@@ -1,11 +1,11 @@
-// src/app/AuthGate.tsx
+﻿// src/app/AuthGate.tsx
 import type { PropsWithChildren } from "react";
 import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useAuthUser } from "@entities/auth/hooks";
+import { useAuthUser } from "@hooks/useAuth";
 import { clientSideLogout } from "@my-project/shared-utils";
-import useHasRole from "@shared/hooks/useHasRole";
-import usePermission from "@shared/hooks/usePermission";
+import useHasRole from "@hooks/useHasRole";
+import usePermission from "@hooks/usePermission";
 
 export default function AuthGate({ children }: PropsWithChildren) {
   const nav = useNavigate();
@@ -40,3 +40,4 @@ export default function AuthGate({ children }: PropsWithChildren) {
 
   return <>{children}</>;
 }
+

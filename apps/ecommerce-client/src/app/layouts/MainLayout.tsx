@@ -1,6 +1,6 @@
 import { Outlet, useLocation } from "react-router-dom";
-import AppHeader from "@widgets/client/Header/AppHeader";
-import Footer from "@widgets/client/Footer/Footer";
+import AppHeader from "@components/layout/AppHeader";
+import Footer from "@components/layout/Footer";
 
 export default function MainLayout() {
   const location = useLocation();
@@ -8,13 +8,12 @@ export default function MainLayout() {
 
   return (
     <div className="page-wrapper selection:bg-accent/30">
-      {/* Header - Fixed & Glass on scroll */}
+      {/* Header - Floating Transparent Overlay on Home, Solid Glass on Scroll */}
       <AppHeader />
 
-      {/* Main Content Area — full-bleed, pages own their spacing */}
+      {/* Main Content Area — Full-bleed on Home page, spacer offset on inner pages */}
       <main className="flex-1 w-full flex flex-col animate-in fade-in duration-500">
-        {/* Offset for fixed header (Anti Double-Padding Rule) */}
-        {!isHome && <div className="h-16 md:h-20 w-full shrink-0" aria-hidden="true" />}
+        {!isHome && <div className="h-16 w-full shrink-0" aria-hidden="true" />}
         
         <Outlet />
       </main>

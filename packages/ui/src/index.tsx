@@ -1,6 +1,7 @@
 export * from "./Button";
 export * from "./Input";
 export * from "./Card";
+export * from "./EditorialProductCard";
 export * from "./Badge";
 export * from "./Checkbox";
 export * from "./Dialog";
@@ -20,4 +21,5 @@ export * from "./Switch/Switch";
 export * from "./Skeleton";
 export * from "./Kbd";
 export * from "./FilterDropdown";
+export * from "./utils";
 

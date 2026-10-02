@@ -1,6 +1,6 @@
 import { useState, FormEvent } from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import { useResetPassword } from "@entities/auth/hooks";
+import { useResetPassword } from "@hooks/useAuth";
 import { Input } from "@my-project/ui";
 import { Button } from "@my-project/ui";
 import { useToast } from "@my-project/ui";

@@ -1,4 +1,3 @@
-// tsconfig.json (phần compilerOptions)
 {
   "compilerOptions": {
     "target": "ES2020",
@@ -10,13 +9,12 @@
     "paths": {
       "@app/*": ["app/*"],
       "@pages/*": ["pages/*"],
-      "@features/*": ["features/*"],
-      "@entities/*": ["entities/*"],
-      "@widgets/*": ["widgets/*"],
-      "@shared/*": ["shared/*"],
+      "@components/*": ["components/*"],
+      "@hooks/*": ["hooks/*"],
+      "@shared/ui": ["components/common/index.ts"],
+      "@shared/ui/*": ["components/common/*"],
       "@schemas/*": ["schemas/*"]
     },
-    
     "types": ["node"],
     "skipLibCheck": true,
     "noEmit": true

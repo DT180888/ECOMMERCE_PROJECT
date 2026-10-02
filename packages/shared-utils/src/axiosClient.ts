@@ -37,8 +37,10 @@ const notifyQueue = (token: string | null) => {
 
 axiosClient.interceptors.response.use(
   (res) => {
-    if (res.data && res.data.hasOwnProperty("succeeded")) {
-      res.data = res.data.data;
+    if (res.data && res.data.hasOwnProperty("success")) {
+      if (res.data.data !== undefined) {
+        res.data = res.data.data;
+      }
     }
     return res;
   },
@@ -48,7 +50,7 @@ axiosClient.interceptors.response.use(
 
     if (error.response && error.response.data) {
       const apiResponse = error.response.data as any;
-      if (apiResponse && typeof apiResponse === "object" && apiResponse.hasOwnProperty("succeeded") && !apiResponse.succeeded) {
+      if (apiResponse && typeof apiResponse === "object" && apiResponse.hasOwnProperty("success") && !apiResponse.success) {
         
         let detailedError = apiResponse.message;
         

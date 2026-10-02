@@ -1,4 +1,4 @@
-import LoginForm from "@features/auth/ui/LoginForm";
+﻿import LoginForm from "@components/auth/LoginForm";
 import { UserIcon } from "@heroicons/react/24/outline";
 import AuthShell from "./AuthShell";
 
@@ -14,3 +14,4 @@ export default function LoginPage() {
     </AuthShell>
   );
 }
+

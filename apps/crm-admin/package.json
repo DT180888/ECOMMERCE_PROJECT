@@ -12,9 +12,9 @@
   "dependencies": {
     "@my-project/ui": "*",
     "@my-project/shared-utils": "*",
+    "@my-project/api": "*",
     "@firecms/neat": "^0.4.0",
     "@fontsource/inter": "^5.2.8",
-    "@headlessui/react": "^2.2.9",
     "@heroicons/react": "^2.2.0",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-dialog": "^1.1.15",
@@ -28,7 +28,6 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "jwt-decode": "^4.0.0",
-    "lucide-react": "^0.553.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-hook-form": "^7.66.0",

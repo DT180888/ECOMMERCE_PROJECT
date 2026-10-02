@@ -12,9 +12,9 @@
   "dependencies": {
     "@my-project/ui": "*",
     "@my-project/shared-utils": "*",
+    "@my-project/api": "*",
     "@firecms/neat": "^0.4.0",
     "@fontsource/inter": "^5.2.8",
-    "@headlessui/react": "^2.2.9",
     "@heroicons/react": "^2.2.0",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-dialog": "^1.1.15",

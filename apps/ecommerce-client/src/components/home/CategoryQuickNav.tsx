@@ -1,9 +1,18 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpRight } from "lucide-react";
+import { 
+  Shirt, 
+  Scissors, 
+  Footprints, 
+  Crown, 
+  ShoppingBag, 
+  Sparkles, 
+  ArrowUpRight,
+  LucideIcon 
+} from "lucide-react";
 
 /**
- * Interface định nghĩa dữ liệu cho từng thẻ danh mục khám phá nhanh
+ * Interface định nghĩa dữ liệu cho từng thẻ danh mục khám phá nhanh dạng Icon Studio Tile
  */
 export interface QuickCategoryItem {
   id: string;
@@ -11,13 +20,12 @@ export interface QuickCategoryItem {
   subtitle: string;
   slug: string;
   itemCount: number;
-  imageUrl: string;
+  icon: LucideIcon;
   targetUrl: string;
 }
 
 /**
- * Dữ liệu tĩnh tinh tuyển cho 6 nhóm mặt hàng thời trang chủ lực
- * Sử dụng hình ảnh Editorial chất lượng cao, tỉ lệ 3:4 chuẩn Studio
+ * Dữ liệu 6 nhóm mặt hàng thời trang chủ lực dạng Icon Nét Mảnh (Hairline stroke-[1.25])
  */
 const QUICK_CATEGORIES: QuickCategoryItem[] = [
   {
@@ -26,7 +34,7 @@ const QUICK_CATEGORIES: QuickCategoryItem[] = [
     subtitle: "Tops & Shirts",
     slug: "ao",
     itemCount: 48,
-    imageUrl: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=800&auto=format&fit=crop",
+    icon: Shirt,
     targetUrl: "/catalog?category=ao",
   },
   {
@@ -35,7 +43,7 @@ const QUICK_CATEGORIES: QuickCategoryItem[] = [
     subtitle: "Trousers & Skirts",
     slug: "quan",
     itemCount: 36,
-    imageUrl: "https://images.unsplash.com/photo-1509551388413-e18d0ac5d495?q=80&w=800&auto=format&fit=crop",
+    icon: Scissors,
     targetUrl: "/catalog?category=quan",
   },
   {
@@ -44,7 +52,7 @@ const QUICK_CATEGORIES: QuickCategoryItem[] = [
     subtitle: "Footwear & Loafers",
     slug: "giay-dep",
     itemCount: 24,
-    imageUrl: "https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80&w=800&auto=format&fit=crop",
+    icon: Footprints,
     targetUrl: "/catalog?category=giay-dep",
   },
   {
@@ -53,16 +61,16 @@ const QUICK_CATEGORIES: QuickCategoryItem[] = [
     subtitle: "Hats & Caps",
     slug: "mu-non",
     itemCount: 18,
-    imageUrl: "https://images.unsplash.com/photo-1521369909029-2afed882baee?q=80&w=800&auto=format&fit=crop",
+    icon: Crown,
     targetUrl: "/catalog?category=mu-non",
   },
   {
     id: "cat-accessories",
     name: "Túi & Phụ Kiện",
-    subtitle: "Bags & Leather Goods",
+    subtitle: "Bags & Leather",
     slug: "phu-kien",
     itemCount: 29,
-    imageUrl: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=800&auto=format&fit=crop",
+    icon: ShoppingBag,
     targetUrl: "/catalog?category=phu-kien",
   },
   {
@@ -71,38 +79,34 @@ const QUICK_CATEGORIES: QuickCategoryItem[] = [
     subtitle: "Suits & Tailoring",
     slug: "may-do",
     itemCount: 15,
-    imageUrl: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=800&auto=format&fit=crop",
+    icon: Sparkles,
     targetUrl: "/catalog?category=may-do",
   },
 ];
 
 /**
- * CategoryQuickNav Component
+ * CategoryQuickNav Component (Studio Icon Matrix Edition)
  * 
- * Mục tiêu: Cổng điều hướng danh mục trực quan (Visual Category Portal) đặt ngay dưới Hero.
- * Phục vụ người dùng mua sắm nhanh (Fast Purchase) — chỉ cần 1 cú click để vào thẳng nhóm đồ cần tìm.
- * 
- * Quy tắc thiết kế:
- * - Chuẩn tỷ lệ ảnh chân dung 3:4, phẳng 100%, góc sắc nét `rounded-none`.
- * - Viền hairline 1px `border-border/60`.
- * - Tên sản phẩm/danh mục 1 dòng kèm dấu 3 chấm nếu quá dài.
- * - Mobile: Snap scroll ngang để tránh chiếm chiều dài màn hình.
+ * Mục tiêu: Cổng điều hướng danh mục dạng Icon tối giản đặt ngay dưới Hero.
+ * Tuân thủ 100% DESIGN.md:
+ * - Dùng Icon Hairline `stroke-[1.25]` siêu mảnh của Lucide.
+ * - Thẻ Studio Icon Tile tỷ lệ 4:3, phẳng 100%, viền 1px `border-border/60`, góc `rounded-[2px]`.
+ * - Zero hardcoded hex colors, 100% semantic tokens (`bg-background`, `bg-surface`, `text-foreground`).
+ * - Mobile: Snap scroll ngang với thanh cuộn ẩn.
  * - Desktop: Lưới 6 cột dàn đều thanh lịch.
  */
 export default function CategoryQuickNav() {
   return (
     <section 
       aria-label="Cổng khám phá danh mục thời trang nhanh"
-      className="w-full py-8 sm:py-12 lg:py-16 bg-background border-b border-border/60"
+      className="w-full py-8 sm:py-10 lg:py-12 bg-background border-b border-border/60"
     >
       <div className="w-full px-4 sm:px-8 lg:px-12 2xl:px-16">
         
         {/* =========================================================
             1. SECTION HEADER (Chuẩn Modern Editorial Typography)
-            - Phân cấp bằng Plus Jakarta Sans với kích thước và tracking
-            - Có nút xem tất cả danh mục dẫn sang trang Catalog
            ========================================================= */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-12 gap-4 pb-4 border-b border-border/40">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 sm:mb-8 gap-4 pb-4 border-b border-border/40">
           <div className="flex flex-col">
             <span className="text-[10px] sm:text-[11px] font-display font-medium tracking-[0.25em] uppercase text-muted-foreground mb-1">
               Phân Loại Sản Phẩm / Quick Discovery
@@ -124,54 +128,48 @@ export default function CategoryQuickNav() {
         </div>
 
         {/* =========================================================
-            2. CATEGORY TILES (Lưới 6 Cột Desktop / Snap Scroll Mobile)
-            - Mobile: overflow-x-auto, snap-x snap-mandatory, thanh cuộn ẩn
-            - Tablet: grid 3 cột
-            - Desktop: grid 6 cột đều nhau
+            2. STUDIO ICON TILES (Lưới 6 Cột Desktop / Snap Scroll Mobile)
            ========================================================= */}
-        <div className="flex md:grid md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 overflow-x-auto pb-4 md:pb-0 scrollbar-none snap-x snap-mandatory">
-          {QUICK_CATEGORIES.map((category) => (
-            <Link
-              key={category.id}
-              to={category.targetUrl}
-              className="group m-0 p-0 flex-shrink-0 w-[180px] sm:w-[220px] md:w-full snap-start flex flex-col focus:outline-none"
-            >
-              {/* Khung ảnh thẻ danh mục (Tỷ lệ 3:4, viền hairline, zero drop shadow) */}
-              <div className="relative w-full aspect-[3/4] bg-surface overflow-hidden border border-border/60 group-hover:border-foreground/40 transition-colors duration-300">
-                <img
-                  src={category.imageUrl}
-                  alt={category.name}
-                  loading="lazy"
-                  className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
-                />
+        <div className="flex md:grid md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 lg:gap-5 overflow-x-auto pb-4 md:pb-0 scrollbar-none snap-x snap-mandatory">
+          {QUICK_CATEGORIES.map((category) => {
+            const IconComponent = category.icon;
 
-                {/* Ambient Scrim mỏng ở chân ảnh để tôn rõ nhãn số lượng mẫu */}
-                <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300 pointer-events-none" />
+            return (
+              <Link
+                key={category.id}
+                to={category.targetUrl}
+                className="group m-0 p-0 flex-shrink-0 w-[140px] sm:w-[170px] md:w-full snap-start flex flex-col focus:outline-none"
+              >
+                {/* Thẻ Studio Icon Tile (Tỷ lệ 4:3, viền hairline 1px, rounded-[2px]) */}
+                <div className="relative w-full aspect-[4/3] bg-surface rounded-[2px] overflow-hidden border border-border/60 group-hover:border-foreground/40 transition-colors duration-300 flex flex-col items-center justify-center">
+                  {/* Icon Hairline stroke-[1.25] siêu mảnh */}
+                  <IconComponent className="w-6 h-6 sm:w-7 sm:h-7 stroke-[1.25] text-foreground transition-transform duration-300 group-hover:scale-110" />
 
-                {/* Badge đếm số lượng mẫu (Chỉ hiển thị thanh lịch ở góc trên) */}
-                <div className="absolute top-2.5 right-2.5 bg-background/85 backdrop-blur-sm border border-border/60 px-2 py-0.5 rounded-[2px] transition-transform duration-300 group-hover:-translate-y-0.5">
-                  <span className="text-[9px] font-display font-medium uppercase tracking-wider text-muted-foreground tabular-nums">
-                    {category.itemCount} MẪU
+                  {/* Badge đếm số lượng mẫu (Góc trên bên phải) */}
+                  <div className="absolute top-2 right-2 bg-background/80 backdrop-blur-sm border border-border/60 px-1.5 py-0.5 rounded-[2px] transition-transform duration-300 group-hover:-translate-y-0.5">
+                    <span className="text-[9px] font-display font-medium uppercase tracking-wider text-muted-foreground tabular-nums">
+                      {category.itemCount} MẪU
+                    </span>
+                  </div>
+
+                  {/* Floating Action Arrow góc dưới (Hiện lên khi hover) */}
+                  <div className="absolute bottom-2 right-2 w-6 h-6 bg-foreground text-background rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300 shadow-none">
+                    <ArrowUpRight className="w-3 h-3 stroke-[1.5]" />
+                  </div>
+                </div>
+
+                {/* Thông tin danh mục (1 dòng kèm truncate) */}
+                <div className="mt-2 flex flex-col select-none">
+                  <h3 className="text-xs sm:text-sm font-medium tracking-tight text-foreground truncate group-hover:text-muted-foreground transition-colors duration-200">
+                    {category.name}
+                  </h3>
+                  <span className="text-[10px] font-display uppercase tracking-[0.15em] text-muted-foreground truncate mt-0.5">
+                    {category.subtitle}
                   </span>
                 </div>
-
-                {/* Floating Action Arrow góc dưới (Phóng to nhẹ khi hover) */}
-                <div className="absolute bottom-2.5 right-2.5 w-7 h-7 bg-foreground text-background rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 shadow-none">
-                  <ArrowUpRight className="w-3.5 h-3.5 stroke-[1.5]" />
-                </div>
-              </div>
-
-              {/* Thông tin mô tả danh mục (Đúng 1 dòng kèm truncate chống vỡ nhịp) */}
-              <div className="mt-2.5 flex flex-col select-none">
-                <h3 className="text-sm font-medium tracking-tight text-foreground truncate group-hover:text-muted-foreground transition-colors duration-200">
-                  {category.name}
-                </h3>
-                <span className="text-[11px] font-display uppercase tracking-[0.1em] text-muted-foreground truncate mt-0.5">
-                  {category.subtitle}
-                </span>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
 
       </div>

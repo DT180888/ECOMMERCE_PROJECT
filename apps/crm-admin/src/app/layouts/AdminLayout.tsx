@@ -1,5 +1,5 @@
 import { Outlet, useLocation } from "react-router-dom";
-import Sidebar from "@widgets/sidebar/Sidebar";
+import Sidebar from "@components/layout/Sidebar";
 import { useState } from "react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 

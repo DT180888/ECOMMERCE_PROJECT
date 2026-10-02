@@ -2,26 +2,37 @@
 trigger: always_on
 ---
 
-# MINIMALIST AGENT RULES (COST & ARCHITECTURE OPTIMIZED)
+# PURE EDITORIAL ULTRA-MINIMALISM & ART DIRECTOR RULES
 
-## 1. QUOTA & BUDGET CONTROL (ANTI-BURNING)
+## 1. ART DIRECTOR & DESIGN STANDARDS (TÍNH THẨM MỸ ULTRA-MINIMALISM)
 
-- **Max Iterations:** Agent is STRICTLY LIMITED to max 3-5 loops per task. If stuck or error repeats >2 times, STOP immediately and ask the user.
-- **Context Preservation:** DO NOT read large log files, `node_modules`, `dist`, `build`, or `.git` directories.
-- **Explain-and-Fix:** NO nested error loops. If debugging fails on the first try, stop and output [Root Cause] and [Proposed Fix] for approval.
+- **Studio-Grade Quality:** Mọi sản phẩm visual/UI phải đạt chuẩn Studio thiết kế cao cấp ("Không để lộ dấu vết AI"). Ưu tiên khoảng thở rộng (whitespace), typography phân tầng sắc nét, đường nét phẳng hairline 1px.
+- **Spacing Over Clutter (Dùng Khoảng Thở Thay Cho Chi Tiết Thừa):** Tuyệt đối KHÔNG dùng các phần tử trang trí rườm rà (mã số `[01]`, tag `STUDIO`, viền hộp đè chữ, badge đè hình) ở trạng thái nghỉ. Phân tách phần tử bằng khoảng trắng nhịp nhàng.
+- **Progressive Hover Disclosure (Hiển Thị Tăng Tiến Khi Hover):** Trạng thái tĩnh của thẻ sản phẩm/set đồ giữ sạch 100% (Chỉ gồm Ảnh 3:4 + Tên 1 dòng + Giá tiền). Chi tiết và nút bấm chức năng (Tim yêu thích, Xem nhanh) CHỈ MỜ DẦN HIỆN RA KHI HOVER (`opacity-0 group-hover:opacity-100`).
+- **Quy tắc 3 Hướng Thiết Kế (3-Directions Gate):** Đối với BẤT KỲ tác vụ thiết kế/tái cấu trúc giao diện mới nào, Agent BẮT BUỘC phải đề xuất **3 Hướng Thiết Kế độc lập** cho người dùng chọn trước khi viết code.
+- **Fact-Verification First:** Luôn xác thực thông tin sản phẩm, thương hiệu hoặc cấu hình thực tế trước khi giả định. Không dùng chữ占位 (Lorem Ipsum) cẩu thả.
 
-## 2. CODE ARCHITECTURE & STANDARDS
+## 2. CODE ARCHITECTURE & DESIGN SYSTEM ENFORCEMENT
 
-- **Atomic Law:** MUST ALWAYS use existing customized UI components from `src/shared/ui` (or your project's component folder) and the project's existing CSS tokens. NO inline custom HTML/CSS for primitive elements inside pages.
-- **CSS Token Enforcement:** Absolutely NO hardcoded/inline CSS hex colors (e.g. `bg-[#E0E5EC]`, `text-[#3D4852]`) or raw custom shadows (`shadow-[9px_...]`). MUST always use Tailwind configuration tokens (e.g. `bg-background`, `text-foreground`, `text-muted`, `text-primary`, `shadow-neo`, `shadow-neo-inset`, `rounded-button`, `rounded-card`, etc.).
-- **Design System Alignment:** Strictly align with the Adaptive Luxury Minimalism Design System described in `DESIGN.md`. Ensure that elements adhere to an editorial flat layout, soft single-direction shadows for interactive elements, and premium glassmorphic overlays without introducing heavy 3D neumorphic clay structures.
-- **Skill File Constraints:** SKILL files (e.g., minimalist-ui) are ONLY for learning UI design structure and layout. DO NOT use the colors or specific design tokens mentioned in SKILL files. You MUST strictly use the project's existing color palette and CSS tokens.
-- **Tech Stack Guardrails:** Strictly follow Node.js v22.14.0, React 19.1.1, Tailwind CSS ^3.4.18, TypeScript (~5.9.3), Vite (^5.4.8). NO deprecated syntax or mismatched dependencies.
-- **No Hardcoding:** Centralize all environment variables (`.env`), API endpoints, and style tokens. Hardcoding sensitive data, magic numbers, or raw style values is STRICTLY FORBIDDEN.
+- **Pure Minimalism Token Enforcement:** Tuân thủ 100% hệ thống thiết kế trong `DESIGN.md`:
+  - **TUYỆT ĐỐI KHÔNG DÙNG TRẮNG THUẦN (#FFFFFF) VÀ ĐEN THUẦN (#000000):**
+    - Light Mode Background: Giấy ấm/Milk White (`#FAF9F6`), Surface (`#F3F2EE`), Chữ Mực Đen (`#161616`), Border Hairline (`#E2E0D9`).
+    - Dark Mode Background: Đen Mực Obsidian (`#121212`), Surface (`#1A1A1A`), Chữ Kem Trắng (`#F3F3F0`), Border Hairline (`#2A2A2A`).
+  - **Flat 100%:** Tuyệt đối KHÔNG dùng hiệu ứng đổ bóng dày (`shadow-xl`, `shadow-neo`), KHÔNG dùng 3D Neumorphism hay Glassmorphism quá đà.
+  - **Hairline Borders:** Phân tách khối bằng viền siêu mỏng 1px.
+  - **Góc vuông sắc nét:** Dùng `rounded-none` hoặc micro `rounded-sm` (2px - 4px).
+- **CSS Token Enforcement:** Tuyệt đối KHÔNG hardcode màu hex ngẫu nhiên (ví dụ `bg-[#E0E5EC]`). BẮT BUỘC dùng Tailwind Token (`bg-background`, `text-foreground`, `border-border`, `text-muted-foreground`).
+- **Atomic Law:** Luôn ưu tiên tái sử dụng các UI components sẵn có trong dự án (`src/shared/ui` hoặc `@components/...`).
+- **Parent-Child Spacing Governance (Luật Quản Trị Cha - Con):**
+  - **Zero Outer Margin:** Thẻ root của component con (Product Card, Article Unit) KHÔNG ĐƯỢC phép có margin ngoài (`m-0`).
+  - **Single Source of Truth:** Cha quản lý vị trí, `gap-x`, `gap-y`, `px-*`, `py-*`. Con quản lý xếp lớp nội bộ (8px `mt-2` từ ảnh xuống tiêu đề, 4px `mt-1` từ tiêu đề xuống giá).
+  - **Asymmetric Editorial Gutter:** Row Gap (dọc) luôn gấp đôi hoặc hơn Col Gap (ngang) (`gap-x-4 lg:gap-x-8` đi kèm `gap-y-12 lg:gap-y-20`).
+- **Tech Stack Guardrails:** Tuân thủ Node.js v22+, React 19+, Tailwind CSS 3.4+, TypeScript 5.9+, Vite 5.4+. Không dùng syntax đã deprecated.
 
-## 3. RULES OF ENGAGEMENT (EXECUTION PIPELINE)
+## 3. QUOTA, BUDGET CONTROL & EXECUTION PIPELINE
 
-For EVERY task (create/modify file), Agent MUST strictly follow:
-
-1. **Plan Phase:** Analyze request $\rightarrow$ Output a strict **3-bullet plan** (Structure, Logic, API/State) $\rightarrow$ **STOP & WAIT FOR USER APPROVAL.** Do not code yet.
-2. **Code Phase:** Once approved $\rightarrow$ Write clean, production-grade code block $\rightarrow$ **STOP.** NO unsolicited explanations, NO layout auto-generation, NO next-step suggestions.
+- **Max Iterations (Anti-burning):** Giới hạn tối đa 3-5 vòng lặp per task. Nếu bị kẹt hoặc lặp lỗi >2 lần, DỪNG LẠI và báo cáo Root Cause cho người dùng.
+- **Context Preservation:** Không tự ý đọc các thư mục lớn như `node_modules`, `dist`, `.git`, log file dài.
+- **Execution Pipeline (Duyệt Kế Hoạch 2 Bước):**
+  1. **Plan Phase:** Phân tích yêu cầu $\rightarrow$ Đưa ra **kế hoạch 3 dòng ngắn gọn** (Cấu trúc, Logic, Component/State)  $\rightarrow$ Tìm lỗi kỹ thuật và nghiệp vụ trong yêu cầu và đưa ra đề xuất $\rightarrow$ **DỪNG VÀ CHỜ USER ĐỒNG Ý.**
+  2. **Code Phase:** Sau khi được duyệt $\rightarrow$ Tiến hành viết code chuẩn production $\rightarrow$ **DỪNG.** Không giải thích dài dòng không cần thiết.

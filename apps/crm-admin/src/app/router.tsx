@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 
 // Layouts
 import AuthLayout from "@app/layouts/AuthLayout";
@@ -10,48 +10,48 @@ import ForgotPasswordPage from "@pages/auth/ForgotPasswordPage";
 import ResetPasswordPage from "@pages/auth/ResetPasswordPage";
 
 // Admin Pages
-import DashboardPage from "@pages/admin/dashboard/DashboardPage";
-import { CatalogSettingsPage } from "@pages/admin/catalog/CatalogSettingsPage";
+import DashboardPage from "@pages/dashboard/DashboardPage";
+import { CatalogSettingsPage } from "@pages/catalog/CatalogSettingsPage";
 
-// Admin - Category
-import CategoryListPage from "@pages/admin/category/CategoryListPage";
-import CategoryFormPage from "@pages/admin/category/CategoryFormPage";
+// Category
+import CategoryListPage from "@pages/category/CategoryListPage";
+import CategoryFormPage from "@pages/category/CategoryFormPage";
 
-// Admin - Brand
-import BrandListPage from "@pages/admin/brand/BrandListPage";
-import BrandFormPage from "@pages/admin/brand/BrandFormPage";
+// Brand
+import BrandListPage from "@pages/brand/BrandListPage";
+import BrandFormPage from "@pages/brand/BrandFormPage";
 
-// Admin - Attribute
-import AttributeListPage from "@pages/admin/attribute/AttributeListPage";
-import AttributeFormPage from "@pages/admin/attribute/AttributeFormPage";
+// Attribute
+import AttributeListPage from "@pages/attribute/AttributeListPage";
+import AttributeFormPage from "@pages/attribute/AttributeFormPage";
 
-// Admin - Product
-import ProductListPage from "@pages/admin/product/ProductListPage";
-import ProductFormPage from "@pages/admin/product/ProductFormPage";
-import AdminProductDetailPage from "@pages/admin/product/AdminProductDetailPage";
-import SkuListPage from "@pages/admin/product/SkuListPage";
+// Product
+import ProductListPage from "@pages/product/ProductListPage";
+import ProductFormPage from "@pages/product/ProductFormPage";
+import AdminProductDetailPage from "@pages/product/AdminProductDetailPage";
+import SkuListPage from "@pages/product/SkuListPage";
 
-// Admin - Order
-import { AdminOrderListPage } from "@pages/admin/order/AdminOrderListPage";
-import { AdminOrderDetailPage } from "@pages/admin/order/AdminOrderDetailPage";
+// Order
+import { AdminOrderListPage } from "@pages/order/AdminOrderListPage";
+import { AdminOrderDetailPage } from "@pages/order/AdminOrderDetailPage";
 
-// Admin - User
-import { AdminUserListPage } from "@pages/admin/user/AdminUserListPage";
+// User
+import { AdminUserListPage } from "@pages/user/AdminUserListPage";
 
-// Admin - Security
-import { AdminSecurityPage } from "@pages/admin/security/AdminSecurityPage";
+// Security
+import { AdminSecurityPage } from "@pages/security/AdminSecurityPage";
 
-// Admin - Promotion
-import { PromotionListPage } from "@pages/admin/promotion/PromotionListPage";
-import { PromotionFormPage } from "@pages/admin/promotion/PromotionFormPage";
-import { PromotionDetailPage } from "@pages/admin/promotion/PromotionDetailPage";
+// Promotion
+import { PromotionListPage } from "@pages/promotion/PromotionListPage";
+import { PromotionFormPage } from "@pages/promotion/PromotionFormPage";
+import { PromotionDetailPage } from "@pages/promotion/PromotionDetailPage";
 
-// Admin - Hero Slide
-import HeroSlideListPage from "@pages/admin/hero-slide/HeroSlideListPage";
-import HeroSlideFormPage from "@pages/admin/hero-slide/HeroSlideFormPage";
+// Hero Slide
+import HeroSlideListPage from "@pages/hero-slide/HeroSlideListPage";
+import HeroSlideFormPage from "@pages/hero-slide/HeroSlideFormPage";
 
-// Admin - Collection
-import { AdminCollectionsPage } from "@pages/admin/collection/AdminCollectionsPage";
+// Collection
+import { AdminCollectionsPage } from "@pages/collection/AdminCollectionsPage";
 
 // Guards
 import AuthGate from "./AuthGate";
@@ -100,7 +100,7 @@ const router = createBrowserRouter([
       { path: "brand", element: <BrandListPage /> },
       { path: "brand/*", element: <BrandFormPage /> },
 
-      // Categoryư
+      // Category
       { path: "category", element: <CategoryListPage /> },
       { path: "category/*", element: <CategoryFormPage /> },
 
@@ -137,7 +137,6 @@ const router = createBrowserRouter([
     ],
   },
 
-  // Fallback 404 (Optional)
   { path: "*", element: <RootRedirect /> },
 ]);
 

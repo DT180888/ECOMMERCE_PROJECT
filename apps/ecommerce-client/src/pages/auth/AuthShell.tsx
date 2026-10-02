@@ -38,7 +38,7 @@ export default function AuthShell({ children, title, subtitle, icon, footerText 
               {icon}
             </div>
           </div>
-          <h1 className="text-3xl font-serif text-foreground tracking-tight leading-none">{title}</h1>
+          <h1 className="text-3xl font-display font-medium text-foreground tracking-tight leading-none">{title}</h1>
           <p className="text-muted-foreground text-sm font-medium">{subtitle}</p>
         </div>
 

@@ -1,1 +1,0 @@
-export const DEFAULT_PRODUCT_IMAGE_URL = '/src/images/image-default.jpg';

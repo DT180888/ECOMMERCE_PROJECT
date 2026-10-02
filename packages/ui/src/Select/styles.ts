@@ -2,7 +2,7 @@
 import { GroupBase, StylesConfig } from "react-select";
 
 // Custom Styles cho React Select theo Neumorphism (Soft UI) Design System
-export const reactSelectFlatStyles: StylesConfig<any, false, GroupBase<any>> = {
+export const reactSelectFlatStyles: StylesConfig<any, boolean, GroupBase<any>> = {
     control: (base, state) => {
         const hasError = (state.selectProps as any).error;
         return {

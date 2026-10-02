@@ -1,6 +1,6 @@
-import { useState, FormEvent } from "react";
+﻿import { useState, FormEvent } from "react";
 import { Link } from "react-router-dom";
-import { useRegister } from "@entities/auth/hooks";
+import { useRegister } from "@hooks/useAuth";
 import { Input } from "@my-project/ui";
 import { Button } from "@my-project/ui";
 import { useToast } from "@my-project/ui";

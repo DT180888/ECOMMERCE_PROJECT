@@ -1,5 +1,5 @@
-import { useState, FormEvent } from "react";
-import { useConfirmEmailAndSetPassword } from "@entities/auth/hooks";
+﻿import { useState, FormEvent } from "react";
+import { useConfirmEmailAndSetPassword } from "@hooks/useAuth";
 import { Button } from "@my-project/ui";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { Input } from "@my-project/ui";

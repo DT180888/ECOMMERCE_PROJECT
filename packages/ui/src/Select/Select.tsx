@@ -1,29 +1,54 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { forwardRef } from "react";
-import ReactSelect, { Props as SelectProps, GroupBase } from "react-select";
+import { forwardRef, type ReactElement, type Ref } from "react";
+import ReactSelect, {
+  type Props as SelectProps,
+  type GroupBase,
+  type SelectInstance,
+  type StylesConfig,
+} from "react-select";
 import { reactSelectFlatStyles } from "./styles";
 
-export interface CustomSelectProps<
-  Option = any,
+export type CustomSelectProps<
+  Option = unknown,
   IsMulti extends boolean = false,
   Group extends GroupBase<Option> = GroupBase<Option>
-> extends SelectProps<Option, IsMulti, Group> {
+> = SelectProps<Option, IsMulti, Group> & {
   error?: boolean;
-}
+};
 
-export const Select = forwardRef<any, CustomSelectProps<any, any, any>>(
-  ({ styles, error, ...props }, ref) => {
-    return (
-      <ReactSelect
-        ref={ref}
-        styles={{ ...reactSelectFlatStyles, ...styles }}
-        menuPortalTarget={typeof document !== "undefined" ? document.body : undefined}
-        // Pass error through selectProps so it's accessible in styles.ts
-        {...props}
-        {...({ error } as any)}
-      />
-    );
+export type SelectComponent = <
+  Option = unknown,
+  IsMulti extends boolean = false,
+  Group extends GroupBase<Option> = GroupBase<Option>
+>(
+  props: CustomSelectProps<Option, IsMulti, Group> & {
+    ref?: Ref<SelectInstance<Option, IsMulti, Group>>;
   }
-);
+) => ReactElement | null;
 
-Select.displayName = "Select";
+const SelectRender = forwardRef(function Select<
+  Option,
+  IsMulti extends boolean = false,
+  Group extends GroupBase<Option> = GroupBase<Option>
+>(
+  { styles, error, ...props }: CustomSelectProps<Option, IsMulti, Group>,
+  ref: Ref<SelectInstance<Option, IsMulti, Group>>
+) {
+  const mergedStyles: StylesConfig<Option, IsMulti, Group> = {
+    ...(reactSelectFlatStyles as unknown as StylesConfig<Option, IsMulti, Group>),
+    ...styles,
+  };
+
+  return (
+    <ReactSelect
+      ref={ref}
+      styles={mergedStyles}
+      menuPortalTarget={typeof document !== "undefined" ? document.body : undefined}
+      {...props}
+      {...({ error } as Record<string, unknown>)}
+    />
+  );
+});
+
+SelectRender.displayName = "Select";
+
+export const Select = SelectRender as unknown as SelectComponent;

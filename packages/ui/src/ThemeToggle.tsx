@@ -17,7 +17,7 @@ export const ThemeToggle = ({ className }: { className?: string }) => {
       {isDark ? (
         <SunIcon className="w-5 h-5 animate-in zoom-in rotate-90 duration-500" />
       ) : (
-        <MoonIcon className="w-5 h-5 animate-in zoom-in duration-500" />
+        <MoonIcon className="w-5 h-5 animate-in zoom-in duration-500 " />
       )}
     </Button>
   );

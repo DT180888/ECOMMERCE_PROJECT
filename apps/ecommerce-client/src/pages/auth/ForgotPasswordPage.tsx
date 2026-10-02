@@ -1,6 +1,6 @@
 import { useState, FormEvent } from "react";
 import { Link } from "react-router-dom";
-import { useForgotPassword } from "@entities/auth/hooks";
+import { useForgotPassword } from "@hooks/useAuth";
 import { Input } from "@my-project/ui";
 import { Button } from "@my-project/ui";
 import { useToast } from "@my-project/ui";
