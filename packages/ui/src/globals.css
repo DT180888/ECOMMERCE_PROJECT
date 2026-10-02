@@ -1,0 +1,161 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Pure Editorial Minimalism Palette (Warm Paper & Rich Ink) */
+    --background: 40 20% 97%;
+    /* #FAF9F6 Warm Paper White (NO #FFFFFF) */
+    --foreground: 0 0% 9%;
+    /* #161616 Rich Ink Charcoal (NO #000000) */
+
+    --card: 45 12% 94%;
+    /* #F3F2EE Surface Off-White */
+    --card-foreground: 0 0% 9%;
+
+    --popover: 40 20% 97%;
+    --popover-foreground: 0 0% 9%;
+
+    --primary: 0 0% 9%;
+    --primary-foreground: 40 20% 97%;
+
+    --secondary: 45 12% 94%;
+    --secondary-foreground: 0 0% 9%;
+
+    --muted: 0 0% 43%;
+    /* #6E6E6E */
+    --muted-foreground: 0 0% 43%;
+
+    --accent: 0 0% 9%;
+    --accent-foreground: 40 20% 97%;
+
+    --destructive: 359 65% 45%;
+    --destructive-foreground: 40 20% 97%;
+
+    --border: 45 12% 87%;
+    /* #E2E0D9 Hairline Border */
+    --input: transparent;
+    --ring: 0 0% 9%;
+
+    --radius: 2px;
+    --radius-card: 0px;
+    --radius-button: 2px;
+    --radius-inner: 2px;
+
+    --surface: 45 12% 94%;
+    --success: 177 52% 46%;
+    --success-foreground: 40 20% 97%;
+    --error: 359 65% 45%;
+    --error-foreground: 40 20% 97%;
+    --error-muted: 359 30% 98%;
+    --warning: 36 69% 35%;
+    --warning-foreground: 40 20% 97%;
+    --info: 211 45% 30%;
+    --info-foreground: 40 20% 97%;
+
+    /* Minimalist UI Badges */
+    --badge-red-bg: 356 70% 95%;
+    --badge-red-fg: 356 55% 40%;
+    --badge-blue-bg: 204 88% 94%;
+    --badge-blue-fg: 204 67% 37%;
+    --badge-green-bg: 111 25% 94%;
+    --badge-green-fg: 125 32% 30%;
+    --badge-yellow-bg: 45 76% 92%;
+    --badge-yellow-fg: 40 100% 29%;
+
+    /* Flat Architecture - Zero Shadows */
+    --shadow-light: transparent;
+    --shadow-dark: transparent;
+    --shadow-light-hover: transparent;
+    --shadow-dark-hover: transparent;
+
+    --shadow-dark-rgb: 0, 0, 0;
+    --shadow-light-rgb: 250, 249, 246;
+    --shadow-dark-opacity: 0;
+    --shadow-light-opacity: 0;
+
+    /* Glassmorphism Hairline Floating Panels */
+    --glass-bg: 40 20% 97% / 0.85;
+    --glass-border: 45 12% 87%;
+    --blur-strength: 12px;
+  }
+
+  .dark {
+    /* Pure Editorial Minimalism Palette (Deep Obsidian & Cream White) */
+    --background: 0 0% 7%;
+    /* #121212 Deep Obsidian Ink (NO #000000) */
+    --foreground: 60 8% 95%;
+    /* #F3F3F0 Soft Cream White (NO #FFFFFF) */
+
+    --card: 0 0% 10%;
+    /* #1A1A1A Surface Dark */
+    --card-foreground: 60 8% 95%;
+
+    --popover: 0 0% 7%;
+    --popover-foreground: 60 8% 95%;
+
+    --primary: 60 8% 95%;
+    --primary-foreground: 0 0% 7%;
+
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 60 8% 95%;
+
+    --muted: 0 0% 56%;
+    /* #8E8E8E */
+    --muted-foreground: 0 0% 56%;
+
+    --accent: 60 8% 95%;
+    --accent-foreground: 0 0% 7%;
+
+    --destructive: 359 65% 55%;
+    --destructive-foreground: 60 8% 95%;
+
+    --border: 0 0% 16.5%;
+    /* #2A2A2A Dark Hairline Border */
+    --input: transparent;
+    --ring: 60 8% 95%;
+
+    --radius: 2px;
+    --radius-card: 0px;
+    --radius-button: 2px;
+    --radius-inner: 2px;
+
+    --surface: 0 0% 10%;
+    --success: 177 52% 46%;
+    --success-foreground: 60 8% 95%;
+    --error: 359 65% 55%;
+    --error-foreground: 60 8% 95%;
+    --warning: 36 74% 62%;
+    --warning-foreground: 0 0% 7%;
+    --info: 211 56% 63%;
+    --info-foreground: 0 0% 7%;
+
+    /* Glassmorphism tokens */
+    --glass-bg: 0 0% 7% / 0.85;
+    --glass-border: 0 0% 16.5%;
+    --blur-strength: 12px;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-display antialiased selection:bg-foreground selection:text-background;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer utilities {
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}

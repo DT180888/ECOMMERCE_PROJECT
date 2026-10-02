@@ -1,14 +1,18 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: ["class"],
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "../../packages/ui/src/**/*.{js,ts,jsx,tsx}"
+  ],
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"DM Sans"', 'sans-serif'],
-        display: ['"Plus Jakarta Sans"', 'sans-serif'],
-        serif: ['Lyon Text', 'Newsreader', 'Playfair Display', 'Instrument Serif', 'serif'],
-        mono: ['Geist Mono', 'SF Mono', 'JetBrains Mono', 'monospace'],
+        display: ['"Plus Jakarta Sans"', '"Inter"', 'sans-serif'],
+        sans: ['"Plus Jakarta Sans"', '"Inter"', 'sans-serif'],
+        serif: ['"Plus Jakarta Sans"', '"Inter"', 'sans-serif'],
+        mono: ['"Plus Jakarta Sans"', '"Inter"', 'sans-serif'],
       },
       colors: {
         background: 'hsl(var(--background))',
@@ -21,9 +25,13 @@ export default {
         },
         elevated: 'hsl(var(--muted))',
         heading: 'hsl(var(--foreground))',
-        muted: 'hsl(var(--muted))',
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))'
+        },
         accent: {
           DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))',
           soft: 'hsla(var(--accent), 0.1)',
         },
         border: 'hsl(var(--border))',
@@ -35,31 +43,30 @@ export default {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))'
         },
-        // Semantic Colors
+        // Functional Status Indicators
         success: 'hsl(var(--success))',
         error: 'hsl(var(--error))',
+        warning: 'hsl(var(--warning))',
+        info: 'hsl(var(--info))',
+      },
+      transitionTimingFunction: {
+        'editorial': 'cubic-bezier(0.16, 1, 0.3, 1)',
       },
       borderRadius: {
+        'none': '0px',
         'xs': '2px',
         'sm': '4px',
-        'md': '6px',
-        'lg': '8px',
-        'xl': '12px',
-        '2xl': '16px',
-        '3xl': '12px',
+        'md': '4px',
+        'lg': '6px',
         'full': '9999px',
-        card: '6px',
-        button: '4px',
+        card: '0px',
+        button: '2px',
         inner: '2px',
-        gallery: '4px', // From DESIGN.md
+        gallery: '0px',
       },
       boxShadow: {
-        'neo': '0 8px 24px rgba(var(--shadow-dark-rgb), var(--shadow-dark-opacity))',
-        'neo-hover': '0 16px 36px rgba(var(--shadow-dark-rgb), calc(var(--shadow-dark-opacity) + 0.04))',
-        'neo-sm': '0 2px 8px rgba(var(--shadow-dark-rgb), var(--shadow-dark-opacity))',
-        'neo-inset': 'inset 0 2px 4px rgba(0, 0, 0, 0.05)',
-        'neo-inset-deep': 'inset 0 4px 8px rgba(0, 0, 0, 0.06)',
-        'neo-inset-sm': 'inset 0 2px 4px rgba(0, 0, 0, 0.1)',
+        'none': 'none',
+        'hairline': '0 0 0 1px hsl(var(--border))',
       },
     }
   },
