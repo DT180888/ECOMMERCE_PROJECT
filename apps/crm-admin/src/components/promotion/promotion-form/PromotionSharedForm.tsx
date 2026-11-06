@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { CreatePromotionReq } from "@my-project/api";
 import { useCategoryOptions } from "@hooks/useCategory";
 import { Input, Button, Label, Switch, Tabs, TabsList, TabsTrigger, reactSelectDarkStyles } from "@my-project/ui";
@@ -11,9 +11,19 @@ interface PromotionSharedFormProps {
   loading: boolean;
   submitLabel?: string;
   readOnly?: boolean;
+  isDrawer?: boolean;
+  formId?: string;
 }
 
-export function PromotionSharedForm({ initialData, onSave, loading, submitLabel = "Lưu Khuyến Mãi", readOnly = false }: PromotionSharedFormProps) {
+export function PromotionSharedForm({
+  initialData,
+  onSave,
+  loading,
+  submitLabel = "Lưu Khuyến Mãi",
+  readOnly = false,
+  isDrawer = false,
+  formId = "promotion-shared-form",
+}: PromotionSharedFormProps) {
   const { options: categoryOptions, isLoading: isCategoryLoading } = useCategoryOptions();
 
   const [form, setForm] = useState<CreatePromotionReq>({
@@ -52,272 +62,360 @@ export function PromotionSharedForm({ initialData, onSave, loading, submitLabel 
     }
   }, [initialData]);
 
-  const handleSubmit = () => {
+  const handleSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     onSave({ ...form, startsAtStr, endsAtStr });
   };
 
   const selectedCategoryItems = form.categoryIds
-    ?.map(id => categoryOptions.find(opt => opt.value === id))
+    ?.map((id) => categoryOptions.find((opt) => opt.value === id))
     .filter(Boolean) as any[];
 
-  return (
-    <>
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 md:gap-4 items-start lg:items-stretch lg:h-full min-h-0">
-      {/* CỘT TRÁI (Main Content) */}
-      <div className="bg-card lg:col-span-8 p-4 sm:p-6 rounded-card   flex flex-col gap-6 order-2 lg:order-1 min-h-0 lg:overflow-y-auto custom-scrollbar shadow-sm">
-          {/* Khối 1: Thông tin cơ bản */}
-          <section className="flex flex-col gap-4">
-            <h3 className="text-base font-bold font-display uppercase tracking-wider text-foreground">Thông tin cơ bản</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 p-0 bg-transparent">
-              <div className="md:col-span-2 space-y-1.5">
-                <Label className="text-muted-foreground text-xs font-semibold">Tên chương trình <span className="text-red-500">*</span></Label>
-                <Input
-                  required
-                  disabled={readOnly}
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="shadow-neo-inset   focus:border-accent"
-                  placeholder="VD: Siêu Sale Tháng 6"
-                />
-              </div>
-              
-              <div className="md:col-span-2 space-y-1.5">
-                <Label className="text-muted-foreground text-xs font-semibold">Mã Code</Label>
-                <Input
-                  disabled={readOnly}
-                  value={form.code ?? ""}
-                  onChange={(e) => setForm({ ...form, code: e.target.value })}
-                  className="shadow-neo-inset   focus:border-accent font-mono tracking-wider uppercase"
-                  placeholder="SUMMER2024"
-                />
-                <p className="text-[11px] text-muted-foreground/80 mt-1">
-                  Bỏ trống nếu đây là Flash Sale hoặc sinh mã hàng loạt.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          {/* Khối 2: Cấu hình giảm giá */}
-          <section className="flex flex-col gap-4">
-            <h3 className="text-base font-bold font-display uppercase tracking-wider text-foreground">Cấu hình giảm giá</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 p-0 bg-transparent">
-              <div className="space-y-1.5 md:col-span-2">
-                <Label className="text-muted-foreground text-xs font-semibold">Loại giảm giá</Label>
-                <Tabs value={form.type.toString()} onValueChange={(v) => setForm({ ...form, type: Number(v) })} className="w-full sm:max-w-xs">
-                  <TabsList className="w-full grid grid-cols-2 bg-foreground/[0.02] border border-muted/10 p-1 h-10 rounded-button shadow-neo-inset">
-                    <TabsTrigger value="0" className={`rounded-button text-xs py-1.5 ${readOnly ? "pointer-events-none opacity-60" : ""}`}>Phần trăm (%)</TabsTrigger>
-                    <TabsTrigger value="1" className={`rounded-button text-xs py-1.5 ${readOnly ? "pointer-events-none opacity-60" : ""}`}>Tiền mặt (VNĐ)</TabsTrigger>
-                  </TabsList>
-                </Tabs>
-              </div>
-              
-              <div className="space-y-1.5">
-                <Label className="text-muted-foreground text-xs font-semibold">Giá trị giảm <span className="text-red-500">*</span></Label>
-                <div className="relative">
-                  <Input
-                    type="number"
-                    required
-                    disabled={readOnly}
-                    min={0}
-                    value={form.value || ""}
-                    onChange={(e) => setForm({ ...form, value: Number(e.target.value) })}
-                    className="shadow-neo-inset pr-12 font-mono text-base   focus:border-accent"
-                  />
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground font-semibold text-xs">
-                    {form.type === 0 ? "%" : "VNĐ"}
-                  </div>
-                </div>
-              </div>
-
-              {form.type === 0 && (
-                <div className="space-y-1.5">
-                  <Label className="text-muted-foreground text-xs font-semibold">Mức giảm tối đa</Label>
-                  <div className="relative">
-                    <Input
-                      type="number"
-                      min={0}
-                      disabled={readOnly}
-                      value={form.maxDiscountAmount === null ? "" : form.maxDiscountAmount}
-                      onChange={(e) =>
-                        setForm({ ...form, maxDiscountAmount: e.target.value === "" ? null : Number(e.target.value) })
-                      }
-                      className="shadow-neo-inset pr-12 font-mono text-base   focus:border-accent"
-                      placeholder="Không giới hạn"
-                    />
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground font-semibold text-xs">VNĐ</div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </section>
-
-          {/* Khối 3: Điều kiện & Phạm vi */}
-          <section className="flex flex-col gap-4">
-            <h3 className="text-base font-bold font-display uppercase tracking-wider text-foreground">Điều kiện & Phạm vi</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 p-0 bg-transparent">
-              
-              <div className="space-y-1.5 md:col-span-2">
-                <Label className="text-muted-foreground text-xs font-semibold">Phạm vi áp dụng</Label>
-                <Tabs value={(form.scope ?? 0).toString()} onValueChange={(v) => setForm({ ...form, scope: Number(v) })} className="w-full">
-                  <TabsList className="w-full grid grid-cols-1 sm:grid-cols-3 bg-foreground/[0.02] border border-muted/10 p-1 h-10 rounded-button shadow-neo-inset gap-1">
-                    <TabsTrigger value="0" className={`gap-2 rounded-button text-xs py-1.5 data-[state=active]:text-accent ${readOnly ? "pointer-events-none opacity-60" : ""}`}>
-                      <TagIcon className="w-3.5 h-3.5" /> Toàn hệ thống
-                    </TabsTrigger>
-                    <TabsTrigger value="1" className={`gap-2 rounded-button text-xs py-1.5 data-[state=active]:text-accent ${readOnly ? "pointer-events-none opacity-60" : ""}`}>
-                      <Squares2X2Icon className="w-3.5 h-3.5" /> Theo danh mục
-                    </TabsTrigger>
-                    <TabsTrigger value="2" className={`gap-2 rounded-button text-xs py-1.5 data-[state=active]:text-accent ${readOnly ? "pointer-events-none opacity-60" : ""}`}>
-                      <ShoppingBagIcon className="w-3.5 h-3.5" /> Nhóm sản phẩm
-                    </TabsTrigger>
-                  </TabsList>
-                </Tabs>
-              </div>
-
-              {form.scope === 1 && (
-                <div className="md:col-span-2 space-y-2 p-4 bg-secondary/10 rounded-card  ">
-                  <Label className="text-foreground text-xs font-semibold">Danh mục áp dụng</Label>
-                  <ReactSelect
-                    isMulti={true as any}
-                    options={categoryOptions}
-                    isLoading={isCategoryLoading}
-                    isDisabled={readOnly || isCategoryLoading}
-                    value={selectedCategoryItems}
-                    onChange={(selected: any) => {
-                      const ids = selected ? selected.map((s: any) => s.value) : [];
-                      setForm({ ...form, categoryIds: ids });
-                    }}
-                    placeholder="Tìm kiếm danh mục..."
-                    styles={reactSelectDarkStyles}
-                    menuPortalTarget={document.body}
-                  />
-                </div>
-              )}
-
-              {form.scope === 2 && (
-                <div className="md:col-span-2 space-y-2 p-4 bg-secondary/10 rounded-card  ">
-                  <Label className="text-foreground text-xs font-semibold">Sản phẩm áp dụng (ID)</Label>
-                  <Input
-                    value={form.productIds?.join(", ")}
-                    disabled={readOnly}
-                    onChange={(e) => {
-                      const ids = e.target.value.split(",").map(s => Number(s.trim())).filter(n => !isNaN(n) && n > 0);
-                      setForm({ ...form, productIds: ids });
-                    }}
-                    className="shadow-neo-inset font-mono text-sm   focus:border-accent"
-                    placeholder="VD: 101, 102, 103"
-                  />
-                </div>
-              )}
-
-              <div className="space-y-1.5 mt-2">
-                <Label className="text-muted-foreground text-xs font-semibold">Đơn hàng tối thiểu (VNĐ)</Label>
-                <Input
-                  type="number"
-                  min={0}
-                  disabled={readOnly}
-                  value={form.minOrderAmount === null ? "" : form.minOrderAmount}
-                  onChange={(e) =>
-                    setForm({ ...form, minOrderAmount: e.target.value === "" ? null : Number(e.target.value) })
-                  }
-                  className="shadow-neo-inset font-mono text-base   focus:border-accent"
-                  placeholder="0"
-                />
-              </div>
-
-              <div className="space-y-1.5 mt-2">
-                <Label className="text-muted-foreground text-xs font-semibold">Lượt dùng tối đa</Label>
-                <Input
-                  type="number"
-                  min={0}
-                  disabled={readOnly}
-                  value={form.maxRedemptions ?? ""}
-                  onChange={(e) =>
-                    setForm({ ...form, maxRedemptions: e.target.value === "" ? undefined : Number(e.target.value) })
-                  }
-                  className="shadow-neo-inset font-mono text-base   focus:border-accent"
-                  placeholder="∞"
-                />
-              </div>
-              
-            </div>
-          </section>
+  // Sub-sections flat on Canvas with pure spacing
+  const basicInfoSection = (
+    <section className="flex flex-col gap-3 md:gap-4">
+      <div>
+        <h3 className="text-xs font-medium font-display uppercase tracking-[0.16em] text-foreground">
+          Thông tin cơ bản
+        </h3>
       </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-4">
+        <div className="sm:col-span-2 flex flex-col gap-1">
+          <Label className="text-xs font-medium text-foreground">
+            Tên chương trình <span className="text-destructive">*</span>
+          </Label>
+          <Input
+            required
+            disabled={readOnly}
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            className="h-8 text-xs rounded-[2px] border-border/60 focus:border-foreground"
+            placeholder="VD: Siêu Sale Mùa Hè 2026"
+          />
+        </div>
 
-      {/* CỘT PHẢI (Sidebar Settings) */}
-      <div className="lg:col-span-4 flex flex-col gap-4 order-1 lg:order-2 shrink-0">
-        {/* Trạng thái */}
-        <div className="p-4 sm:p-5 bg-card rounded-card   shadow-sm flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <Label className="text-sm font-bold font-display">Trạng thái hiển thị</Label>
-            <Switch
+        <div className="sm:col-span-2 flex flex-col gap-1">
+          <Label className="text-xs font-medium text-foreground">Mã Voucher (Code)</Label>
+          <Input
+            disabled={readOnly}
+            value={form.code ?? ""}
+            onChange={(e) => setForm({ ...form, code: e.target.value })}
+            className="h-8 text-xs rounded-[2px] border-border/60 focus:border-foreground font-mono tracking-wider uppercase"
+            placeholder="SUMMER2026"
+          />
+          <p className="text-[11px] text-muted-foreground mt-0.5">
+            Bỏ trống nếu đây là chương trình tự động áp dụng (Flash Sale) toàn hệ thống.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+
+  const discountConfigSection = (
+    <section className="flex flex-col gap-3 md:gap-4">
+      <div>
+        <h3 className="text-xs font-medium font-display uppercase tracking-[0.16em] text-foreground">
+          Cấu hình giảm giá
+        </h3>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+        <div className="flex flex-col gap-1 sm:col-span-2">
+          <Label className="text-xs font-medium text-foreground">Loại giảm giá</Label>
+          <Tabs
+            value={form.type.toString()}
+            onValueChange={(v) => setForm({ ...form, type: Number(v) })}
+            className="w-full sm:max-w-xs"
+          >
+            <TabsList className="w-full grid grid-cols-2">
+              <TabsTrigger
+                value="0"
+                className={readOnly ? "pointer-events-none opacity-60" : ""}
+              >
+                Phần trăm (%)
+              </TabsTrigger>
+              <TabsTrigger
+                value="1"
+                className={readOnly ? "pointer-events-none opacity-60" : ""}
+              >
+                Tiền mặt (VNĐ)
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <Label className="text-xs font-medium text-foreground">
+            Giá trị giảm <span className="text-destructive">*</span>
+          </Label>
+          <div className="relative">
+            <Input
+              type="number"
+              required
               disabled={readOnly}
-              checked={!!form.isActive}
-              onCheckedChange={(checked: boolean) => setForm({ ...form, isActive: checked })}
+              min={0}
+              value={form.value || ""}
+              onChange={(e) => setForm({ ...form, value: Number(e.target.value) })}
+              className="h-8 text-xs rounded-[2px] border-border/60 pr-12 font-mono focus:border-foreground"
+            />
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground font-mono text-xs">
+              {form.type === 0 ? "%" : "VNĐ"}
+            </div>
+          </div>
+        </div>
+
+        {form.type === 0 && (
+          <div className="flex flex-col gap-1">
+            <Label className="text-xs font-medium text-foreground">Mức giảm tối đa</Label>
+            <div className="relative">
+              <Input
+                type="number"
+                min={0}
+                disabled={readOnly}
+                value={form.maxDiscountAmount === null ? "" : form.maxDiscountAmount}
+                onChange={(e) =>
+                  setForm({ ...form, maxDiscountAmount: e.target.value === "" ? null : Number(e.target.value) })
+                }
+                className="h-8 text-xs rounded-[2px] border-border/60 pr-12 font-mono focus:border-foreground"
+                placeholder="Không giới hạn"
+              />
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground font-mono text-xs">
+                VNĐ
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+
+  const scopeAndRulesSection = (
+    <section className="flex flex-col gap-3 md:gap-4">
+      <div>
+        <h3 className="text-xs font-medium font-display uppercase tracking-[0.16em] text-foreground">
+          Điều kiện & Phạm vi
+        </h3>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+        <div className="space-y-1.5 sm:col-span-2">
+          <Label className="text-xs font-medium text-foreground">Phạm vi áp dụng</Label>
+          <Tabs
+            value={(form.scope ?? 0).toString()}
+            onValueChange={(v) => setForm({ ...form, scope: Number(v) })}
+            className="w-full"
+          >
+            <TabsList className="w-full grid grid-cols-1 sm:grid-cols-3">
+              <TabsTrigger
+                value="0"
+                icon={<TagIcon className="w-3.5 h-3.5" />}
+                className={readOnly ? "pointer-events-none opacity-60" : ""}
+              >
+                Toàn hệ thống
+              </TabsTrigger>
+              <TabsTrigger
+                value="1"
+                icon={<Squares2X2Icon className="w-3.5 h-3.5" />}
+                className={readOnly ? "pointer-events-none opacity-60" : ""}
+              >
+                Theo danh mục
+              </TabsTrigger>
+              <TabsTrigger
+                value="2"
+                icon={<ShoppingBagIcon className="w-3.5 h-3.5" />}
+                className={readOnly ? "pointer-events-none opacity-60" : ""}
+              >
+                Nhóm sản phẩm
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+
+        {form.scope === 1 && (
+          <div className="sm:col-span-2 space-y-2 p-3 bg-surface/30 rounded-[2px]">
+            <Label className="text-foreground text-xs font-medium">Danh mục áp dụng</Label>
+            <ReactSelect
+              isMulti={true as any}
+              options={categoryOptions}
+              isLoading={isCategoryLoading}
+              isDisabled={readOnly || isCategoryLoading}
+              value={selectedCategoryItems}
+              onChange={(selected: any) => {
+                const ids = selected ? selected.map((s: any) => s.value) : [];
+                setForm({ ...form, categoryIds: ids });
+              }}
+              placeholder="Chọn các danh mục..."
+              styles={reactSelectDarkStyles}
+              menuPortalTarget={typeof document !== "undefined" ? document.body : null}
             />
           </div>
-          <div className="text-xs text-muted-foreground">
-            {form.isActive 
-              ? "Khuyến mãi đang được BẬT. Khách hàng có thể thấy và áp dụng mã nếu đủ điều kiện."
-              : "Khuyến mãi đang TẮT. Chỉ có admin mới nhìn thấy chương trình này."}
+        )}
+
+        {form.scope === 2 && (
+          <div className="sm:col-span-2 space-y-2 p-3 bg-surface/30 rounded-[2px]">
+            <Label className="text-foreground text-xs font-medium">Sản phẩm áp dụng (ID)</Label>
+            <Input
+              value={form.productIds?.join(", ")}
+              disabled={readOnly}
+              onChange={(e) => {
+                const ids = e.target.value
+                  .split(",")
+                  .map((s) => Number(s.trim()))
+                  .filter((n) => !isNaN(n) && n > 0);
+                setForm({ ...form, productIds: ids });
+              }}
+              className="h-8 text-xs rounded-[2px] border-border/60 font-mono focus:border-foreground"
+              placeholder="VD: 101, 102, 103"
+            />
           </div>
+        )}
+
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium text-foreground">Đơn tối thiểu (VNĐ)</Label>
+          <Input
+            type="number"
+            min={0}
+            disabled={readOnly}
+            value={form.minOrderAmount === null ? "" : form.minOrderAmount}
+            onChange={(e) =>
+              setForm({ ...form, minOrderAmount: e.target.value === "" ? null : Number(e.target.value) })
+            }
+            className="h-8 text-xs rounded-[2px] border-border/60 font-mono focus:border-foreground"
+            placeholder="0"
+          />
         </div>
 
-        {/* Thời gian */}
-        <div className="p-4 sm:p-5 bg-card rounded-card   shadow-sm flex flex-col gap-3">
-          <Label className="text-sm font-bold font-display">Thời hạn áp dụng</Label>
-          <div className="space-y-4">
-            <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground font-semibold">Bắt đầu lúc</Label>
-              <Input
-                type="datetime-local"
-                disabled={readOnly}
-                value={startsAtStr}
-                onChange={(e) => setStartsAtStr(e.target.value)}
-                className="shadow-neo-inset text-sm   focus:border-accent"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground font-semibold">Kết thúc lúc</Label>
-              <Input
-                type="datetime-local"
-                disabled={readOnly}
-                value={endsAtStr}
-                onChange={(e) => setEndsAtStr(e.target.value)}
-                className="shadow-neo-inset text-sm   focus:border-accent"
-              />
-            </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium text-foreground">Lượt dùng tối đa</Label>
+          <Input
+            type="number"
+            min={0}
+            disabled={readOnly}
+            value={form.maxRedemptions ?? ""}
+            onChange={(e) =>
+              setForm({ ...form, maxRedemptions: e.target.value === "" ? undefined : Number(e.target.value) })
+            }
+            className="h-8 text-xs rounded-[2px] border-border/60 font-mono focus:border-foreground"
+            placeholder="∞"
+          />
+        </div>
+      </div>
+    </section>
+  );
+
+  const statusAndDurationSection = (
+    <div className="flex flex-col gap-6">
+      {/* Trạng thái */}
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between">
+          <Label className="text-xs font-medium font-display uppercase tracking-[0.16em] text-foreground">
+            Trạng thái kích hoạt
+          </Label>
+          <Switch
+            disabled={readOnly}
+            checked={!!form.isActive}
+            onCheckedChange={(checked: boolean) => setForm({ ...form, isActive: checked })}
+          />
+        </div>
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          {form.isActive
+            ? "Khuyến mãi đang BẬT. Khách hàng có thể nhìn thấy và áp dụng ưu đãi này."
+            : "Khuyến mãi đang TẮT. Chỉ có quản trị viên mới thấy bản ghi này."}
+        </p>
+      </div>
+
+      {/* Thời gian */}
+      <div className="flex flex-col gap-3">
+        <div>
+          <Label className="text-xs font-medium font-display uppercase tracking-[0.16em] text-foreground">
+            Thời hạn áp dụng
+          </Label>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="flex flex-col gap-1">
+            <Label className="text-xs text-foreground font-medium">Bắt đầu lúc</Label>
+            <Input
+              type="datetime-local"
+              disabled={readOnly}
+              value={startsAtStr}
+              onChange={(e) => setStartsAtStr(e.target.value)}
+              className="h-8 text-xs rounded-[2px] border-border/60 focus:border-foreground font-mono"
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <Label className="text-xs text-foreground font-medium">Kết thúc lúc</Label>
+            <Input
+              type="datetime-local"
+              disabled={readOnly}
+              value={endsAtStr}
+              onChange={(e) => setEndsAtStr(e.target.value)}
+              className="h-8 text-xs rounded-[2px] border-border/60 focus:border-foreground font-mono"
+            />
           </div>
         </div>
+      </div>
+    </div>
+  );
 
-        {/* Actions (Desktop) */}
-        {!readOnly && (
-        <div className="hidden lg:flex p-4 sm:p-5 bg-card rounded-card   shadow-sm flex-col gap-3">
-          <Button 
-            onClick={handleSubmit} 
+  // 1. DRAWER MODE: Clean vertical flow flat on canvas
+  if (isDrawer) {
+    return (
+      <form id={formId} onSubmit={handleSubmit} className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6">
+          {basicInfoSection}
+          {discountConfigSection}
+          {scopeAndRulesSection}
+        </div>
+
+        {statusAndDurationSection}
+      </form>
+    );
+  }
+
+  // 2. FULL PAGE MODE: Two-Column Studio Monolith Layout flat on Canvas
+  return (
+    <>
+      <form
+        id={formId}
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 items-start"
+      >
+        {/* Left Column (8 cols): Main Information */}
+        <div className="lg:col-span-8 flex flex-col gap-6 md:gap-8 order-2 lg:order-1">
+          {basicInfoSection}
+          {discountConfigSection}
+          {scopeAndRulesSection}
+        </div>
+
+        {/* Right Column (4 cols): Settings & Desktop Action */}
+        <div className="lg:col-span-4 flex flex-col gap-6 order-1 lg:order-2 shrink-0">
+          {statusAndDurationSection}
+
+          {!readOnly && (
+            <div className="hidden lg:flex flex-col gap-2 pt-2">
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full h-9 text-xs font-semibold tracking-wider uppercase rounded-[2px] shadow-none"
+              >
+                {loading ? "Đang xử lý..." : submitLabel}
+              </Button>
+            </div>
+          )}
+        </div>
+      </form>
+
+      {/* Mobile Sticky Bottom Bar */}
+      {!readOnly && (
+        <div className="sticky bottom-0 z-40 p-3 mt-4 -mx-3 -mb-3 bg-background/95 backdrop-blur-md lg:hidden flex flex-col justify-center">
+          <Button
+            type="submit"
+            form={formId}
             disabled={loading}
-            className="w-full h-11 text-sm font-bold tracking-wide shadow-none hover:shadow-sm"
+            className="w-full h-10 text-xs font-semibold uppercase tracking-wider rounded-[2px] shadow-none"
           >
             {loading ? "Đang xử lý..." : submitLabel}
           </Button>
         </div>
-        )}
-      </div>
-    </div>
-
-    {/* Actions (Mobile Sticky Bottom Bar) */}
-    {!readOnly && (
-    <div className="sticky bottom-0 z-50 p-4 mt-4 -mx-3 -mb-3 bg-background/90 backdrop-blur-md border-t border-foreground/[0.05] shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.2)] lg:hidden flex flex-col justify-center">
-      <Button 
-        onClick={handleSubmit} 
-        disabled={loading}
-        className="w-full h-12 text-sm font-bold tracking-wide shadow-none hover:shadow-sm rounded-button bg-primary text-primary-foreground"
-      >
-        {loading ? "Đang xử lý..." : submitLabel}
-      </Button>
-    </div>
-    )}
+      )}
     </>
   );
 }
-
-

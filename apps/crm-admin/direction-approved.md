@@ -1,0 +1,38 @@
+# Design Direction Approved: YouTube Pure Charcoal Cinematic Design System
+
+- **Approved Date:** 2026-11-05
+- **User Selection:** "YouTube Pure Charcoal Cinematic Design System" (Đặc tả thiết kế kỹ thuật chuẩn theo [apps/crm-admin/DESIGN.md](file:///d:/Hutech/DACS/ECOMMERCE_PROJECT/ECommerce_FE/apps/crm-admin/DESIGN.md))
+- **Approved Aesthetic System:**
+  - **Color Palette (YouTube Cinematic Neutral Tones & Light-Catching Borders):**
+    - **Dark Mode (YouTube Pure Charcoal):**
+      - `bg-canvas`: `#0F0F0F` (Nền đáy than điện ảnh sâu thẳm, không ám xanh tím)
+      - `bg-surface`: `#161616` (Nền thanh Sidebar, Header, panel phân cấp)
+      - `bg-surface-elevated` (Card): `#212121` (Thẻ Card con, Table row, khối dữ liệu nổi bật 1.38:1)
+      - `bg-surface-modal`: `#282828` (Cửa sổ hội thoại nổi, Command Menu ⌘K, Popover)
+      - `bg-surface-hover`: `#2F2F2F` (Trạng thái hover của các hàng, danh sách item)
+      - `text-primary`: `#F1F1F1` (Tiêu đề chính, nội dung đọc ~95% white không chói)
+      - `text-secondary`: `#AAAAAA` (Nhãn phụ, tiêu đề bảng, thuộc tính quan trọng)
+      - `text-tertiary (Muted)`: `#717171` (Mã SKU/định danh, timestamp, placeholder)
+      - `text-disabled`: `#4A4A4A` (Trạng thái vô hiệu hóa)
+      - `border-subtle`: `rgba(255, 255, 255, 0.08)` (Viền chia các hàng trong bảng)
+      - `border-default`: `rgba(255, 255, 255, 0.10)` (Viền ngoài của Card, Sidebar divider)
+      - `border-strong`: `rgba(255, 255, 255, 0.20)` (Viền ô Input, viền Modal khi nhận tương tác)
+      - `border-focus`: `#3EA6FF` (Vòng outline YouTube Blue khi nhận tiêu điểm bàn phím)
+    - **Light Mode (Inverted Neutral Studio):**
+      - `bg-canvas`: `#F1F1F1` (Nền đáy xám trung tính êm dịu, giảm chói mắt)
+      - `bg-surface`: `#E5E5E5` (Nền Sidebar, Header, panel phụ)
+      - `bg-surface-elevated` (Card): `#FFFFFF` (Thẻ Card nổi trắng tinh khiết)
+      - `text-primary`: `#0F0F0F` (Mực đen than sắc nét)
+      - `text-secondary`: `#606060` (Nhãn phụ, thuộc tính)
+      - `text-tertiary`: `#909090` (Mã SKU, timestamp)
+      - `border-subtle`: `rgba(0, 0, 0, 0.08)`
+      - `border-default`: `rgba(0, 0, 0, 0.10)`
+      - `border-strong`: `rgba(0, 0, 0, 0.20)`
+      - `border-focus`: `#065FD4` (YouTube Blue Light)
+  - **Geometry & Elevation:**
+    - Corner Radius: `none: 0px` (Table, SplitPane), `sm: 2px – 4px` (Controls tiêu chuẩn: Button, Input, Select, Badge, Tag), `md: 6px` (Modal, Drawer).
+    - Elevation & Border Governance: Flat 100% (`shadow-none`), phân tách khối bằng bước nhảy quang học Tonal Step Delta $1.38 : 1$ (0px viền cho khối tĩnh). Chỉ dùng viền trục đơn 1 cạnh (`border-b` / `border-r`) cho Table/Sidebar/Header, và viền 4 cạnh bắt sáng alpha (`0.10 / 0.20`) cho thành phần tương tác (Input, Select, Form Controls).
+  - **Control Standards & Typography:**
+    - Standard Heights: `small: 28px`, `medium: 34px` (Mặc định toàn hệ thống), `large: 40px`.
+    - Spacing Governance: 4px base grid, Zero Outer Margin trên thẻ con, Asymmetric Editorial Gutter (Row gap $\ge$ 2x Col gap).
+    - Typography: Editorial / Display serif + grotesk body (`Inter`), Display/Body ratio $\ge$ 2.5x.

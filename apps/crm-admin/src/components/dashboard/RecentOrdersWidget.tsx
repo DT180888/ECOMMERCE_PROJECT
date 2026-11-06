@@ -1,75 +1,89 @@
-﻿import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import { useRecentOrders } from "@hooks/useStats";
 import { formatVND, formatDateTime } from "@my-project/shared-utils";
-import { OrderStatusBadge } from "@my-project/ui";
+import { OrderStatusBadge, Skeleton } from "@my-project/ui";
 
 function RowSkeleton() {
   return (
-    <div className="flex items-center gap-3 py-3 px-3.5 border-b border-neo-bevel last:border-0 animate-pulse">
-      <div className="flex-1 space-y-1.5">
-        <div className="h-3 w-20 bg-muted/30 rounded" />
-        <div className="h-2.5 w-32 bg-muted/30 rounded" />
+    <div className="flex items-center justify-between py-3 px-4">
+      <div className="space-y-1.5">
+        <Skeleton className="h-4 w-24 rounded" />
+        <Skeleton className="h-3 w-36 rounded" />
       </div>
-      <div className="h-3 w-16 bg-muted/30 rounded" />
-      <div className="h-5 w-16 bg-muted/30 rounded-full" />
+      <div className="flex flex-col items-end gap-1.5">
+        <Skeleton className="h-4 w-20 rounded" />
+        <Skeleton className="h-5 w-16 rounded-sm" />
+      </div>
     </div>
   );
 }
 
 export function RecentOrdersWidget() {
-  const { data, isLoading } = useRecentOrders(5);
+  const { data, isLoading } = useRecentOrders(6);
 
   return (
-    <div className="bg-card border border-neo-bevel shadow-none rounded-card h-full flex flex-col overflow-hidden">
-      {/* Header */}
-      <div className="px-5 py-4 flex items-center justify-between border-b border-neo-bevel shrink-0">
-        <h3 className="text-sm font-semibold text-foreground font-display">Đơn hàng gần đây</h3>
+    <div className="bg-card border border-border rounded-sm h-auto xl:h-full flex flex-col justify-between overflow-hidden shadow-none font-sans">
+      {/* Header (Aligned to h-11 / 44px baseline) */}
+      <div className="px-4 h-11 flex items-center justify-between border-b border-border bg-surface shrink-0">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-success shrink-0" />
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-foreground">
+            Đơn hàng gần đây
+          </h3>
+        </div>
         <Link
           to="/admin/orders"
-          className="text-xs text-primary hover:text-primary/80 flex items-center gap-1 transition-colors font-semibold"
+          className="text-xs text-primary hover:text-primary-hover inline-flex items-center gap-1 transition-colors font-medium group"
         >
-          Xem tất cả <ArrowRightIcon className="w-3.5 h-3.5" />
+          <span>Xem tất cả</span>
+          <ArrowRightIcon className="w-3.5 h-3.5 stroke-[1.5] transition-transform duration-150 group-hover:translate-x-0.5" />
         </Link>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-6 px-5 pb-3">
+      {/* Content Feed */}
+      <div className="flex-1 xl:overflow-y-auto custom-scrollbar p-1.5">
         {isLoading ? (
-          <div className="space-y-3 py-3">
+          <div className="divide-y divide-border">
             {[...Array(5)].map((_, i) => <RowSkeleton key={i} />)}
           </div>
         ) : !data || data.length === 0 ? (
-          <div className="h-full flex items-center justify-center">
-            <p className="text-sm text-muted-foreground">Chưa có đơn hàng nào</p>
+          <div className="h-full flex items-center justify-center p-8">
+            <p className="text-xs text-muted-foreground font-sans">
+              Chưa có đơn hàng nào phát sinh
+            </p>
           </div>
         ) : (
-          <ul className="space-y-3">
+          <ul className="divide-y divide-border-subtle">
             {data.map((order) => (
-              <li key={order.orderId} className="py-3 px-3.5 flex items-start gap-3 group border-b border-neo-bevel last:border-0 hover:bg-foreground/[0.015] hover:shadow-neo-hover transition-all duration-300 ease-out rounded-card relative z-0 hover:z-10">
-                {/* Order info */}
-                <div className="flex-1 min-w-0">
-                  <Link
-                    to={`/admin/orders/${order.orderId}`}
-                    className="text-xs font-mono text-primary group-hover:text-primary/80 transition-colors font-semibold"
-                  >
-                    #{order.orderNumber}
-                  </Link>
-                  <p className="text-sm font-medium text-foreground truncate mt-0.5" title={order.customerName}>
-                    {order.customerName || "Khách lẻ"}
-                  </p>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">
-                    {formatDateTime(order.createdAt)}
-                  </p>
-                </div>
+              <li key={order.orderId}>
+                <Link
+                  to={`/admin/orders/${order.orderId}`}
+                  className="group relative px-3 py-2.5 flex items-center justify-between gap-3 rounded-md transition-colors duration-150 hover:bg-surface-hover"
+                >
+                  {/* Order Information */}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[13px] font-semibold text-foreground group-hover:text-primary transition-colors">
+                        #{order.orderNumber}
+                      </span>
+                      <span className="text-xs text-muted-foreground truncate">
+                        • {formatDateTime(order.createdAt)}
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground truncate mt-0.5" title={order.customerName || undefined}>
+                      {order.customerName || "Khách lẻ tại cửa hàng"}
+                    </p>
+                  </div>
 
-                {/* Amount + status */}
-                <div className="flex flex-col items-end gap-1.5 shrink-0">
-                  <span className="text-sm font-semibold text-emerald-500 tabular-nums whitespace-nowrap">
-                    {formatVND(order.totalMinor)}
-                  </span>
-                  <OrderStatusBadge status={order.status} />
-                </div>
+                  {/* Amount + Status */}
+                  <div className="flex flex-col items-end gap-1.5 shrink-0">
+                    <span className="text-[13px] font-semibold text-foreground whitespace-nowrap">
+                      {formatVND(order.totalMinor)}
+                    </span>
+                    <OrderStatusBadge status={order.status} />
+                  </div>
+                </Link>
               </li>
             ))}
           </ul>
@@ -78,6 +92,3 @@ export function RecentOrdersWidget() {
     </div>
   );
 }
-
-
-

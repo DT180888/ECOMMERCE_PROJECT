@@ -40,20 +40,22 @@ export function PromotionForm() {
   };
 
   return (
-    <AdminPageShell
-      title="Tạo Khuyến Mãi Mới"
-      noCard={true}
-      actions={
-        <Link to="/admin/promotion">
-          <Button variant="outline" className="h-8 px-3 text-xs font-semibold shadow-none">
-            <ArrowLeftIcon className="w-3.5 h-3.5 mr-1.5" /> Trở về
-          </Button>
-        </Link>
-      }
-    >
-      <div className="w-full max-w-[1400px] mx-auto p-4 sm:p-6 lg:p-8">
-        <PromotionSharedForm onSave={handleSave} loading={loading} submitLabel="Tạo Khuyến Mãi" />
-      </div>
+    <AdminPageShell>
+      <AdminPageShell.Header
+        title="Tạo Khuyến Mãi Mới"
+        actions={
+          <Link to="/admin/promotion">
+            <Button variant="outline" className="h-8 px-3 text-xs font-semibold shadow-none">
+              <ArrowLeftIcon className="w-3.5 h-3.5 mr-1.5" /> Trở về
+            </Button>
+          </Link>
+        }
+      />
+      <AdminPageShell.Body>
+        <div className="w-full max-w-[1400px] mx-auto">
+          <PromotionSharedForm onSave={handleSave} loading={loading} submitLabel="Tạo Khuyến Mãi" />
+        </div>
+      </AdminPageShell.Body>
     </AdminPageShell>
   );
 }

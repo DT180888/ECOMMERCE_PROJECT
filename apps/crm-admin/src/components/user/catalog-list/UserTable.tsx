@@ -117,9 +117,9 @@ export default function UserTable({ list, isLoading, onAssignRole, formatDate, r
         <Guard permission="Permissions.Users.ManageRoles">
           <div className="flex items-center justify-center bg-background p-1 rounded-card shadow-neo-inset-sm w-fit mx-auto">
             <Button
-              size="sm"
+              size="default"
               variant="ghost"
-              className="h-7 w-7 p-0 rounded-button text-muted-foreground hover:text-primary hover:bg-background hover:shadow-neo-sm transition-all duration-300"
+              className="h-9 w-9 p-0 rounded-button text-muted-foreground hover:text-primary hover:bg-background hover:shadow-neo-sm transition-all duration-300"
               title="Phân quyền"
               onClick={() => onAssignRole({ id: user.id, roles: user.roles })}
             >
@@ -132,15 +132,14 @@ export default function UserTable({ list, isLoading, onAssignRole, formatDate, r
   ];
 
   return (
-    <div className="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-6 flex flex-col">
+    <div className="flex-1 min-h-0 flex flex-col">
       <AdminTable
         columns={columns}
         data={list}
         isLoading={isLoading}
-        skeletonRows={8}
+        rowKey="id"
+        emptyText="Không tìm thấy người dùng nào"
         emptyIcon={InboxIcon}
-        emptyTitle="Không tìm thấy người dùng nào"
-        emptyDescription="Thử từ khoá tìm kiếm khác"
       />
     </div>
   );

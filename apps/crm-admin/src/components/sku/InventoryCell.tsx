@@ -1,9 +1,7 @@
 import { useState, useRef, useEffect } from "react";
-import { Button } from "@my-project/ui";
-import { Input } from "@my-project/ui";
+import { Button, Input, Skeleton, useToast } from "@my-project/ui";
 import { useUpdateAdminInventory, useAdminInventory } from "@hooks/useSku";
 import { CheckIcon, XMarkIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
-import { useToast } from "@my-project/ui";
 
 export function InventoryCell({ skuId }: { skuId: number }) {
   const [editing, setEditing] = useState(false);
@@ -21,7 +19,7 @@ export function InventoryCell({ skuId }: { skuId: number }) {
     }
   }, [editing, inv]);
 
-  if (isLoading) return <div className="animate-pulse w-8 h-4 bg-muted/50 rounded"></div>;
+  if (isLoading) return <Skeleton className="w-8 h-4" />;
   if (!inv) return <span className="text-muted-foreground text-xs italic">N/A</span>;
 
   const currentQty = inv.quantityOnHand ?? 0;
@@ -62,7 +60,7 @@ export function InventoryCell({ skuId }: { skuId: number }) {
           size="icon"
           onClick={handleSave}
           disabled={updateMut.isPending}
-          className="h-8 w-8 rounded-inner"
+          className="h-8 w-8 rounded-[2px]"
         >
           {updateMut.isPending ? <ArrowPathIcon className="w-3.5 h-3.5 animate-spin" /> : <CheckIcon className="w-3.5 h-3.5" />}
         </Button>
@@ -70,7 +68,7 @@ export function InventoryCell({ skuId }: { skuId: number }) {
           variant="ghost"
           size="icon"
           onClick={() => setEditing(false)}
-          className="h-8 w-8 rounded-inner"
+          className="h-8 w-8 rounded-[2px]"
         >
           <XMarkIcon className="w-3.5 h-3.5" />
         </Button>
@@ -81,7 +79,7 @@ export function InventoryCell({ skuId }: { skuId: number }) {
   return (
     <div
       onClick={() => setEditing(true)}
-      className="inline-flex items-center gap-2 cursor-pointer group px-2 py-1 -ml-2 rounded-inner hover:bg-muted/50 transition-colors"
+      className="inline-flex items-center gap-2 cursor-pointer group px-2 py-1 -ml-2 rounded-[2px] hover:bg-muted/50 transition-colors"
       title="Click để sửa tồn kho"
     >
       <span className={`font-mono text-sm font-semibold ${isLow && currentQty > 0 ? "text-yellow-500" : currentQty === 0 ? "text-destructive" : "text-foreground"}`}>

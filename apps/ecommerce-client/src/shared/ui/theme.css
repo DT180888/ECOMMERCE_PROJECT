@@ -1,0 +1,146 @@
+/* ── Pure Modern Editorial & Lookbook Client Theme (Tri-Anchor Architectural Edition) ── */
+@layer base {
+  :root {
+    /* Pure Modern Editorial Tri-Anchor Palette */
+    --background: 43 100% 95%;
+    /* #FFF8E7 Warm Silk / Cosmic Milk Canvas */
+    --foreground: 200 20% 15%;
+    /* #1E282D Deep Slate Charcoal Ink */
+
+    --card: 35 55% 92%;
+    /* #F6EDE0 Sand Surface Card */
+    --card-foreground: 200 20% 15%;
+
+    --surface: 35 55% 92%;
+    /* #F6EDE0 Sand Surface */
+    --surface-hover: 34 47% 88%;
+    /* #EFE3D3 Surface Hover */
+
+    --popover: 35 55% 92%;
+    --popover-foreground: 200 20% 15%;
+
+    --primary: 200 20% 15%;
+    /* #1E282D Deep Slate Primary CTA */
+    --primary-foreground: 43 100% 95%;
+    /* #FFF8E7 Warm Silk Text */
+    --primary-hover: 200 23% 10%;
+    /* #141C20 Primary Hover */
+
+    --secondary: 35 55% 92%;
+    --secondary-foreground: 200 20% 15%;
+
+    --muted: 35 55% 92%;
+    --muted-foreground: 31 14% 34%;
+    /* #63574A Muted Meta Text */
+
+    --subtle: 36 16% 68%;
+    /* #BAAF9F Subtle Hairline / Placeholder */
+
+    --accent: 33 31% 39%;
+    --accent-foreground: 43 100% 95%;
+
+    --accent-walnut: 33 31% 39%;
+    /* #826644 Muted Walnut / Artisan Leather */
+    --accent-walnut-foreground: 43 100% 95%;
+
+    --accent-linen: 43 100% 95%;
+
+    --destructive: 9 55% 35%;
+    /* #8C3829 Terracotta Red */
+    --destructive-foreground: 43 100% 95%;
+
+    --border: 35 39% 85%;
+    /* #E8DCCB Hairline Border 1px */
+    --input: transparent;
+    --ring: 200 20% 15%;
+
+    --radius: 2px;
+    --radius-card: 0px;
+    --radius-button: 2px;
+    --radius-inner: 2px;
+
+    --success: 139 27% 24%;
+    --success-foreground: 43 100% 95%;
+    --error: 9 55% 35%;
+    --error-foreground: 43 100% 95%;
+    --error-muted: 9 55% 95%;
+    --warning: 30 65% 36%;
+    --warning-foreground: 43 100% 95%;
+    --info: 199 26% 27%;
+    --info-foreground: 43 100% 95%;
+
+    --badge-red-bg: 9 55% 93%;
+    --badge-red-fg: 9 55% 30%;
+    --badge-blue-bg: 199 26% 92%;
+    --badge-blue-fg: 199 26% 25%;
+    --badge-green-bg: 139 27% 92%;
+    --badge-green-fg: 139 27% 20%;
+    --badge-yellow-bg: 30 65% 90%;
+    --badge-yellow-fg: 30 65% 25%;
+
+    --shadow-light: transparent;
+    --shadow-dark: transparent;
+    --shadow-light-hover: transparent;
+    --shadow-dark-hover: transparent;
+  }
+
+  .dark {
+    /* Pure Modern Editorial Tri-Anchor Palette (Obsidian Walnut Canvas) */
+    --background: 200 14% 8%;
+    /* #121618 Deep Obsidian Canvas */
+    --foreground: 43 100% 95%;
+    /* #FFF8E7 Warm Silk Text */
+
+    --card: 200 15% 12%;
+    /* #1A2023 Deep Slate Card */
+    --card-foreground: 43 100% 95%;
+
+    --surface: 200 15% 12%;
+    --surface-hover: 200 15% 16%;
+
+    --popover: 200 15% 12%;
+    --popover-foreground: 43 100% 95%;
+
+    --primary: 32 38% 62%;
+    /* #C29F78 Golden Walnut Primary CTA */
+    --primary-foreground: 200 14% 8%;
+    --primary-hover: 32 36% 60%;
+
+    --secondary: 200 15% 12%;
+    --secondary-foreground: 43 100% 95%;
+
+    --muted: 200 15% 12%;
+    --muted-foreground: 34 12% 60%;
+
+    --subtle: 32 13% 29%;
+
+    --accent: 32 28% 53%;
+    --accent-foreground: 200 14% 8%;
+
+    --accent-walnut: 32 28% 53%;
+    --accent-walnut-foreground: 200 14% 8%;
+
+    --accent-linen: 43 100% 95%;
+
+    --destructive: 9 67% 64%;
+    --destructive-foreground: 200 14% 8%;
+
+    --border: 198 13% 19%;
+    --input: transparent;
+    --ring: 32 38% 62%;
+
+    --radius: 2px;
+    --radius-card: 0px;
+    --radius-button: 2px;
+    --radius-inner: 2px;
+
+    --success: 134 29% 56%;
+    --success-foreground: 200 14% 8%;
+    --error: 9 67% 64%;
+    --error-foreground: 200 14% 8%;
+    --warning: 33 74% 61%;
+    --warning-foreground: 200 14% 8%;
+    --info: 198 26% 55%;
+    --info-foreground: 200 14% 8%;
+  }
+}

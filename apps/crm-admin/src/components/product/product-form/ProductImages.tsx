@@ -1,9 +1,9 @@
-﻿import React from "react";
+import React from "react";
 import { useFormContext, useFieldArray, Controller } from "react-hook-form";
 import { PhotoIcon } from "@heroicons/react/24/outline";
 import ImageUploader from "@components/common/ImageUploader";
-import { buildImgSrc } from "@my-project/shared-utils";
-import { DEFAULT_PRODUCT_IMAGE_URL } from "@my-project/shared-utils";
+import { buildImgSrc, DEFAULT_PRODUCT_IMAGE_URL } from "@my-project/shared-utils";
+import { Button, cn, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@my-project/ui";
 
 export function ProductImages() {
   const { control, watch, setValue, getValues } = useFormContext<any>();
@@ -21,84 +21,122 @@ export function ProductImages() {
   };
 
   return (
-    <div className="bg-transparent border border-neo-bevel rounded-card p-6 space-y-6">
-        <div className="flex items-center justify-between">
-            <h3 className="text-lg font-medium text-foreground">Thư viện ảnh</h3>
-            <span className="text-xs bg-accent/10 text-accent border border-accent/20 px-2 py-1 rounded-button font-semibold">
-                {imagesFA.fields.length} ảnh đã chọn
-            </span>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-xs font-medium font-sans uppercase tracking-[0.16em] text-foreground">
+            Thư viện hình ảnh sản phẩm
+          </h3>
+          <p className="text-[11px] text-muted-foreground mt-0.5">
+            Tải lên hình ảnh góc chụp chi tiết của sản phẩm (khuyến nghị tỷ lệ vuông 1:1 hoặc 3:4).
+          </p>
         </div>
+        <span className="font-mono text-[10.5px] tabular-nums bg-surface border border-border/60 text-muted-foreground px-2 py-0.5 rounded-[2px] font-medium shrink-0">
+          {imagesFA.fields.length} ảnh đã chọn
+        </span>
+      </div>
 
-        <ImageUploader onUploaded={onImagesUploaded} />
-        
-        {imagesFA.fields.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-muted border border-neo-bevel rounded-card bg-transparent">
-                <PhotoIcon className="w-16 h-16 mb-3 opacity-20" />
-                <p className="text-sm">Chưa có hình ảnh nào. Hãy tải lên ảnh sản phẩm.</p>
-            </div>
-        ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
-                {imagesFA.fields.map((field, idx) => {
-                    const isPrimary = watch(`images.${idx}.isPrimary`);
-                    const url = watch(`images.${idx}.url`);
-                    const imageSkuCode = watch(`images.${idx}.skuCode`);
-                    // Hiển thị ảnh chung (không gán SKU)
-                    if (imageSkuCode) return null;
-                    return (
-                        <div key={field.id} className={`flex flex-col gap-2 p-2 rounded-card border transition-all bg-transparent ${isPrimary ? "border-accent shadow-neo-sm" : "border-neo-bevel hover:border-foreground/[0.12] dark:hover:border-white/[0.12]"}`}>
-                            <div className="relative group aspect-square rounded-inner overflow-hidden">
-                                <img src={buildImgSrc(url) ?? DEFAULT_PRODUCT_IMAGE_URL} alt="" className="w-full h-full object-cover" />
-                                
-                                <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-3 backdrop-blur-sm">
-                                    <button 
-                                        type="button" 
-                                        onClick={() => {
-                                            const currentImages = getValues("images") || [];
-                                            currentImages.forEach((img: any, j: number) => {
-                                                if (!img.skuCode) {
-                                                    setValue(`images.${j}.isPrimary`, j === idx);
-                                                }
-                                            });
-                                        }} 
-                                        className={`text-xs px-3 py-1.5 rounded-button font-medium w-full transition-colors ${isPrimary ? 'bg-accent text-white' : 'bg-white/20 text-white hover:bg-white/30'}`}
-                                    >
-                                        {isPrimary ? "✓ Ảnh chính" : "Đặt làm chính"}
-                                    </button>
-                                    <button type="button" onClick={() => imagesFA.remove(idx)} className="text-xs px-3 py-1.5 rounded-button w-full bg-destructive/20 text-destructive hover:bg-destructive/30 transition-all duration-200">
-                                        Xóa
-                                    </button>
-                                </div>
-                                {isPrimary && <div className="absolute top-2 right-2 w-3 h-3 bg-accent rounded-full shadow ring-2 ring-black/50"></div>}
-                            </div>
-                            <div className="px-1">
-                                <Controller
-                                    control={control}
-                                    name={`images.${idx}.skuCode`}
-                                    render={({ field: { onChange, value } }) => (
-                                        <select
-                                            value={value || ""}
-                                            onChange={(e) => onChange(e.target.value || null)}
-                                            className="w-full text-[11px] bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-button px-2 py-1 text-foreground focus:border-accent focus:ring-1 focus:ring-accent/20 outline-none transition-all duration-200 cursor-pointer"
-                                        >
-                                            <option value="">Ảnh chung (Không SKU)</option>
-                                            {watch("skus")
-                                                ?.map((s: any) => s.skuCode)
-                                                .filter(Boolean)
-                                                .map((code: string) => (
-                                                    <option key={code} value={code}>
-                                                        SKU: {code}
-                                                    </option>
-                                                ))}
-                                        </select>
-                                    )}
-                                />
-                            </div>
-                        </div>
-                    );
-                })}
-            </div>
-        )}
+      <ImageUploader onUploaded={onImagesUploaded} />
+
+      {imagesFA.fields.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-16 text-muted-foreground border border-dashed border-border/60 rounded-[2px] bg-transparent">
+          <PhotoIcon className="w-10 h-10 mb-2 opacity-30 text-muted-foreground" />
+          <p className="text-xs">Chưa có hình ảnh nào được tải lên cho sản phẩm.</p>
+          <p className="text-[11px] text-muted-foreground/70 font-mono mt-1">Định dạng hỗ trợ: JPG, PNG, WEBP</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 sm:gap-4">
+          {imagesFA.fields.map((field, idx) => {
+            const isPrimary = watch(`images.${idx}.isPrimary`);
+            const url = watch(`images.${idx}.url`);
+            const imageSkuCode = watch(`images.${idx}.skuCode`);
+            // Hiển thị ảnh chung (không gán SKU)
+            if (imageSkuCode) return null;
+            return (
+              <div
+                key={field.id}
+                className={cn(
+                  "flex flex-col gap-2 p-1.5 rounded-[2px] border transition-colors bg-card",
+                  isPrimary ? "border-primary" : "border-border/60 hover:border-border"
+                )}
+              >
+                <div className="relative group aspect-square rounded-[2px] overflow-hidden bg-surface">
+                  <img
+                    src={buildImgSrc(url) ?? DEFAULT_PRODUCT_IMAGE_URL}
+                    alt=""
+                    className="w-full h-full object-cover select-none"
+                  />
+
+                  {/* Primary Corner Accent */}
+                  {isPrimary && (
+                    <div className="absolute top-1.5 left-1.5 z-10 px-1.5 py-0.5 bg-background/90 backdrop-blur-sm border border-border/80 rounded-[1px] text-[9px] font-mono uppercase tracking-wider text-foreground flex items-center gap-1 font-semibold shadow-none">
+                      <span className="w-1 h-1 rounded-[0.5px] bg-primary" />
+                      Ảnh chính
+                    </div>
+                  )}
+
+                  {/* Progressive Hover Disclosure Overlay */}
+                  <div className="absolute inset-0 bg-background/85 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-2 z-20">
+                    <Button
+                      type="button"
+                      size="default"
+                      variant={isPrimary ? "default" : "outline"}
+                      onClick={() => {
+                        const currentImages = getValues("images") || [];
+                        currentImages.forEach((img: any, j: number) => {
+                          if (!img.skuCode) {
+                            setValue(`images.${j}.isPrimary`, j === idx, { shouldDirty: true });
+                          }
+                        });
+                      }}
+                      className="text-[10.5px] h-6 rounded-[2px] font-medium w-full shadow-none"
+                    >
+                      {isPrimary ? "Ảnh chính" : "Đặt làm chính"}
+                    </Button>
+                    <Button
+                      type="button"
+                      size="default"
+                      variant="ghost"
+                      onClick={() => imagesFA.remove(idx)}
+                      className="text-[10.5px] h-6 rounded-[2px] w-full text-destructive hover:bg-destructive/10"
+                    >
+                      Xóa ảnh
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="px-0.5">
+                  <Controller
+                    control={control}
+                    name={`images.${idx}.skuCode`}
+                    render={({ field: { onChange, value } }) => (
+                      <Select
+                        value={value || "ALL"}
+                        onValueChange={(val) => onChange(val === "ALL" ? null : val)}
+                      >
+                        <SelectTrigger className="h-6 text-[10px] px-1.5 py-0 bg-surface border-border/60 rounded-[2px]">
+                          <SelectValue placeholder="Gán SKU..." />
+                        </SelectTrigger>
+                        <SelectContent className="rounded-[2px] border-border/60">
+                          <SelectItem value="ALL">Ảnh chung (Toàn bộ)</SelectItem>
+                          {watch("skus")
+                            ?.map((s: any) => s.skuCode)
+                            .filter(Boolean)
+                            .map((code: string) => (
+                              <SelectItem key={code} value={code}>
+                                SKU: {code}
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
-

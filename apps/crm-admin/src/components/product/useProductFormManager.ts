@@ -123,8 +123,8 @@ export function useProductFormManager() {
     if (isCreate) {
       const stepTabMap: Record<number, string> = {
         1: "basic",
-        2: "attrs",
-        3: "images",
+        2: "images",
+        3: "attrs",
         4: "skus",
       };
       setActiveTab(stepTabMap[currentStep] || "basic");

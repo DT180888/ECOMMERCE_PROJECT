@@ -30,7 +30,7 @@ export default function usePermission() {
     if (hasPermission("Permissions.Products.View")) return "/admin/product";
     if (hasAnyPermission(["Permissions.Products.View", "Permissions.Promotions.View"])) return "/admin/catalog-settings";
     if (hasPermission("Permissions.Orders.View")) return "/admin/orders";
-    if (hasPermission("Permissions.Users.View")) return "/admin/listUsers";
+    if (hasPermission("Permissions.Users.View")) return "/admin/users";
     if (hasPermission("Permissions.Roles.View")) return "/admin/security";
     return "/auth/login"; 
   }, [hasPermission, hasAnyPermission]);

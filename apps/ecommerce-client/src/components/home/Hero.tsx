@@ -4,6 +4,7 @@ import { useHeroSlides } from "@hooks/useHero";
 import { buildImgSrc } from "@my-project/shared-utils";
 import type { HeroSlideDto, AssetDetail } from "@my-project/api";
 import { ChevronLeftIcon, ChevronRightIcon, ArrowRightIcon, SparklesIcon } from "@heroicons/react/24/outline";
+import { Skeleton } from "@my-project/ui";
 
 interface HeroProps {
   variant?: "fullscreen" | "banner" | "aspect16x9";
@@ -140,14 +141,14 @@ export default function Hero({ variant = "fullscreen", autoPlayInterval = 6000 }
   // Loading state với theme-aware Skeleton
   if (isLoading) {
     return (
-      <div className="w-full aspect-[4/3] sm:aspect-[16/9] min-h-[400px] max-h-[90vh] bg-surface/50 border-b border-border/60 animate-pulse flex items-center justify-center select-none">
+      <Skeleton className="w-full aspect-[4/3] sm:aspect-[16/9] min-h-[400px] max-h-[90vh] border-b border-border/60 flex items-center justify-center select-none rounded-none">
         <div className="flex flex-col items-center gap-3 text-muted-foreground">
           <div className="w-8 h-8 rounded-none border border-muted-foreground/30 border-t-foreground animate-spin" />
           <span className="text-[11px] font-display uppercase tracking-[0.2em] text-muted-foreground">
             Đang tải bộ sưu tập...
           </span>
         </div>
-      </div>
+      </Skeleton>
     );
   }
 

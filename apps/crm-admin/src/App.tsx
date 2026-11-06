@@ -14,7 +14,10 @@ export default function App() {
       <ToastProvider>
         <QueryClientProvider client={queryClient}>
           <RouterProvider router={router} />
-          <ReactQueryDevtools initialIsOpen={false} />
+          {/* Hide DevTools on mobile to avoid overlapping BottomBar; dock at bottom-right on desktop */}
+          <div className="hidden md:block">
+            <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
+          </div>
         </QueryClientProvider>
       </ToastProvider>
     </ThemeProvider>

@@ -1,12 +1,8 @@
-﻿import { useState, FormEvent } from "react";
+import { useState, FormEvent } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { useResetPassword } from "@hooks/useAuth";
-import { Input } from "@my-project/ui";
-import { Button } from "@my-project/ui";
-import { useToast } from "@my-project/ui";
+import { Input, PasswordInput, Button, useToast } from "@my-project/ui";
 import { 
-  EyeIcon, 
-  EyeSlashIcon, 
   CheckCircleIcon, 
   XCircleIcon,
   ShieldCheckIcon,
@@ -24,7 +20,6 @@ export default function ResetPasswordPage() {
 
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPass, setShowPass] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
   if (!userId || !token) {
@@ -36,7 +31,7 @@ export default function ResetPasswordPage() {
         footerText="Hệ thống bảo mật Minimalism mã hóa đầu cuối"
       >
         <div className="space-y-6 text-center animate-in fade-in slide-in-from-bottom-2 duration-500">
-          <Link to="/auth/login" className="h-10 w-full flex items-center justify-center rounded-button bg-primary text-primary-foreground font-medium text-xs uppercase tracking-widest transition-all active:scale-[0.98]">
+          <Link to="/auth/login" className="h-10 w-full flex items-center justify-center rounded-button font-medium text-xs uppercase tracking-widest transition-all active:scale-[0.98]">
               Quay lại đăng nhập
           </Link>
         </div>
@@ -81,7 +76,7 @@ export default function ResetPasswordPage() {
         footerText="Thông tin của bạn được bảo mật tuyệt đối"
       >
         <div className="space-y-6 text-center animate-in fade-in slide-in-from-bottom-2 duration-500">
-          <Link to="/auth/login" className="h-10 w-full flex items-center justify-center rounded-button bg-primary text-primary-foreground font-medium text-xs uppercase tracking-widest transition-all active:scale-[0.98]">
+          <Link to="/auth/login" className="h-10 w-full flex items-center justify-center rounded-button font-medium text-xs uppercase tracking-widest transition-all active:scale-[0.98]">
               Đăng nhập ngay
           </Link>
         </div>
@@ -100,31 +95,22 @@ export default function ResetPasswordPage() {
         <div className="space-y-4">
           <div className="space-y-2 animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both" style={{ animationDelay: "50ms" }}>
             <label className="text-xs font-medium text-muted-foreground uppercase tracking-widest ml-1">Mật khẩu mới</label>
-            <div className="relative">
-                <Input 
-                    className="w-full pr-12" 
-                    placeholder="••••••••" 
-                    type={showPass ? "text" : "password"}
-                    value={newPassword} 
-                    onChange={e => setNewPassword(e.target.value)} 
-                    disabled={resetMut.isPending}
-                />
-                <button
-                    type="button"
-                    onClick={() => setShowPass(!showPass)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                >
-                    {showPass ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
-                </button>
-            </div>
+            <PasswordInput 
+                id="newPassword"
+                className="w-full" 
+                placeholder="••••••••" 
+                value={newPassword} 
+                onChange={e => setNewPassword(e.target.value)} 
+                disabled={resetMut.isPending}
+            />
           </div>
 
           <div className="space-y-2 animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both" style={{ animationDelay: "100ms" }}>
             <label className="text-xs font-medium text-muted-foreground uppercase tracking-widest ml-1">Xác nhận mật khẩu</label>
-            <Input 
+            <PasswordInput 
+                id="confirmPassword"
                 className="w-full" 
                 placeholder="••••••••" 
-                type="password"
                 value={confirmPassword} 
                 onChange={e => setConfirmPassword(e.target.value)} 
                 disabled={resetMut.isPending}

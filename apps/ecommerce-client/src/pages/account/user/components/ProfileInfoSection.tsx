@@ -149,7 +149,7 @@ export default function ProfileInfoSection({ user }: { user: UserData | undefine
           )}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 md:gap-3">
           {/* Số điện thoại */}
           <div className="gap-1.5 flex flex-col">
             <label className="text-xs font-bold text-muted uppercase tracking-wider pl-1 flex items-center gap-1.5">

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useMyOrders } from "@hooks/useOrder";
-import { Button } from "@my-project/ui";
+import { Button, Skeleton } from "@my-project/ui";
 import { getOrderStatusConfig } from "@my-project/shared-utils";
 import { EyeIcon, ShoppingBagIcon } from "@heroicons/react/24/outline";
 
@@ -72,9 +72,9 @@ export default function OrderHistoryPage() {
             <tbody>
               {isLoading ? (
                 [...Array(3)].map((_, i) => (
-                  <tr key={i} className="animate-pulse">
+                  <tr key={i}>
                     <td colSpan={6} className="px-6 py-4">
-                      <div className="h-16 bg-muted/10 rounded-button shadow-neo-inset-sm w-full"></div>
+                      <Skeleton className="h-16 w-full" />
                     </td>
                   </tr>
                 ))

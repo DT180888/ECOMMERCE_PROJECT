@@ -1,4 +1,4 @@
-﻿import { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
   useAdminSkuList,
@@ -19,10 +19,9 @@ import {
 import {
   AdminPageShell,
   AdminTable,
-  AdminPagination,
   Guard,
 } from "@shared/ui";
-import { useSkuColumns, SkuSearchActions, SkuAdvancedPanel } from "@components/sku";
+import { useSkuColumns, SkuSearchActions, SkuFilterDrawer } from "@components/sku";
 const STATUS_OPTIONS = [
   { value: "", label: "Tất cả trạng thái" },
   { value: "true", label: "Hoạt động (Active)" },
@@ -226,7 +225,7 @@ export function GlobalSkuList() {
       <Button
         onClick={() => setIsPriceModalOpen(true)}
         variant="outline"
-        size="sm"
+        size="default"
         className="h-8 text-xs font-semibold"
       >
         <CurrencyDollarIcon className="w-3.5 h-3.5 mr-1.5 text-muted-foreground" /> Cập nhật Giá
@@ -234,7 +233,7 @@ export function GlobalSkuList() {
       <Button
         onClick={() => setIsStockModalOpen(true)}
         variant="outline"
-        size="sm"
+        size="default"
         className="h-8 text-xs font-semibold"
       >
         <CircleStackIcon className="w-3.5 h-3.5 mr-1.5 text-muted-foreground" /> Cập nhật Tồn kho
@@ -242,7 +241,7 @@ export function GlobalSkuList() {
       <Button
         onClick={() => handleBulkStatusUpdate(true)}
         variant="outline"
-        size="sm"
+        size="default"
         className="h-8 text-xs font-semibold"
       >
         <CheckIcon className="w-3.5 h-3.5 mr-1.5 text-muted-foreground" /> Bật hoạt động
@@ -250,7 +249,7 @@ export function GlobalSkuList() {
       <Button
         onClick={() => handleBulkStatusUpdate(false)}
         variant="outline"
-        size="sm"
+        size="default"
         className="h-8 text-xs font-semibold hover:bg-error/5 hover:text-error hover:border-error/20"
       >
         <XMarkIcon className="w-3.5 h-3.5 mr-1.5" /> Tắt hoạt động
@@ -275,58 +274,57 @@ export function GlobalSkuList() {
   };
 
   return (
-    <AdminPageShell
-      icon={InboxStackIcon}
-      title="Danh sách SKU"
-      badge={`${total} SKU`}
-      noCard
-      actions={<SkuSearchActions {...toolbarProps} />}
-      filterBar={<SkuAdvancedPanel {...toolbarProps} />}
-    >
-      <div className="flex flex-col flex-1 min-h-0 bg-card shadow-none rounded-card overflow-hidden">
-        <AdminTable<AdminSkuItem>
-          columns={columns}
-          data={items}
-          isLoading={isLoading}
-          skeletonRows={size}
-          emptyIcon={ArchiveBoxXMarkIcon}
-          emptyTitle="Không tìm thấy SKU phù hợp"
-          emptyDescription="Thử chỉnh lại bộ lọc hoặc điều chỉnh khoảng giá/số lượng tồn."
-          className="border-0 shadow-none rounded-none bg-transparent flex-1"
-          selection={{
-            selected: selectedIds,
-            onSelect: handleSelect,
-            onSelectAll: handleSelectAll,
-            getRowKey: (sku: any) => sku.skuId,
-          }}
-          bulkActions={bulkActionsBar}
-          footer={
-            <AdminPagination
-              page={page}
-              totalPages={totalPages}
-              total={total}
-              pageSize={size}
-              onPageChange={goPage}
-            />
-          }
-        />
-      </div>
+    <AdminPageShell>
+      <AdminPageShell.Header
+        icon={InboxStackIcon}
+        title="Danh sách SKU"
+        badge={`${total} SKU`}
+        actions={<SkuSearchActions {...toolbarProps} />}
+      />
+      <AdminPageShell.Body>
+      <AdminTable<AdminSkuItem>
+        columns={columns}
+        data={items}
+        isLoading={isLoading}
+        rowKey="skuId"
+        pagination={{
+          page,
+          total,
+          pageSize: size,
+          onPageChange: goPage,
+          onPageSizeChange: (newSize) => {
+            const next = new URLSearchParams(sp);
+            next.set("page", "1");
+            next.set("size", String(newSize));
+            setSp(next);
+          },
+        }}
+        emptyText="Không tìm thấy SKU phù hợp"
+        emptyIcon={ArchiveBoxXMarkIcon}
+        className="border-0 shadow-none rounded-none bg-transparent flex-1"
+        selection={{
+          selected: selectedIds,
+          onSelect: handleSelect,
+          onSelectAll: handleSelectAll,
+          getRowKey: (sku: any) => sku.skuId,
+        }}
+        bulkActions={bulkActionsBar}
+      />
 
       {/* --- BULK PRICE UPDATE DIALOG --- */}
       {isPriceModalOpen && (
         <Dialog open={true} onOpenChange={(open) => !open && setIsPriceModalOpen(false)}>
-          <DialogContent noClose className="w-[95vw] sm:w-full sm:max-w-md p-0 overflow-hidden flex flex-col bg-card rounded-card border-border/40 shadow-xl">
-            <div className="flex items-center justify-between px-6 py-4 bg-foreground/[0.015] border-b border-border/40 shrink-0">
+          <DialogContent noClose className="w-[95vw] sm:w-full sm:max-w-md p-0 overflow-hidden flex flex-col bg-card rounded-[2px] border border-border shadow-none">
+            <div className="h-11 px-4 flex items-center justify-between bg-surface border-b border-border shrink-0 select-none">
               <div>
-                <DialogTitle className="text-base font-bold font-display text-foreground tracking-tight normal-case">Cập nhật Giá hàng loạt</DialogTitle>
-                <p className="text-[11px] text-muted-foreground mt-0.5">Áp dụng giá mới cho {selectedIds.size} SKU đã chọn</p>
+                <DialogTitle className="text-xs font-medium font-sans text-foreground uppercase tracking-[0.16em]">Cập nhật Giá hàng loạt</DialogTitle>
               </div>
-              <Button variant="ghost" onClick={() => setIsPriceModalOpen(false)} size="icon" className="text-muted-foreground hover:text-foreground hover:bg-foreground/[0.04] rounded-full w-8 h-8 p-0">
-                <XMarkIcon className="w-5 h-5" />
+              <Button variant="ghost" onClick={() => setIsPriceModalOpen(false)} size="icon" className="text-muted-foreground hover:text-foreground hover:bg-surface-hover rounded-[2px] w-6 h-6 p-0 transition-colors">
+                <XMarkIcon className="w-3.5 h-3.5 stroke-[1.25]" />
               </Button>
             </div>
 
-            <div className="p-6 space-y-6">
+            <div className="p-4 space-y-4">
               <div className="space-y-2">
                 <Label variant="default">Hình thức cập nhật</Label>
                 <Tabs value={priceUpdateType} onValueChange={(v) => setPriceUpdateType(v as any)} className="w-full">
@@ -350,18 +348,18 @@ export function GlobalSkuList() {
                   type="number"
                   value={priceUpdateValue}
                   onChange={(e) => setPriceUpdateValue(Number(e.target.value))}
-                  className="font-bold font-mono text-right text-lg"
+                  className="font-bold font-mono text-right text-base h-8"
                 />
               </div>
 
-              <div className="pt-2 flex justify-end gap-3 border-t border-border/40">
-                <Button type="button" variant="outline" onClick={() => setIsPriceModalOpen(false)} className="h-10 text-xs font-medium rounded-button px-4">
+              <div className="pt-2 flex justify-end gap-2 border-t border-border">
+                <Button type="button" variant="outline" onClick={() => setIsPriceModalOpen(false)} className="h-8 text-xs font-medium rounded-[2px] px-3 shadow-none">
                   Hủy
                 </Button>
                 <Button
                   onClick={handleBulkPriceUpdate}
                   variant="default"
-                  className="h-10 px-6 font-semibold rounded-button text-xs"
+                  className="h-8 px-4 font-semibold rounded-[2px] text-xs shadow-none"
                 >
                   Xác nhận cập nhật
                 </Button>
@@ -374,18 +372,17 @@ export function GlobalSkuList() {
       {/* --- BULK STOCK UPDATE DIALOG --- */}
       {isStockModalOpen && (
         <Dialog open={true} onOpenChange={(open) => !open && setIsStockModalOpen(false)}>
-          <DialogContent noClose className="w-[95vw] sm:w-full sm:max-w-md p-0 overflow-hidden flex flex-col bg-card rounded-card border-border/40 shadow-xl">
-            <div className="flex items-center justify-between px-6 py-4 bg-foreground/[0.015] border-b border-border/40 shrink-0">
+          <DialogContent noClose className="w-[95vw] sm:w-full sm:max-w-md p-0 overflow-hidden flex flex-col bg-card rounded-[2px] border border-border shadow-none">
+            <div className="h-11 px-4 flex items-center justify-between bg-surface border-b border-border shrink-0 select-none">
               <div>
-                <DialogTitle className="text-base font-bold font-display text-foreground tracking-tight normal-case">Cập nhật Tồn kho hàng loạt</DialogTitle>
-                <p className="text-[11px] text-muted-foreground mt-0.5">Áp dụng số lượng tồn mới cho {selectedIds.size} SKU đã chọn</p>
+                <DialogTitle className="text-xs font-medium font-sans text-foreground uppercase tracking-[0.16em]">Cập nhật Tồn kho hàng loạt</DialogTitle>
               </div>
-              <Button variant="ghost" onClick={() => setIsStockModalOpen(false)} size="icon" className="text-muted-foreground hover:text-foreground hover:bg-foreground/[0.04] rounded-full w-8 h-8 p-0">
-                <XMarkIcon className="w-5 h-5" />
+              <Button variant="ghost" onClick={() => setIsStockModalOpen(false)} size="icon" className="text-muted-foreground hover:text-foreground hover:bg-surface-hover rounded-[2px] w-6 h-6 p-0 transition-colors">
+                <XMarkIcon className="w-3.5 h-3.5 stroke-[1.25]" />
               </Button>
             </div>
 
-            <div className="p-6 space-y-6">
+            <div className="p-4 space-y-4">
               <div className="space-y-2">
                 <Label variant="default">Hình thức cập nhật</Label>
                 <Tabs value={stockUpdateType} onValueChange={(v) => setStockUpdateType(v as any)} className="w-full">
@@ -404,18 +401,18 @@ export function GlobalSkuList() {
                   type="number"
                   value={stockUpdateValue}
                   onChange={(e) => setStockUpdateValue(Number(e.target.value))}
-                  className="font-bold font-mono text-right text-lg"
+                  className="font-bold font-mono text-right text-base h-8"
                 />
               </div>
 
-              <div className="pt-2 flex justify-end gap-3 border-t border-border/40">
-                <Button type="button" variant="outline" onClick={() => setIsStockModalOpen(false)} className="h-10 text-xs font-medium rounded-button px-4">
+              <div className="pt-2 flex justify-end gap-2 border-t border-border">
+                <Button type="button" variant="outline" onClick={() => setIsStockModalOpen(false)} className="h-8 text-xs font-medium rounded-[2px] px-3 shadow-none">
                   Hủy
                 </Button>
                 <Button
                   onClick={handleBulkStockUpdate}
                   variant="default"
-                  className="h-10 px-6 font-semibold rounded-button text-xs"
+                  className="h-8 px-4 font-semibold rounded-[2px] text-xs shadow-none"
                 >
                   Xác nhận cập nhật
                 </Button>
@@ -424,6 +421,10 @@ export function GlobalSkuList() {
           </DialogContent>
         </Dialog>
       )}
+      </AdminPageShell.Body>
+      <AdminPageShell.Inspector>
+        <SkuFilterDrawer {...toolbarProps} />
+      </AdminPageShell.Inspector>
     </AdminPageShell>
   );
 }

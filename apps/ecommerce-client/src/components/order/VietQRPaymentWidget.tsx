@@ -159,7 +159,7 @@ export const VietQRPaymentWidget: React.FC<VietQRPaymentWidgetProps> = ({
           <Button
             onClick={handleCopyContent}
             size="sm"
-            className="px-2.5 py-1 text-[10px] font-bold bg-primary text-primary-foreground rounded-button shadow-neo-sm hover:opacity-90 transition-all"
+            className="px-2.5 py-1 text-[10px] font-bold rounded-button shadow-neo-sm hover:opacity-90 transition-all"
           >
             {copied ? '✓ Đã chép' : 'Sao chép'}
           </Button>
@@ -175,7 +175,7 @@ export const VietQRPaymentWidget: React.FC<VietQRPaymentWidgetProps> = ({
           type="button"
           onClick={() => refetch()}
           disabled={isFetching}
-          className="w-full text-xs font-bold py-2 bg-primary text-primary-foreground rounded-button hover:opacity-90 transition"
+          className="w-full text-xs font-bold py-2 rounded-button hover:opacity-90 transition"
         >
           {isFetching ? 'Đang kiểm tra...' : 'Tôi đã chuyển khoản'}
         </Button>

@@ -1,28 +1,50 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import FullScreenFilterOverlay from "@components/catalog/FullScreenFilterOverlay";
-import ActiveFilterChips from "@components/catalog/ActiveFilterChips";
-import CatalogFilters from "@components/catalog/CatalogFilters";
-import ProductGrid from "@components/product/ProductGrid";
-import { Hero } from "@components/home";
+import { 
+  ChevronRight, 
+  SlidersHorizontal, 
+  ArrowUpDown,
+  Grid2x2,
+  LayoutGrid,
+  Grid3x3,
+  Check
+} from "lucide-react";
+import CatalogFilterDrawer from "@components/catalog/CatalogFilterDrawer";
+import CatalogFilterSidebar from "@components/catalog/CatalogFilterSidebar";
+import ProductGrid, { ViewMode } from "@components/product/ProductGrid";
 import { useProductList, useFilterableAttributes } from "@hooks/useProduct";
 import type { ProductListParams } from "@my-project/api";
-import { Button } from "@my-project/ui";
 import { useBrandBySlug, useBrandOptions } from "@hooks/useBrand";
 import { useCategoryBySlug, useCategoryOptions } from "@hooks/useCategory";
-import { ChevronLeftIcon, ChevronRightIcon, AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
-
 import { useSmartCart } from "@hooks/useSmartCart";
-import { useToast } from "@my-project/ui";
+import { useToast, FilterDropdown, FilterDropdownOption, Button } from "@my-project/ui";
 import { getProductById } from "@my-project/api";
 import { usePromotion } from "@hooks/usePromotion";
 import { useCollectionBySlug, useCollectionOptions } from "@hooks/useCollection";
+import ActiveFilterChips from "@components/catalog/ActiveFilterChips";
 
 const parseIntOrUndef = (v: string | null) => (v ? parseInt(v, 10) : undefined);
 
+const sortOptions: FilterDropdownOption[] = [
+  { value: "", label: "Mới Nhất" },
+  { value: "price_asc", label: "Giá: Thấp → Cao" },
+  { value: "price_desc", label: "Giá: Cao → Thấp" },
+];
+
+
+
+/**
+ * CatalogPage Component (Editorial Haute Couture Studio Edition)
+ * 
+ * Cấu trúc Layout:
+ * 1. Top Section: Pure Breadcrumb (Chỉ chứa đường dẫn phân cấp thuần túy, khoảng thở rộng, KHÔNG chứa viền hairline).
+ * 2. Topbar Section: Tích hợp Tiêu đề trang + Con số thống kê (vd: 100 sản phẩm) + Chế độ hiển thị (2|4|6 cột) + Sắp xếp + Active Chips.
+ * 3. Main Content: 2 cột Spacing chuẩn (Cột trái Accordion Filter Sidebar + Cột phải Lưới sản phẩm).
+ */
 export default function CatalogPage() {
   const [sp, setSp] = useSearchParams();
-  const [showMobileFilter, setShowMobileFilter] = useState(false);
+  const [showFilterDrawer, setShowFilterDrawer] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>("4");
 
   const { data: filterData } = useFilterableAttributes();
 
@@ -47,14 +69,15 @@ export default function CatalogPage() {
       collectionSlug: sp.get("collectionSlug") || undefined,
       promotionId: parseIntOrUndef(sp.get("promotionId")),
       attrs: attrFilters.length > 0 ? attrFilters.join("|") : undefined,
-      page,
+      page: 1, // Luôn nạp từ page 1 với size tích lũy cho Infinite Scroll
       size,
     };
-  }, [sp]);
+  }, [sp, size]);
 
-  const { data, isLoading } = useProductList(params);
+  const { data, isLoading, isFetching } = useProductList(params);
   const items = data?.items ?? [];
   const total = data?.total ?? 0;
+  const hasMore = items.length < total;
 
   const promotionId = parseIntOrUndef(sp.get("promotionId"));
   const { data: promotionData } = usePromotion(promotionId);
@@ -68,15 +91,6 @@ export default function CatalogPage() {
   const brandSlug = sp.get("brandSlug") || undefined;
   const { data: brandData } = useBrandBySlug(brandSlug);
 
-  const totalPages = Math.max(1, Math.ceil(total / size));
-
-  const goPage = (p: number) => {
-    const next = new URLSearchParams(sp);
-    next.set("page", String(p));
-    setSp(next);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   const { options: brandOptions } = useBrandOptions();
   const { options: categoryOptions } = useCategoryOptions(); 
   const { options: collectionOptions } = useCollectionOptions();
@@ -84,17 +98,25 @@ export default function CatalogPage() {
   const { addToCart } = useSmartCart();
   const toast = useToast();
 
+  const handleLoadMore = () => {
+    if (isFetching || !hasMore) return;
+    const nextSize = size + 24;
+    const next = new URLSearchParams(sp);
+    next.set("size", String(nextSize));
+    setSp(next, { replace: true });
+  };
+
   const handleAddToCart = async (productId: number) => {
     try {
       toast.info("Đang xử lý...");
       const productDetail = await getProductById(productId);
-      const activeSku = productDetail.skus?.find(sku => sku.isActive);
+      const activeSku = productDetail.skus?.find((sku) => sku.isActive);
       if (!activeSku) {
         toast.error("Sản phẩm tạm thời hết hàng hoặc không có phân loại khả dụng.");
         return;
       }
       
-      const primaryImage = productDetail.images?.find(img => img.isPrimary)?.url || productDetail.images?.[0]?.url || "";
+      const primaryImage = productDetail.images?.find((img) => img.isPrimary)?.url || productDetail.images?.[0]?.url || "";
 
       await addToCart({
         skuId: activeSku.skuId,
@@ -123,7 +145,6 @@ export default function CatalogPage() {
         onClear: () => {
           const next = new URLSearchParams(sp);
           next.delete("keyword");
-          next.set("page", "1");
           setSp(next);
         }
       });
@@ -137,7 +158,6 @@ export default function CatalogPage() {
         onClear: () => {
           const next = new URLSearchParams(sp);
           next.delete("brandSlug");
-          next.set("page", "1");
           setSp(next);
         }
       });
@@ -151,7 +171,6 @@ export default function CatalogPage() {
         onClear: () => {
           const next = new URLSearchParams(sp);
           next.delete("categorySlug");
-          next.set("page", "1");
           setSp(next);
         }
       });
@@ -165,7 +184,6 @@ export default function CatalogPage() {
         onClear: () => {
           const next = new URLSearchParams(sp);
           next.delete("collectionSlug");
-          next.set("page", "1");
           setSp(next);
         }
       });
@@ -179,7 +197,6 @@ export default function CatalogPage() {
         onClear: () => {
           const next = new URLSearchParams(sp);
           next.delete("promotionId");
-          next.set("page", "1");
           setSp(next);
         }
       });
@@ -190,11 +207,11 @@ export default function CatalogPage() {
     if (priceMin || priceMax) {
       let label = "";
       if (priceMin && priceMax) {
-        label = `Giá: ${parseInt(priceMin).toLocaleString("vi-VN")}đ - ${parseInt(priceMax).toLocaleString("vi-VN")}đ`;
+        label = `Giá: ${parseInt(priceMin).toLocaleString("vi-VN")}₫ - ${parseInt(priceMax).toLocaleString("vi-VN")}₫`;
       } else if (priceMin) {
-        label = `Giá: từ ${parseInt(priceMin).toLocaleString("vi-VN")}đ`;
+        label = `Giá từ ${parseInt(priceMin).toLocaleString("vi-VN")}₫`;
       } else if (priceMax) {
-        label = `Giá: đến ${parseInt(priceMax).toLocaleString("vi-VN")}đ`;
+        label = `Giá đến ${parseInt(priceMax).toLocaleString("vi-VN")}₫`;
       }
       chips.push({
         key: "price",
@@ -203,7 +220,6 @@ export default function CatalogPage() {
           const next = new URLSearchParams(sp);
           next.delete("priceMin");
           next.delete("priceMax");
-          next.set("page", "1");
           setSp(next);
         }
       });
@@ -218,7 +234,6 @@ export default function CatalogPage() {
           onClear: () => {
             const next = new URLSearchParams(sp);
             next.delete(attr.slug);
-            next.set("page", "1");
             setSp(next);
           }
         });
@@ -230,8 +245,18 @@ export default function CatalogPage() {
 
   const clearAllFilters = () => {
     const next = new URLSearchParams(sp);
-    ["brandSlug", "categorySlug", "priceMin", "priceMax", "keyword", "page", "collectionSlug", "promotionId"].forEach(k => next.delete(k));
-    filterData?.attributes.forEach(attr => next.delete(attr.slug));
+    ["brandSlug", "categorySlug", "priceMin", "priceMax", "keyword", "page", "collectionSlug", "promotionId"].forEach((k) => next.delete(k));
+    filterData?.attributes.forEach((attr) => next.delete(attr.slug));
+    setSp(next);
+  };
+
+  const handleSortChange = (newSort: string) => {
+    const next = new URLSearchParams(sp);
+    if (newSort) {
+      next.set("sort", newSort);
+    } else {
+      next.delete("sort");
+    }
     setSp(next);
   };
 
@@ -239,118 +264,197 @@ export default function CatalogPage() {
     const keyword = sp.get("keyword");
 
     if (collectionData) {
-      return `Bộ sưu tập: ${collectionData.name}`;
+      return collectionData.name;
     }
     if (promotionData) {
-      return `Khuyến mãi: ${promotionData.name}`;
+      return promotionData.name;
     }
     if (keyword) {
-      return `Kết quả tìm kiếm cho: "${keyword}"`;
+      return `Kết quả: "${keyword}"`;
     }
     if (categoryData) {
-      return `Danh mục: ${categoryData.name}`;
+      return categoryData.name;
     }
     if (brandData) {
-      return `Thương hiệu: ${brandData.name}`;
+      return brandData.name;
     }
-    return "Tất cả sản phẩm";
+    return "Tất Cả Sản Phẩm";
   }, [sp, collectionData, promotionData, categoryData, brandData]);
 
+  const currentSort = sp.get("sort") || "";
+
   return (
-    <div className="w-full">
-      <div className="w-full aspect-[4/5] sm:aspect-[16/5] md:aspect-[32/5] relative overflow-hidden mb-6 lg:mb-12">
-        <Hero variant="banner" />
+    <div className="w-full bg-background min-h-screen">
+      
+      {/* Mobile Compact Trigger (<1024px) */}
+      <div className="lg:hidden sticky top-16 mt-5 z-30 w-full bg-background/90 backdrop-blur-md px-4 sm:px-6 py-3 flex items-center justify-between gap-3 select-none">
+        <Button
+          type="button"
+          onClick={() => setShowFilterDrawer(true)}
+          className="gap-2 h-8 px-3.5 text-xs font-display font-medium uppercase tracking-widest rounded-[2px]"
+        >
+          <SlidersHorizontal className="w-3.5 h-3.5 stroke-[1.5]" />
+          <span>Bộ Lọc {activeChips.length > 0 && `(${activeChips.length})`}</span>
+        </Button>
+
+        <FilterDropdown
+          options={sortOptions}
+          value={currentSort}
+          onSelect={handleSortChange}
+          icon={<ArrowUpDown className="w-3.5 h-3.5 text-muted-foreground stroke-[1.25] shrink-0" />}
+        />
       </div>
 
-      <section className="client-page-container pb-8 lg:pb-12 flex flex-col gap-4 sm:gap-6 lg:gap-8">
+      {/* Mobile Drawer */}
+      <CatalogFilterDrawer
+        isOpen={showFilterDrawer}
+        onClose={() => setShowFilterDrawer(false)}
+        brandOptions={brandOptions}
+        categoryOptions={categoryOptions}
+        collectionOptions={collectionOptions}
+      />
+
+      {/* Main Container với Spacing Chuẩn */}
+      <div className="w-full px-4 sm:px-6 lg:px-10 2xl:px-12 py-4 sm:py-6 space-y-1 sm:space-y-3">
         
-      <div className="flex flex-col gap-2">
-        <nav className="text-xs font-bold text-muted flex flex-wrap items-center gap-x-2 gap-y-1 uppercase tracking-widest">
-          <Link to="/" className="hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background">Home</Link>
-          <ChevronRightIcon className="w-3 h-3 text-muted/60 shrink-0" />
-          <span className="text-foreground truncate max-w-[150px] sm:max-w-[300px]">Shop</span>
+        {/* =========================================================
+            1. PURE BREADCRUMB SECTION (CHỈ CHỨA BREADCRUMB THUẦN TÚY)
+           ========================================================= */}
+        <nav aria-label="Đường dẫn trang" className="flex items-center gap-2 text-xs font-display text-muted-foreground uppercase tracking-widest">
+          <Link to="/" className="hover:text-foreground transition-colors">
+            Trang Chủ
+          </Link>
+          <ChevronRight className="w-3.5 h-3.5 stroke-[1.25] text-muted-foreground/50 shrink-0" />
+          <Link to="/catalog" className="hover:text-foreground transition-colors">
+            Tuyển Tập
+          </Link>
+          {pageTitle !== "Tất Cả Sản Phẩm" && (
+            <>
+              <ChevronRight className="w-3.5 h-3.5 stroke-[1.25] text-muted-foreground/50 shrink-0" />
+              <span className="text-foreground font-medium truncate max-w-[200px]">
+                {pageTitle}
+              </span>
+            </>
+          )}
         </nav>
-        <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2">
-          <h1 className="responsive-h3 tracking-tight text-foreground break-words line-clamp-2 max-w-full">
-            {pageTitle}
-          </h1>
-          <p className="text-xs font-semibold text-muted uppercase tracking-wider shrink-0">
-            {total} kết quả phù hợp
-          </p>
-        </div>
-      </div>
 
-      <div className="sticky top-16 left-50 z-40 glass-panel py-3 border-b border-muted/10 -mx-[0.75rem] px-[0.75rem] sm:-mx-[1.5rem] sm:px-[1.5rem] md:-mx-[2rem] md:px-[2rem] lg:-mx-[3rem] lg:px-[3rem]">
-        <div className="flex flex-col lg:flex-row lg:items-center gap-4 w-full">
-          
-          <Button
-            variant="outline"
-            onClick={() => setShowMobileFilter(true)}
-            className="lg:hidden flex items-center justify-center gap-2 text-foreground bg-background shadow-neo-sm hover:shadow-neo-hover active:shadow-neo-inset-sm active:translate-y-0.5 rounded-button h-11 px-6 shrink-0 w-full"
-          >
-            <AdjustmentsHorizontalIcon className="w-5 h-5 text-muted" />
-            <span>Bộ lọc & Sắp xếp {activeChips.length > 0 && `(${activeChips.length})`}</span>
-          </Button>
 
-          <div className="hidden lg:block w-full">
-            <CatalogFilters brandOptions={brandOptions} categoryOptions={categoryOptions} collectionOptions={collectionOptions} layout="horizontal" />
-          </div>
-          
-        </div>
-        
-        {activeChips.length > 0 && (
-          <div className="lg:hidden w-full overflow-x-auto no-scrollbar pt-3">
-            <ActiveFilterChips chips={activeChips} onClearAll={clearAllFilters} className="mb-0 flex-nowrap" />
-          </div>
-        )}
-      </div>
-
-      <div className="w-full">
-        <FullScreenFilterOverlay
-          isOpen={showMobileFilter}
-          onClose={() => setShowMobileFilter(false)}
-          brandOptions={brandOptions}
-          categoryOptions={categoryOptions}
-          collectionOptions={collectionOptions}
-        />
-
-        <ProductGrid
-          list={items}
-          isLoading={isLoading}
-          skeletonCount={size}
-          emptyText="Không tìm thấy sản phẩm nào phù hợp với bộ lọc hiện tại."
-          onAddToCart={handleAddToCart}
-        />
-
-        {totalPages > 1 && (
-          <div className="mt-12 flex items-center justify-center gap-3 py-6">
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={page <= 1}
-              onClick={() => goPage(page - 1)}
-              className="bg-background text-foreground h-11 w-11 p-0 flex items-center justify-center rounded-button shadow-neo-sm hover:shadow-neo-hover active:shadow-neo-inset-sm disabled:shadow-none disabled:opacity-40 disabled:pointer-events-none transition-all duration-300"
-            >
-              <ChevronLeftIcon className="w-3 h-3 md:w-4 md:h-4" />
-            </Button>
-
-            <div className="text-xs font-semibold text-foreground uppercase tracking-widest bg-background px-5 h-11 flex items-center justify-center rounded-button shadow-neo-sm">
-              {page} / {totalPages}
+        {/* =========================================================
+            3. MAIN 2-COLUMN LAYOUT (ACCORDION SIDEBAR + PRODUCT GRID)
+           ========================================================= */}
+        <div className="flex flex-col gap-4 lg:gap-5 items-start">
+          <div className="hidden lg:flex items-center w-full sticky gap-6 lg:gap-8 top-16 z-10 bg-background py-3">
+            {/* Cột Trái: Cố định w-64 shrink-0 trùng khớp 100% với Sidebar bên dưới */}
+            <div className="flex items-center justify-between w-64 shrink-0">
+              <h1 className="text-sm sm:text-lg lg:text-xl font-display font-medium text-foreground uppercase">
+                {pageTitle}
+              </h1>
+              <span className="text-[10px] sm:text-[11px] font-display font-medium text-muted-foreground uppercase tracking-[0.15em] shrink-0 ml-2">
+                ({total})
+              </span>
             </div>
 
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={page >= totalPages}
-              onClick={() => goPage(page + 1)}
-              className="bg-background text-foreground h-11 w-11 p-0 flex items-center justify-center rounded-button shadow-neo-sm hover:shadow-neo-hover active:shadow-neo-inset-sm disabled:shadow-none disabled:opacity-40 disabled:pointer-events-none transition-all duration-300"
-            >
-              <ChevronRightIcon className="w-3 h-3 md:w-4 md:h-4" />
-            </Button>
+            {/* Cột Phải: flex-1 min-w-0 chiếm toàn bộ phần còn lại trên đầu Lưới sản phẩm */}
+            <div className="flex-1 min-w-0 flex items-center justify-between gap-4">
+              {/* Active Filter Chips */}
+              {activeChips.length > 0 ? (
+                <div className="flex-1 min-w-0 overflow-hidden">
+                  <ActiveFilterChips chips={activeChips} onClearAll={clearAllFilters} />
+                </div>
+              ) : (
+                <div />
+              )}
+
+              {/* Controls (View Mode Switcher & Sort Selector) */}
+              <div className="flex items-center gap-4 shrink-0 ml-auto">
+                
+                {/* View Mode Switcher */}
+                <div className="hidden sm:flex items-center gap-1">
+                  <span className="text-[10px] font-display uppercase tracking-widest text-muted-foreground font-medium mr-1.5">
+                    Hiển Thị:
+                  </span>
+                  <Button
+                    type="button"
+                    variant={viewMode === "2" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setViewMode("2")}
+                    title="Chế độ 2 cột"
+                    className={`h-9 w-9 p-0 rounded-[2px] ${viewMode !== "2" ? "bg-surface/70 text-muted-foreground hover:text-foreground" : ""}`}
+                  >
+                    <Grid2x2 className="w-3.5 h-3.5 stroke-[1.5]" />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={viewMode === "4" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setViewMode("4")}
+                    title="Chế độ 4 cột (Chuẩn)"
+                    className={`h-9 w-9 p-0 rounded-[2px] ${viewMode !== "4" ? "bg-surface/70 text-muted-foreground hover:text-foreground" : ""}`}
+                  >
+                    <LayoutGrid className="w-3.5 h-3.5 stroke-[1.5]" />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={viewMode === "6" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setViewMode("6")}
+                    title="Chế độ 6 cột (Mật độ cao)"
+                    className={`h-9 w-9 p-0 rounded-[2px] ${viewMode !== "6" ? "bg-surface/70 text-muted-foreground hover:text-foreground" : ""}`}
+                  >
+                    <Grid3x3 className="w-3.5 h-3.5 stroke-[1.5]" />
+                  </Button>
+                </div>
+
+                {/* Sort Selector */}
+                <FilterDropdown
+                  options={sortOptions}
+                  value={currentSort}
+                  onSelect={handleSortChange}
+                  placeholder="Sắp Xếp:"
+                  icon={<ArrowUpDown className="w-3.5 h-3.5 text-muted-foreground stroke-[1.25] shrink-0" />}
+                />
+
+              </div>
+            </div>
+
           </div>
-        )}
+          {/* Title and Product Count */}
+          <div className="w-full flex gap-6 lg:gap-8 items-start">
+
+          {/* Left Accordion Sidebar (Dính ngay dưới Sticky Topbar tại top-[112px]) */}
+          <div className="hidden lg:block w-64 shrink-0 sticky top-[112px] max-h-[calc(100vh-128px)] overflow-y-auto scrollbar-none">
+            <CatalogFilterSidebar
+              brandOptions={brandOptions}
+              categoryOptions={categoryOptions}
+              collectionOptions={collectionOptions}
+              activeChips={activeChips}
+              onClearAllFilters={clearAllFilters}
+            />
+          </div>
+
+          {/* Right Product Grid */}
+          <div className="flex-1 min-w-0">
+
+            {/* Lưới sản phẩm */}
+            <ProductGrid
+              list={items}
+              isLoading={isLoading}
+              isLoadingMore={isFetching && items.length > 0}
+              hasMore={hasMore}
+              viewMode={viewMode}
+              skeletonCount={size}
+              emptyText="Không tìm thấy sản phẩm nào phù hợp với bộ lọc hiện tại."
+              onAddToCart={handleAddToCart}
+              onLoadMore={handleLoadMore}
+            />
+          </div>
+          </div>
+          
+
+        </div>
+
       </div>
-      </section>
+
     </div>
   );
 }

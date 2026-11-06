@@ -1,4 +1,4 @@
-﻿import { useMemo } from "react";
+import { useMemo } from "react";
 import type { AdminTableColumn } from "@shared/ui";
 import type { CollectionDto } from "@my-project/api";
 import { Button, Switch } from "@my-project/ui";
@@ -19,61 +19,79 @@ export function useCollectionColumns({
   onAssignProducts,
   onToggleStatus,
   isTogglePending,
-  isDeletePending
+  isDeletePending,
 }: UseCollectionColumnsProps) {
   return useMemo<AdminTableColumn<CollectionDto>[]>(() => {
     return [
       {
-        key: "name",
-        label: "Tên Bộ Sưu Tập",
-        isMain: true,
-        minWidth: "250px",
+        key: "coverImageUrl",
+        label: "Ảnh bìa",
+        isMedia: true,
+        mediaAspect: "wide",
+        minWidth: "60px",
         render: (item) => (
-          <div className="flex items-center gap-3">
+          <div className="w-10 h-7 rounded-[2px] bg-surface border border-border/40 flex items-center justify-center overflow-hidden shrink-0">
             {item.coverImageUrl ? (
-              <img src={item.coverImageUrl} alt={item.name} className="w-10 h-10 object-cover rounded-inner bg-secondary/10 border border-border/10" />
+              <img
+                src={item.coverImageUrl}
+                alt={item.name}
+                className="w-full h-full object-cover"
+              />
             ) : (
-              <div className="w-10 h-10 rounded-inner bg-secondary/10 border border-border/10 flex items-center justify-center">
-                <ViewColumnsIcon className="w-5 h-5 text-muted-foreground opacity-50" />
-              </div>
+              <ViewColumnsIcon className="w-3.5 h-3.5 text-muted-foreground stroke-[1.25]" />
             )}
-            <span className="font-medium text-foreground">{item.name}</span>
           </div>
         ),
       },
       {
-        key: "slug",
-        label: "Slug",
-        minWidth: "150px",
+        key: "name",
+        label: "Bộ sưu tập",
+        isMain: true,
+        minWidth: "200px",
         render: (item) => (
-          <span className="text-muted-foreground">{item.slug}</span>
+          <span className="font-medium text-xs text-foreground truncate">{item.name}</span>
+        ),
+      },
+      {
+        key: "slug",
+        label: "Đường dẫn",
+        minWidth: "140px",
+        isSub: true,
+        render: (item) => (
+          <code className="text-muted-foreground font-mono text-xs truncate block">
+            {item.slug}
+          </code>
         ),
       },
       {
         key: "isActive",
-        label: "Trạng Thái",
+        label: "Trạng thái",
         align: "center",
-        minWidth: "120px",
+        minWidth: "100px",
         render: (item) => (
-          <Switch
-            checked={item.isActive}
-            onCheckedChange={() => onToggleStatus(item.id)}
-            disabled={isTogglePending}
-            className="data-[state=checked]:bg-accent bg-secondary/20"
-          />
+          <div className="flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+            <Switch
+              checked={item.isActive}
+              onCheckedChange={() => onToggleStatus(item.id)}
+              disabled={isTogglePending}
+              className="data-[state=checked]:bg-foreground"
+            />
+          </div>
         ),
       },
       {
         key: "actions",
-        label: "Thao Tác",
+        label: "Thao tác",
         align: "right",
-        minWidth: "150px",
+        isAction: true,
+        minWidth: "140px",
+        sticky: "right",
         render: (item) => (
-          <div className="flex items-center justify-end gap-1">
+          <div className="flex items-center justify-center gap-1" onClick={(e) => e.stopPropagation()}>
             <Button
               variant="ghost"
-              size="sm"
-              className="text-muted-foreground hover:text-accent hover:bg-accent/10 text-xs font-semibold px-2"
+              size="default"
+              className="h-7 px-2 text-muted-foreground hover:text-foreground hover:bg-surface-hover text-xs font-normal rounded-[2px]"
               onClick={() => onAssignProducts(item)}
             >
               Gán SP
@@ -81,19 +99,21 @@ export function useCollectionColumns({
             <Button
               variant="ghost"
               size="icon"
-              className="text-muted-foreground hover:text-accent hover:bg-accent/10"
+              className="h-7 w-7 text-info hover:text-info hover:bg-info/10 rounded-[2px]"
+              title="Chỉnh sửa"
               onClick={() => onEdit(item)}
             >
-              <PencilSquareIcon className="w-4 h-4" />
+              <PencilSquareIcon className="w-3.5 h-3.5 stroke-[1.25]" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              className="text-muted-foreground hover:text-red-400 hover:bg-red-500/10"
+              className="h-7 w-7 text-error hover:text-error hover:bg-error/10 rounded-[2px]"
+              title="Xóa"
               onClick={() => onDelete(item.id, item.name)}
               disabled={isDeletePending}
             >
-              <TrashIcon className="w-4 h-4" />
+              <TrashIcon className="w-3.5 h-3.5 stroke-[1.25]" />
             </Button>
           </div>
         ),
@@ -101,4 +121,4 @@ export function useCollectionColumns({
     ];
   }, [onEdit, onDelete, onAssignProducts, onToggleStatus, isTogglePending, isDeletePending]);
 }
-
+export default useCollectionColumns;

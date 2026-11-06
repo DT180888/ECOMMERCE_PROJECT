@@ -1,1 +1,1 @@
-export { AdminSecurity } from "./AdminSecurity";
+export * from "./SecuritySettings";

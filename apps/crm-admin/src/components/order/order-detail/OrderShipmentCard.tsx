@@ -1,8 +1,8 @@
-import { Button } from "@my-project/ui";
-import { Input } from "@my-project/ui";
+import React from "react";
+import { Button, Input, cn } from "@my-project/ui";
 import { TruckIcon, PaperAirplaneIcon } from "@heroicons/react/24/outline";
 
-interface Shipment {
+export interface ShipmentItem {
   shipmentId: number;
   carrier: string;
   statusText: string;
@@ -11,79 +11,120 @@ interface Shipment {
   status: number;
 }
 
-interface Props {
-  shipments: Shipment[];
+interface OrderShipmentCardProps {
+  shipments: ShipmentItem[];
   trackingDraft: Record<number, string>;
   onDraftChange: (shipmentId: number, value: string) => void;
   onSaveTracking: (shipmentId: number) => void;
   isUpdating: boolean;
 }
 
-const DetailCardHeader = ({ title, icon: Icon }: { title: string; icon: React.ElementType }) => (
-  <div className="flex items-center gap-2 pb-3 mb-4">
-    <Icon className="w-5 h-5 text-primary" />
-    <h3 className="font-bold text-foreground text-sm uppercase tracking-wide">{title}</h3>
-  </div>
-);
-
-export function OrderShipmentCard({ shipments, trackingDraft, onDraftChange, onSaveTracking, isUpdating }: Props) {
-  if (shipments.length === 0) return null;
-
+export function OrderShipmentCard({
+  shipments,
+  trackingDraft,
+  onDraftChange,
+  onSaveTracking,
+  isUpdating,
+}: OrderShipmentCardProps) {
   return (
-    <section className="bg-card rounded-card overflow-hidden border border-foreground/[0.04] dark:border-white/[0.05] shadow-neo-sm">
-      <div className="p-6">
-        <DetailCardHeader title="Thông tin Vận chuyển" icon={TruckIcon} />
-        <div className="space-y-4">
-          {shipments.map((s) => {
-            const draftValue = trackingDraft[s.shipmentId] ?? s.trackingNumber ?? "";
-            const isDrafted = draftValue !== (s.trackingNumber ?? "");
-            return (
-              <div key={s.shipmentId} className="p-5 bg-muted/10 border border-foreground/[0.04] dark:border-white/[0.05] rounded-card transition-colors hover:bg-muted/20">
-                <div className="flex flex-col sm:flex-row justify-between gap-4 mb-4">
-                  <div>
-                    <div className="flex items-center gap-3 mb-1">
-                      <span className="text-foreground font-bold text-sm">{s.carrier}</span>
-                      <span className={`text-[9px] px-2 py-0.5 rounded-inner uppercase font-semibold tracking-wide ${
-                        s.status === 1 ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "bg-amber-500/10 text-amber-600 dark:text-amber-400"
-                      }`}>
+    <section className="space-y-3">
+      {/* ── Section Header (Pure Typography & Spacing) ── */}
+      <div className="flex items-center justify-between select-none">
+        <div className="flex items-center gap-2">
+          <TruckIcon className="w-3.5 h-3.5 stroke-[1.25] text-muted-foreground" aria-hidden="true" />
+          <h3 className="font-medium text-foreground text-xs uppercase tracking-[0.16em]">
+            Thông tin vận chuyển
+          </h3>
+        </div>
+        <span className="text-[10px] font-mono tabular-nums uppercase text-muted-foreground">
+          {shipments.length} kiện hàng
+        </span>
+      </div>
+
+      {/* ── Content Body ── */}
+      <div>
+        {shipments.length === 0 ? (
+          <div className="py-6 text-center text-xs text-muted-foreground italic font-sans select-none">
+            Chưa có thông tin vận chuyển cho đơn hàng này.
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {shipments.map((s) => {
+              const draftValue = trackingDraft[s.shipmentId] ?? s.trackingNumber ?? "";
+              const isDrafted = draftValue !== (s.trackingNumber ?? "");
+              const isDelivered = s.status === 1;
+
+              return (
+                <div
+                  key={s.shipmentId}
+                  className="p-3 bg-surface/30 rounded-[2px] transition-colors hover:bg-surface/50 space-y-3"
+                >
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                    {/* Carrier & Service */}
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-foreground font-semibold text-xs font-mono uppercase tracking-wide">
+                        {s.carrier}
+                      </span>
+                      <span className="text-[11px] text-muted-foreground">
+                        Dịch vụ: {s.serviceCode || "Tiêu chuẩn"}
+                      </span>
+                      <span
+                        className={cn(
+                          "text-[9.5px] px-1.5 py-0.5 rounded-[2px] uppercase font-mono font-medium tracking-wider select-none",
+                          isDelivered
+                            ? "bg-success/10 text-success"
+                            : "bg-warning/10 text-warning"
+                        )}
+                      >
                         {s.statusText}
                       </span>
                     </div>
-                    <div className="text-xs text-muted-foreground font-sans">Dịch vụ: {s.serviceCode || "Tiêu chuẩn"}</div>
-                  </div>
-                  <div className="text-left sm:text-right">
-                    <div className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground mb-1">Mã vận đơn hiện tại</div>
-                    <div className="font-mono text-accent text-xs bg-accent/5 px-2 py-1 rounded-inner inline-block">
-                      {s.trackingNumber || "Chưa cập nhật"}
+
+                    {/* Current Tracking Badge */}
+                    <div className="flex items-center gap-2 text-xs">
+                      <span className="text-[10px] uppercase font-mono text-muted-foreground">
+                        Mã hiện tại:
+                      </span>
+                      <span className="font-mono text-foreground text-xs">
+                        {s.trackingNumber || "Chưa cập nhật"}
+                      </span>
                     </div>
                   </div>
-                </div>
 
-                <div className="flex items-end gap-3 p-3 bg-muted/10 border border-foreground/[0.04] dark:border-white/[0.05] rounded-button">
-                  <div className="flex-1 space-y-1.5">
-                    <label className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">Cập nhật Mã vận đơn</label>
+                  {/* Inline Tracking Updater (Separated by Spacing, No Hairline) */}
+                  <div className="flex items-center gap-2 pt-1">
+                    <span className="text-[10px] uppercase font-mono text-muted-foreground shrink-0 select-none">
+                      Cập nhật mã:
+                    </span>
                     <Input
-                      placeholder="Nhập mã tracking..."
+                      placeholder="Nhập mã vận đơn tracking..."
                       value={draftValue}
                       onChange={(e) => onDraftChange(s.shipmentId, e.target.value)}
-                      className={`bg-muted/20 text-xs font-mono text-foreground focus:ring-2 focus:ring-accent/20 transition-all border-transparent focus:border-accent focus:bg-card ${isDrafted ? "ring-2 ring-accent/20 border-accent bg-card" : ""}`}
+                      className={cn(
+                        "h-8 text-xs font-mono bg-background border-border flex-1 shadow-none",
+                        isDrafted && "border-foreground"
+                      )}
                     />
+                    <Button
+                      size="default"
+                      disabled={isUpdating || !isDrafted}
+                      onClick={() => onSaveTracking(s.shipmentId)}
+                      className="h-8 px-3 rounded-[2px] text-xs font-medium shrink-0 shadow-none"
+                    >
+                      {isUpdating ? (
+                        "..."
+                      ) : (
+                        <>
+                          <PaperAirplaneIcon className="w-3 h-3 stroke-[1.25] mr-1" /> Lưu mã
+                        </>
+                      )}
+                    </Button>
                   </div>
-                  <Button
-                    size="sm"
-                    disabled={isUpdating || !isDrafted}
-                    onClick={() => onSaveTracking(s.shipmentId)}
-                    className={`px-4 rounded-button text-xs font-medium transition-all ${
-                      isDrafted ? "bg-primary text-primary-foreground hover:bg-primary/95 hover:-translate-y-[1px] active:translate-y-[0.5px]" : "bg-muted/20 border border-border/10 text-muted-foreground cursor-not-allowed"
-                    }`}
-                  >
-                    {isUpdating ? "..." : <><PaperAirplaneIcon className="w-3 h-3 md:w-4 md:h-4 mr-1.5" /> Lưu</>}
-                  </Button>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
   );

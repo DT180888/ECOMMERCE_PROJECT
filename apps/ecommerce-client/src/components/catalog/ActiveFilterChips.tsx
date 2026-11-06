@@ -1,3 +1,7 @@
+import React from "react";
+import { X, ArrowCounterClockwise } from "@phosphor-icons/react";
+import { Button, Badge } from "@my-project/ui";
+
 export interface FilterChip {
   key: string;
   label: string;
@@ -10,30 +14,41 @@ interface ActiveFilterChipsProps {
   className?: string;
 }
 
-export default function ActiveFilterChips({ chips, onClearAll, className = "mb-6" }: ActiveFilterChipsProps) {
+/**
+ * ActiveFilterChips Component (Hairline Studio Edition)
+ * 
+ * Hiển thị các tiêu chí đang được chọn dưới dạng Hairline Studio Pills:
+ * - Chuẩn hóa bằng Badge và Button từ @my-project/ui.
+ * - Triệt tiêu 100% Neumorphism (shadow-none).
+ * - Phẳng 100%, viền 1px border-border/60, góc micro rounded-[2px].
+ */
+export default function ActiveFilterChips({ chips, onClearAll, className = "" }: ActiveFilterChipsProps) {
   if (chips.length === 0) return null;
 
   return (
-    <div className={`flex flex-wrap items-center gap-2 animate-in fade-in duration-200 ${className}`}>
-      <span className="text-[11px] font-semibold text-muted uppercase tracking-wider mr-2 shrink-0">
-        Đang lọc theo:
-      </span>
-      {chips.map(chip => (
-        <button
-          key={chip.key}
-          onClick={chip.onClear}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-background shadow-neo-sm hover:shadow-neo-inset-sm text-xs font-medium text-foreground rounded-full transition-all duration-300 cursor-pointer"
-        >
-          {chip.label}
-          <span className="text-muted font-bold hover:text-foreground text-[10px] ml-0.5">✕</span>
-        </button>
-      ))}
-      <button
+    <div className={`flex items-center gap-2 select-none overflow-x-auto scrollbar-none ${className}`}>
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
         onClick={onClearAll}
-        className="text-xs font-semibold text-primary hover:text-primary/80 transition-colors ml-2 uppercase tracking-wider cursor-pointer"
+        className="h-7 px-2 text-[11px] gap-1 shrink-0 rounded-[2px] sticky"
       >
-        Xóa tất cả
-      </button>
+        <ArrowCounterClockwise className="w-3 h-3 stroke-[1.25]" weight="light" />
+        <span>Xóa Tất Cả</span>
+      </Button>
+
+      {chips.map((chip) => (
+        <Badge
+          key={chip.key}
+          variant="flat"
+          onClick={chip.onClear}
+          className="h-7 px-2.5 gap-1.5 cursor-pointer hover:border-foreground/60 transition-colors shrink-0 normal-case font-normal text-xs text-foreground group"
+        >
+          <span className="truncate max-w-[200px]">{chip.label}</span>
+          <X className="w-3 h-3 text-muted-foreground group-hover:text-foreground stroke-[1.5] transition-colors shrink-0" weight="light" />
+        </Badge>
+      ))}
     </div>
   );
 }

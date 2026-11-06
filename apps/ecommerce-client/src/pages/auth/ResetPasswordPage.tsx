@@ -36,7 +36,7 @@ export default function ResetPasswordPage() {
         footerText="Hệ thống bảo mật Minimalism mã hóa đầu cuối"
       >
         <div className="space-y-6 text-center animate-in fade-in slide-in-from-bottom-2 duration-500">
-          <Link to="/auth/login" className="h-10 w-full flex items-center justify-center rounded-button bg-primary text-primary-foreground font-medium text-xs uppercase tracking-widest transition-all active:scale-[0.98]">
+          <Link to="/auth/login" className="h-10 w-full flex items-center justify-center rounded-button font-medium text-xs uppercase tracking-widest transition-all active:scale-[0.98]">
               Quay lại đăng nhập
           </Link>
         </div>
@@ -81,7 +81,7 @@ export default function ResetPasswordPage() {
         footerText="Thông tin của bạn được bảo mật tuyệt đối"
       >
         <div className="space-y-6 text-center animate-in fade-in slide-in-from-bottom-2 duration-500">
-          <Link to="/auth/login" className="h-10 w-full flex items-center justify-center rounded-button bg-primary text-primary-foreground font-medium text-xs uppercase tracking-widest transition-all active:scale-[0.98]">
+          <Link to="/auth/login" className="h-10 w-full flex items-center justify-center rounded-button font-medium text-xs uppercase tracking-widest transition-all active:scale-[0.98]">
               Đăng nhập ngay
           </Link>
         </div>

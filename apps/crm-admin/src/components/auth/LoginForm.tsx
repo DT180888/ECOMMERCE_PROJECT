@@ -1,13 +1,12 @@
 import { useState, FormEvent } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useLogin } from "@hooks/useAuth";
-import { Input, Button, useToast } from "@my-project/ui";
-import { EyeIcon, EyeSlashIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
+import { Input, PasswordInput, Button, useToast } from "@my-project/ui";
+import { ArrowRightIcon } from "@heroicons/react/24/outline";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
 
   const login = useLogin();
   const toast = useToast();
@@ -64,24 +63,14 @@ export default function LoginForm() {
               Quên mật khẩu?
             </Link>
           </div>
-          <div className="relative">
-            <Input 
-              className="w-full pr-12" 
-              placeholder="••••••••" 
-              type={showPassword ? "text" : "password"} 
-              value={password} 
-              onChange={e => setPassword(e.target.value)} 
-              disabled={login.isPending}
-              required
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {showPassword ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
-            </button>
-          </div>
+          <PasswordInput 
+            id="password" 
+            placeholder="••••••••" 
+            value={password} 
+            onChange={e => setPassword(e.target.value)} 
+            disabled={login.isPending}
+            required
+          />
         </div>
       </div>
 

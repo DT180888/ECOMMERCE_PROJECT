@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { Control, UseFormRegister, UseFormSetValue, UseFormGetValues, UseFieldArrayRemove } from "react-hook-form";
 import { Button, Input, Checkbox, Dialog, DialogContent, DialogTitle } from "@my-project/ui";
 import { PhotoIcon, TrashIcon, PencilSquareIcon, SwatchIcon, XMarkIcon } from "@heroicons/react/24/outline";
@@ -156,7 +156,7 @@ export function ProductFormSkuTable({
           <button
             type="button"
             onClick={() => setEditingSkuIdx(idx)}
-            className="group relative w-10 h-10 rounded-button mx-auto border border-foreground/[0.04] bg-muted/20 flex items-center justify-center overflow-hidden hover:border-accent/40 hover:shadow-neo-sm transition-all"
+            className="group relative w-10 h-10 rounded-[2px] mx-auto border border-border/60 bg-muted/10 flex items-center justify-center overflow-hidden hover:border-foreground/40 transition-colors"
             title="Nhấp để tải/sửa ảnh"
           >
             {displayUrl ? (
@@ -177,7 +177,7 @@ export function ProductFormSkuTable({
         return (
           <span
             className={cn(
-              "inline-flex px-2 py-0.5 rounded-[4px] text-[10px] font-bold uppercase tracking-wider",
+              "inline-flex px-2 py-0.5 rounded-[2px] text-[10px] font-bold uppercase tracking-wider",
               active
                 ? "bg-success/10 text-success border border-success/20"
                 : "bg-muted text-muted-foreground border border-foreground/[0.04]"
@@ -203,9 +203,10 @@ export function ProductFormSkuTable({
                 e.stopPropagation();
                 setEditingSkuIdx(idx);
               }}
-              className="h-7 w-7 p-0 transition-colors text-muted hover:text-accent hover:bg-accent/10"
+              className="h-9 w-9 p-0 transition-colors border border-info/20 text-info hover:text-info hover:bg-info/10 rounded-[2px]"
+              title="Chỉnh sửa SKU"
             >
-              <PencilSquareIcon className="w-4 h-4" />
+              <PencilSquareIcon className="w-3.5 h-3.5" />
             </Button>
             <Button
               type="button"
@@ -216,9 +217,10 @@ export function ProductFormSkuTable({
                 if (editingSkuIdx === idx) setEditingSkuIdx(null);
               }}
               disabled={skusFA.fields.length <= 1}
-              className="h-7 w-7 p-0 text-muted hover:text-error hover:bg-error/10 transition-colors"
+              className="h-9 w-9 p-0 border border-error/20 text-error hover:text-error hover:bg-error/10 rounded-[2px] transition-colors disabled:opacity-30 disabled:pointer-events-none"
+              title="Xóa SKU"
             >
-              <TrashIcon className="w-4 h-4" />
+              <TrashIcon className="w-3.5 h-3.5" />
             </Button>
           </div>
         );
@@ -236,32 +238,29 @@ export function ProductFormSkuTable({
 
     return (
       <Dialog open={true} onOpenChange={(open) => !open && handleCloseModal()}>
-        <DialogContent noClose className="max-w-3xl p-0 overflow-hidden flex flex-col max-h-[90vh] bg-card rounded-card border border-foreground/[0.04] dark:border-white/[0.05] shadow-neo">
-          {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 bg-muted/5 border-b border-foreground/[0.04] dark:border-white/[0.05] shrink-0">
+        <DialogContent noClose className="max-w-3xl p-0 overflow-hidden flex flex-col max-h-[90vh] bg-card rounded-[2px] border border-border/60 shadow-none">
+          {/* Header (Horizon strip baseline h-11) */}
+          <div className="h-11 px-4 flex items-center justify-between bg-surface border-b border-border/60 shrink-0 select-none">
             <div>
-              <DialogTitle className="text-base font-bold font-display text-foreground tracking-tight normal-case">
+              <DialogTitle className="text-xs font-medium font-sans uppercase tracking-[0.16em] text-foreground">
                 Chỉnh Sửa SKU #{idx + 1}
               </DialogTitle>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
-                Cập nhật mã SKU, giá bán, thuộc tính và ảnh đại diện
-              </p>
             </div>
             <Button
               type="button"
               variant="ghost"
               onClick={handleCloseModal}
               size="icon"
-              className="text-muted-foreground hover:text-foreground hover:bg-muted/10 rounded-full w-8 h-8 p-0 transition-all duration-200"
+              className="text-muted-foreground hover:text-foreground hover:bg-surface-hover rounded-[2px] w-6 h-6 p-0 transition-colors"
             >
-              <XMarkIcon className="w-5 h-5" />
+              <XMarkIcon className="w-3.5 h-3.5 stroke-[1.25]" />
             </Button>
           </div>
 
-          <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="flex-1 overflow-y-auto custom-scrollbar p-4 flex flex-col gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {/* Column 1: Info */}
-              <div className="space-y-4">
+              <div className="flex flex-col gap-4">
                 <div>
                   <label className="block text-xs font-semibold text-muted-foreground mb-1">
                     Mã SKU <span className="text-error">*</span>
@@ -272,7 +271,7 @@ export function ProductFormSkuTable({
                     className="w-full bg-card"
                   />
                   {err?.skuCode && (
-                    <p className="text-xs text-error mt-1">⚠️ {err.skuCode.message}</p>
+                    <p className="text-xs text-error mt-1">{err.skuCode.message}</p>
                   )}
                 </div>
 
@@ -304,8 +303,8 @@ export function ProductFormSkuTable({
               </div>
 
               {/* Column 2: Options */}
-              <div className="space-y-4">
-                <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+              <div className="flex flex-col gap-4">
+                <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
                   <SwatchIcon className="w-4 h-4 text-accent" /> Biến thể
                 </label>
 
@@ -345,15 +344,15 @@ export function ProductFormSkuTable({
               </div>
 
               {/* Column 3: Image */}
-              <div className="space-y-4">
-                <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+              <div className="flex flex-col gap-4">
+                <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
                   <PhotoIcon className="w-4 h-4 text-accent" /> Hình ảnh đại diện
                 </label>
 
                 {skuCodeVal.trim() ? (
-                  <div className="space-y-4">
+                  <div className="flex flex-col gap-4">
                     {/* Upload new image */}
-                    <div className="space-y-1">
+                    <div className="flex flex-col gap-1">
                       <span className="text-[10px] font-bold text-muted uppercase tracking-wider block">
                         Tải ảnh mới cho SKU
                       </span>
@@ -384,11 +383,11 @@ export function ProductFormSkuTable({
 
                     {/* Choose from existing gallery */}
                     {allImages.length > 0 && (
-                      <div className="space-y-1.5">
+                      <div className="space-y-2">
                         <span className="text-[10px] font-bold text-muted uppercase tracking-wider block">
                           Chọn từ thư viện ảnh sản phẩm
                         </span>
-                        <div className="flex flex-wrap gap-2 max-h-[140px] overflow-y-auto p-1 border border-border/10 rounded-button bg-card custom-scrollbar">
+                        <div className="flex flex-wrap gap-2 max-h-[140px] overflow-y-auto p-1 border border-border/60 rounded-[2px] bg-card custom-scrollbar">
                           {allImages.map((img: any, imgIdx: number) => {
                             const isAssignedToThisSku = img.skuCode === skuCodeVal.trim();
                             return (
@@ -408,7 +407,7 @@ export function ProductFormSkuTable({
                                   }
                                 }}
                                 className={cn(
-                                  "w-12 h-12 rounded-inner border cursor-pointer relative overflow-hidden flex items-center justify-center transition-all bg-muted/20",
+                                  "w-12 h-12 rounded-[2px] border cursor-pointer relative overflow-hidden flex items-center justify-center transition-all bg-muted/20",
                                   isAssignedToThisSku
                                     ? "border-accent ring-2 ring-accent/20 scale-95"
                                     : img.skuCode
@@ -435,7 +434,7 @@ export function ProductFormSkuTable({
                     )}
                   </div>
                 ) : (
-                  <div className="text-xs text-warning bg-warning/10 border border-warning/20 p-2.5 rounded-[4px]">
+                  <div className="text-xs text-warning bg-warning/10 border border-warning/20 p-3 rounded-[2px]">
                     Vui lòng nhập Mã SKU cho dòng này trước khi tải/chọn ảnh.
                   </div>
                 )}
@@ -443,11 +442,11 @@ export function ProductFormSkuTable({
             </div>
 
             {/* Footer Actions */}
-            <div className="flex items-center justify-end gap-2 border-t border-neo-bevel pt-4 mt-6">
+            <div className="flex items-center justify-center gap-2 border-t border-border/60 pt-3 mt-4">
               <Button
                 type="button"
                 variant="default"
-                size="sm"
+                size="default"
                 onClick={handleCloseModal}
               >
                 Đóng
@@ -463,7 +462,7 @@ export function ProductFormSkuTable({
     <div className="space-y-4">
       {/* Bulk Price Sync controls */}
       {skusFA.fields.length > 0 && (
-        <div className="flex items-center gap-3 bg-muted/20 border border-foreground/[0.04] dark:border-white/[0.05] p-3 rounded-card mb-4 max-w-md">
+        <div className="flex items-center gap-3 bg-muted/10 border border-border/60 p-3 rounded-[2px] mb-4 max-w-md">
           <div className="flex-1 space-y-1">
             <label className="text-[10px] font-bold text-muted uppercase tracking-wider block">
               Đồng bộ giá hàng loạt (VNĐ)
@@ -483,7 +482,7 @@ export function ProductFormSkuTable({
         </div>
       )}
 
-      <div className="border border-foreground/[0.04] dark:border-white/[0.05] rounded-card overflow-hidden bg-background/30">
+      <div className="border border-border/60 rounded-[2px] overflow-hidden bg-transparent">
         <AdminTable
           columns={columns}
           data={skusFA.fields}

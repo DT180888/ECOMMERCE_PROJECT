@@ -8,7 +8,7 @@ import {
 } from "@hooks/useAttribute";
 import type { AttributeId } from "@my-project/api";
 import { DATA_TYPE_OPTIONS, toBEDataType, fromBEDataType } from "@hooks/useAttribute";
-import { Input, Button } from "@my-project/ui";
+import { Input, Button, Checkbox } from "@my-project/ui";
 
 // 1. Import ReactSelect và Style chung
 import ReactSelect from "react-select";
@@ -147,12 +147,12 @@ export function AttributeForm() {
 
             <div className="flex flex-col gap-2 ml-24 pt-2">
                 <label className="flex items-center gap-2 text-foreground cursor-pointer">
-                <input type="checkbox" {...register("isFilterable")} className="w-3 h-3 md:w-4 md:h-4 rounded border-foreground/[0.08] dark:border-white/[0.08] text-accent focus:ring-accent/30 bg-transparent" />
+                <Checkbox {...register("isFilterable")} />
                 <span>Có dùng làm bộ lọc</span>
                 </label>
 
                 <label className="flex items-center gap-2 text-foreground cursor-pointer">
-                <input type="checkbox" {...register("isVariant")} className="w-3 h-3 md:w-4 md:h-4 rounded border-foreground/[0.08] dark:border-white/[0.08] text-accent focus:ring-accent/30 bg-transparent" />
+                <Checkbox {...register("isVariant")} />
                 <span>Dùng để phân loại (variant)</span>
                 </label>
             </div>

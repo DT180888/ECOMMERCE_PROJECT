@@ -158,26 +158,23 @@ export function ProductDetailSkuEditModal({
 
   return (
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent noClose className="max-w-3xl p-0 overflow-hidden flex flex-col max-h-[90vh] bg-card rounded-card border border-foreground/[0.04] dark:border-white/[0.05] shadow-neo">
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 bg-muted/5 border-b border-foreground/[0.04] dark:border-white/[0.05] shrink-0">
+      <DialogContent noClose className="max-w-3xl p-0 overflow-hidden flex flex-col max-h-[90vh] bg-card rounded-[2px] border border-border/60 shadow-none">
+        {/* Header (Horizon strip baseline h-11) */}
+        <div className="h-11 px-4 flex items-center justify-between bg-surface border-b border-border/60 shrink-0 select-none">
           <div>
-            <DialogTitle className="text-base font-bold font-display text-foreground tracking-tight normal-case">
+            <DialogTitle className="text-xs font-medium font-sans uppercase tracking-[0.16em] text-foreground">
               Chỉnh Sửa SKU
             </DialogTitle>
-            <DialogDescription className="text-[11px] text-muted-foreground mt-0.5">
-              Cập nhật mã SKU, giá bán, thuộc tính và hình ảnh đại diện biến thể
-            </DialogDescription>
           </div>
-          <Button variant="ghost" onClick={onClose} size="icon" className="text-muted-foreground hover:text-foreground hover:bg-muted/10 rounded-full w-8 h-8 p-0 transition-all duration-200">
-            <XMarkIcon className="w-5 h-5" />
+          <Button variant="ghost" onClick={onClose} size="icon" className="text-muted-foreground hover:text-foreground hover:bg-surface-hover rounded-[2px] w-6 h-6 p-0 transition-colors">
+            <XMarkIcon className="w-3.5 h-3.5 stroke-[1.25]" />
           </Button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmitForm)} className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <form onSubmit={handleSubmit(onSubmitForm)} className="flex-1 overflow-y-auto custom-scrollbar p-4 flex flex-col gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Column 1: Info */}
-            <div className="space-y-4">
+            <div className="flex flex-col gap-4">
               <div>
                 <label className="block text-xs font-semibold text-muted-foreground mb-1">Mã SKU <span className="text-error">*</span></label>
                 <Input
@@ -209,14 +206,14 @@ export function ProductDetailSkuEditModal({
             </div>
 
             {/* Column 2: Options */}
-            <div className="space-y-4">
+            <div className="flex flex-col gap-4">
               <div className="flex items-center justify-between">
-                <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+                <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
                   <SwatchIcon className="w-4 h-4 text-accent" /> Biến thể
                 </label>
                 <Button
                   type="button"
-                  size="sm"
+                  size="default"
                   variant="ghost"
                   onClick={() => append({ attributeId: 0, value: "" })}
                   className="text-xs h-6 px-2 text-accent hover:bg-accent/10"
@@ -250,7 +247,7 @@ export function ProductDetailSkuEditModal({
                       <Input
                         {...register(`options.${idx}.value` as const, { required: "Vui lòng nhập giá trị" })}
                         placeholder="Giá trị (VD: Đỏ)"
-                        className="w-full bg-card h-[36px]"
+                        className="w-full bg-card h-8 text-xs border-border/60"
                       />
                       {getOptionError(idx, "value") && (
                         <p className="text-[10px] text-error mt-0.5">⚠️ {getOptionError(idx, "value")}</p>
@@ -260,9 +257,9 @@ export function ProductDetailSkuEditModal({
                       type="button"
                       variant="ghost"
                       onClick={() => remove(idx)}
-                      className="h-[36px] w-[36px] p-0 text-muted hover:text-error hover:bg-error/10 shrink-0"
+                      className="h-8 w-8 p-0 text-muted-foreground hover:text-error hover:bg-error/10 shrink-0 rounded-[2px]"
                     >
-                      <TrashIcon className="w-4 h-4" />
+                      <TrashIcon className="w-3.5 h-3.5 stroke-[1.25]" />
                     </Button>
                   </div>
                 ))}
@@ -274,11 +271,11 @@ export function ProductDetailSkuEditModal({
             </div>
 
             {/* Column 3: Image */}
-            <div className="space-y-4">
-              <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+            <div className="flex flex-col gap-4">
+              <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
                 <PhotoIcon className="w-4 h-4 text-accent" /> Hình ảnh đại diện
               </label>
-              <div className="flex flex-wrap gap-2 max-h-[160px] overflow-y-auto p-1 border border-border/10 rounded-button bg-card custom-scrollbar">
+              <div className="flex flex-wrap gap-2 max-h-[160px] overflow-y-auto p-1 border border-border/60 rounded-[2px] bg-card custom-scrollbar">
                 {productImages.map((img, idx) => {
                   const isSelected = selectedImage?.url === img.url;
                   return (
@@ -286,7 +283,7 @@ export function ProductDetailSkuEditModal({
                       key={idx}
                       onClick={() => handleSelectImage(img)}
                       className={cn(
-                        "w-12 h-12 rounded-inner border cursor-pointer relative overflow-hidden flex items-center justify-center transition-all bg-muted/20",
+                        "w-12 h-12 rounded-[2px] border cursor-pointer relative overflow-hidden flex items-center justify-center transition-all bg-muted/20",
                         isSelected ? "border-accent ring-2 ring-accent/20 scale-95" : "border-border/30 hover:border-accent/40"
                       )}
                     >
@@ -308,27 +305,30 @@ export function ProductDetailSkuEditModal({
                 )}
               </div>
               {selectedImage && (
-                <div className="flex items-center gap-2 bg-accent-soft/20 border border-accent/10 px-3 py-1.5 rounded-button w-max max-w-full">
-                  <img src={buildImgSrc(selectedImage.url)} alt="" className="w-6 h-6 object-cover rounded-inner" />
+                <div className="flex items-center gap-2 bg-muted/20 border border-border/60 px-3 py-1.5 rounded-[2px] w-max max-w-full">
+                  <img src={buildImgSrc(selectedImage.url)} alt="" className="w-6 h-6 object-cover rounded-[2px]" />
                   <span className="text-[10px] text-accent font-semibold truncate max-w-[150px]">Đã chọn</span>
-                  <button
+                  <Button
                     type="button"
+                    variant="ghost"
+                    size="icon"
                     onClick={() => setSelectedImage(null)}
-                    className="text-muted hover:text-error font-bold text-xs"
+                    className="h-5 w-5 text-muted-foreground hover:text-error rounded-[2px] p-0"
+                    title="Bỏ chọn"
                   >
-                    ×
-                  </button>
+                    <XMarkIcon className="w-3.5 h-3.5" />
+                  </Button>
                 </div>
               )}
             </div>
           </div>
 
           {/* Footer Actions */}
-          <div className="flex items-center justify-end gap-2 border-t border-neo-bevel pt-4 mt-6">
+          <div className="flex items-center justify-center gap-2 border-t border-border/60 pt-3 mt-4">
             <Button
               type="button"
               variant="outline"
-              size="sm"
+              size="default"
               onClick={onClose}
               disabled={isSubmitting}
             >
@@ -337,7 +337,7 @@ export function ProductDetailSkuEditModal({
             <Button
               type="submit"
               variant="default"
-              size="sm"
+              size="default"
               disabled={isSubmitting}
             >
               {isSubmitting ? "Đang lưu..." : "Lưu thay đổi"}

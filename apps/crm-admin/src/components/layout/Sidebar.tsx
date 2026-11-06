@@ -1,296 +1,330 @@
-import { useState, useEffect } from "react";
+import React from "react";
 import { NavLink } from "react-router-dom";
 import {
   BanknotesIcon,
   ArchiveBoxIcon,
   ChartBarIcon,
+  ChartBarSquareIcon,
   UserGroupIcon,
-  AdjustmentsHorizontalIcon,
   SparklesIcon,
-  ArrowRightOnRectangleIcon,
   QueueListIcon,
   ShieldCheckIcon,
   ChevronLeftIcon,
-  ChevronRightIcon,
   TagIcon,
   PhotoIcon,
+  FolderIcon,
+  SwatchIcon,
   ViewColumnsIcon,
+  ShoppingCartIcon,
+  ChatBubbleBottomCenterTextIcon,
+  ChartPieIcon,
+  BoltIcon,
 } from "@heroicons/react/24/outline";
-import { ThemeToggle } from "@my-project/ui";
-import { useAuthUser } from "@hooks/useAuth";
-import { clientSideLogout } from "@my-project/shared-utils";
+import { cn } from "@my-project/ui";
 import usePermission from "@hooks/usePermission";
+import { useLayoutMode } from "@app/layouts/LayoutContext";
 
-interface SidebarProps {
-  onClose?: () => void;
+interface NavItemConfig {
+  to: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  permission?: string;
+  permissionsAny?: string[];
+  end?: boolean;
 }
 
-export default function Sidebar({ onClose }: SidebarProps) {
-  const { data: me } = useAuthUser();
+interface NavSectionConfig {
+  id: string;
+  heading?: string;
+  items: NavItemConfig[];
+  permission?: string;
+  permissionsAny?: string[];
+}
+
+/**
+ * Sidebar Component
+ * Linear Modern Editorial Design System Specification
+ * - Clean Navigation Panel: w-60 (expanded) <-> w-16 (collapsed)
+ * - Hairline Precision: 1px single-edge right border, 4px radius, WCAG AAA contrast
+ * - Active State: Subtle primary tint with solid indicator
+ */
+export default function Sidebar() {
   const { hasPermission, hasAnyPermission } = usePermission();
+  const { isSidebarCollapsed: isCollapsed, toggleSidebarCollapse } = useLayoutMode();
 
-  const isMobile = Boolean(onClose);
+  const sections: NavSectionConfig[] = [
+    {
+      id: "overview",
+      heading: "Tổng quan",
+      items: [
+        {
+          to: "/admin/dashboard",
+          label: "Tổng quan",
+          icon: ChartBarIcon,
+          permission: "Permissions.Dashboard.View",
+          end: true,
+        },
+        {
+          to: "/admin/reports",
+          label: "Báo cáo & Phân tích",
+          icon: ChartBarSquareIcon,
+          permissionsAny: ["Permissions.Reports.View", "Permissions.Dashboard.View"],
+        },
+      ],
+    },
+    {
+      id: "business",
+      heading: "Kinh doanh",
+      permissionsAny: [
+        "Permissions.Orders.View",
+        "Permissions.Promotions.View",
+        "Permissions.Users.View",
+        "Permissions.Products.View",
+      ],
+      items: [
+        {
+          to: "/admin/orders",
+          label: "Đơn hàng",
+          icon: BanknotesIcon,
+          permission: "Permissions.Orders.View",
+        },
+        {
+          to: "/admin/abandoned-carts",
+          label: "Giỏ hàng bỏ quên",
+          icon: ShoppingCartIcon,
+          permission: "Permissions.Orders.View",
+        },
+        {
+          to: "/admin/reviews",
+          label: "Đánh giá",
+          icon: ChatBubbleBottomCenterTextIcon,
+          permission: "Permissions.Products.View",
+        },
+        {
+          to: "/admin/customers/rfm-segments",
+          label: "Phân cụm RFM",
+          icon: ChartPieIcon,
+          permission: "Permissions.Users.View",
+        },
+        {
+          to: "/admin/automation/triggers",
+          label: "Tự động hóa",
+          icon: BoltIcon,
+          permission: "Permissions.Users.View",
+        },
+        {
+          to: "/admin/promotion",
+          label: "Khuyến mãi",
+          icon: TagIcon,
+          permission: "Permissions.Promotions.View",
+        },
+        {
+          to: "/admin/collection",
+          label: "Bộ sưu tập",
+          icon: ViewColumnsIcon,
+          permission: "Permissions.Promotions.View",
+        },
+        {
+          to: "/admin/hero-slides",
+          label: "Banner Slides",
+          icon: PhotoIcon,
+          permission: "Permissions.Promotions.View",
+        },
+      ],
+    },
+    {
+      id: "catalog",
+      heading: "Sản phẩm & Danh mục",
+      permission: "Permissions.Products.View",
+      items: [
+        {
+          to: "/admin/product",
+          label: "Sản phẩm",
+          icon: ArchiveBoxIcon,
+          permission: "Permissions.Products.View",
+        },
+        {
+          to: "/admin/skus",
+          label: "Quản lý SKU",
+          icon: QueueListIcon,
+          permission: "Permissions.Products.View",
+        },
+        {
+          to: "/admin/category",
+          label: "Danh mục",
+          icon: FolderIcon,
+          permission: "Permissions.Products.View",
+        },
+        {
+          to: "/admin/brand",
+          label: "Thương hiệu",
+          icon: TagIcon,
+          permission: "Permissions.Products.View",
+        },
+        {
+          to: "/admin/attribute",
+          label: "Thuộc tính",
+          icon: SwatchIcon,
+          permission: "Permissions.Products.View",
+        },
+      ],
+    },
+    {
+      id: "system",
+      heading: "Hệ thống",
+      permissionsAny: ["Permissions.Users.View", "Permissions.Roles.View"],
+      items: [
+        {
+          to: "/admin/users",
+          label: "Người dùng",
+          icon: UserGroupIcon,
+          permission: "Permissions.Users.View",
+        },
+        {
+          to: "/admin/security",
+          label: "Bảo mật",
+          icon: ShieldCheckIcon,
+          permission: "Permissions.Roles.View",
+        },
+      ],
+    },
+  ];
 
-  const [isCollapsed, setIsCollapsed] = useState(() => {
-    if (isMobile) return false;
-    const saved = localStorage.getItem("crm_sidebar_collapsed");
-    return saved === "true";
-  });
-
-  useEffect(() => {
-    if (!isMobile) {
-      localStorage.setItem("crm_sidebar_collapsed", String(isCollapsed));
-    }
-  }, [isCollapsed, isMobile]);
-
-  const handleLogout = () => {
-    clientSideLogout();
-    onClose?.();
+  const checkPerm = (item: { permission?: string; permissionsAny?: string[] }) => {
+    if (item.permission && !hasPermission(item.permission)) return false;
+    if (item.permissionsAny && !hasAnyPermission(item.permissionsAny)) return false;
+    return true;
   };
 
   const navItemClass = ({ isActive }: { isActive: boolean }) =>
-    [
-      "flex items-center rounded-button py-2.5 text-[13px] transition-all duration-300 ease-out group relative",
-      isCollapsed ? "justify-center px-0 " : "justify-start px-4 ",
+    cn(
+      "flex items-center text-[13px] font-sans transition-all duration-150 group relative rounded-sm select-none",
+      isCollapsed
+        ? "justify-center h-7 w-7 mx-auto"
+        : "justify-start h-7 px-3 py-1.5",
       isActive
-        ? "bg-accent/10 text-accent font-bold before:absolute before:left-0 before:top-1.5 before:bottom-1.5 before:w-1 before:bg-accent before:rounded-r-full"
-        : "text-muted hover:text-foreground hover:bg-foreground/[0.04]",
-    ].join(" ");
-
-  const userEmail = me?.email || "admin@ecommerce.com";
-  const userName = me?.email ? me.email.split("@")[0] : "Admin User";
-  const avatarInitials = userName.substring(0, 2).toUpperCase();
-
-  const toggleSidebar = () => {
-    setIsCollapsed((prev) => !prev);
-  };
+        ? "bg-primary/10 text-primary font-medium"
+        : "text-muted-foreground hover:text-foreground hover:bg-surface-hover"
+    );
 
   return (
     <div
-      className={[
-        "h-full flex flex-col admin-surface bg-card pb-3 md:pb-3.5 select-none overflow-hidden transition-all duration-300 ease-out shadow-none",
-        isCollapsed ? "w-[64px]" : "w-64",
-      ].join(" ")}
+      className={cn(
+        "h-full flex flex-col select-none relative group/sidebar transition-all duration-200 ease-out bg-surface",
+        isCollapsed ? "w-16" : "w-52"
+      )}
     >
-      {/* ── Header / Logo ── */}
-      <div className={`flex py-3 md:py-3.5 ${isCollapsed ? "flex-col gap-3" : "w-full justify-between"}`}>
-        <div className={`w-full flex items-center px-3 ${isCollapsed ? "justify-center" : "justify-between"}`}>
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-card bg-background dark:bg-white/[0.03] text-foreground shrink-0 border border-neo-bevel shadow-none mt-0.5 sm:mt-0">
-              <SparklesIcon className="w-4 h-4 text-foreground" />
-            </div>
-            {!isCollapsed && (
-              <div className="flex flex-col">
-                <span className="font-display font-bold text-sm tracking-tight text-foreground leading-none">
-                  E-Commerce
-                </span>
-                <span className="text-[10px] text-muted font-mono mt-0.5 tracking-wider uppercase">
-                  CRM Admin
-                </span>
-              </div>
-            )}
-          </div>
-          {!isMobile && (
-            <button
-              onClick={toggleSidebar}
-              className={`shrink-0 p-1.5 rounded-button text-muted hover:text-foreground hover:bg-foreground/[0.04] transition-colors ${
-                isCollapsed ? "hidden" : ""
-              }`}
-              title="Thu nhỏ Sidebar"
-            >
-              <ChevronLeftIcon className="w-4 h-4" />
-            </button>
+      {/* ── Brand Logo Header (h-14 / 56px baseline) ── */}
+      <div className="h-14 flex items-center px-3.5 shrink-0 select-none border-b border-border">
+        <NavLink
+          to="/admin/dashboard"
+          className={cn(
+            "flex items-center gap-2.5 min-w-0 cursor-pointer w-full",
+            isCollapsed && "justify-center"
           )}
-        </div>  
-
-        {isCollapsed && !isMobile && (
-          <div className="flex justify-center">
-            <button
-              onClick={toggleSidebar}
-              className="p-1.5 rounded-button text-muted hover:text-foreground hover:bg-foreground/[0.04] transition-colors"
-              title="Mở rộng Sidebar"
-            >
-              <ChevronRightIcon className="w-4 h-4" />
-            </button>
+          title="Về bảng điều khiển"
+        >
+          <div className="w-8 h-8 rounded-sm bg-primary text-primary-foreground flex items-center justify-center shrink-0 shadow-none">
+            <SparklesIcon className="w-4 h-4 stroke-[1.75]" />
           </div>
-        )}
-
+          {!isCollapsed && (
+            <div className="flex flex-col min-w-0 transition-opacity duration-200">
+              <span className="font-sans font-bold text-sm tracking-tight text-foreground leading-none truncate">
+                Studio CRM
+              </span>
+              <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider mt-1 truncate">
+                Admin Workspace
+              </span>
+            </div>
+          )}
+        </NavLink>
       </div>
 
       {/* ── Navigation Menu ── */}
-      <nav className={"flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar " + (isCollapsed ? "px-2" : " px-3")}>
-        
-        {/* Section: Tổng quan */}
-        <div className="">
-          {!isCollapsed && (
-            <h5 className="text-[10px] uppercase tracking-widest text-muted font-bold mb-2 opacity-70">
-              Tổng quan
-            </h5>
-          )}
-          {isCollapsed && <div className="h-1 border-b border-foreground/30" />}
-          <ul className="space-y-1 relative py-3">
-            {hasPermission("Permissions.Dashboard.View") && (
-              <li>
-                <NavLink to="/admin/dashboard" end className={navItemClass} onClick={onClose} title={isCollapsed ? "Tổng quan" : undefined}>
-                  <ChartBarIcon className={`w-5 h-5 shrink-0 transition-transform duration-300 group-hover:scale-110 ${isCollapsed ? "" : "mr-3"}`} />
-                  {!isCollapsed && <span className="truncate">Tổng quan</span>}
-                </NavLink>
-              </li>
-            )}
-          </ul>
-        </div>
+      <div className="flex-1 flex flex-col justify-between overflow-hidden">
+        <nav className="flex flex-col h-full overflow-y-auto overflow-x-hidden p-3 custom-scrollbar space-y-3">
+          {sections
+            .filter((section) => checkPerm(section))
+            .map((section, sIdx) => {
+              const visibleItems = section.items.filter((item) => checkPerm(item));
+              if (visibleItems.length === 0) return null;
 
-        {/* Section: Kinh doanh & Marketing */}
-        {(hasPermission("Permissions.Orders.View") || hasPermission("Permissions.Promotions.View")) && (
-          <div className="mt-1">
-            {!isCollapsed && (
-              <h5 className="text-[10px] uppercase tracking-widest text-muted font-bold mb-2 opacity-70">
-                Kinh doanh & Marketing
-              </h5>
-            )}
-            {isCollapsed && <div className="h-1 border-b border-foreground/30" />}
-            <ul className="space-y-1 relative py-3">
-              {hasPermission("Permissions.Orders.View") && (
-                <li>
-                  <NavLink to="/admin/orders" className={navItemClass} onClick={onClose} title={isCollapsed ? "Đơn hàng" : undefined}>
-                    <BanknotesIcon className={`w-5 h-5 shrink-0 transition-transform duration-300 group-hover:scale-110 ${isCollapsed ? "" : "mr-3"}`} />
-                    {!isCollapsed && (
-                      <div className="flex items-center justify-between flex-1">
-                        <span className="truncate">Đơn hàng</span>
-                        <span className="text-[10px] font-bold bg-accent text-accent-foreground px-1.5 py-0.5 rounded-full">
-                          3
-                        </span>
-                      </div>
-                    )}
-                    {isCollapsed && (
-                      <span className="absolute top-2 right-2 w-2 h-2 bg-accent rounded-full animate-pulse border border-card" />
-                    )}
-                  </NavLink>
-                </li>
-              )}
-              {hasPermission("Permissions.Promotions.View") && (
-                <>
-                  <li>
-                    <NavLink to="/admin/promotion" className={navItemClass} onClick={onClose} title={isCollapsed ? "Khuyến mãi" : undefined}>
-                      <TagIcon className={`w-5 h-5 shrink-0 transition-transform duration-300 group-hover:scale-110 ${isCollapsed ? "" : "mr-3"}`} />
-                      {!isCollapsed && <span className="truncate">Khuyến mãi</span>}
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/admin/collection" className={navItemClass} onClick={onClose} title={isCollapsed ? "Bộ sưu tập" : undefined}>
-                      <ViewColumnsIcon className={`w-5 h-5 shrink-0 transition-transform duration-300 group-hover:scale-110 ${isCollapsed ? "" : "mr-3"}`} />
-                      {!isCollapsed && <span className="truncate">Bộ sưu tập</span>}
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/admin/hero-slides" className={navItemClass} onClick={onClose} title={isCollapsed ? "Banner (Hero Slides)" : undefined}>
-                      <PhotoIcon className={`w-5 h-5 shrink-0 transition-transform duration-300 group-hover:scale-110 ${isCollapsed ? "" : "mr-3"}`} />
-                      {!isCollapsed && <span className="truncate">Banner (Hero Slides)</span>}
-                    </NavLink>
-                  </li>
-                </>
-              )}
-            </ul>
-          </div>
-        )}
+              return (
+                <div key={section.id}>
+                  {sIdx > 0 && (
+                    <div
+                      className={cn(
+                        "bg-border my-2",
+                        isCollapsed ? "w-6 h-px mx-auto" : "h-px mx-2"
+                      )}
+                    />
+                  )}
 
-        {/* Section: Sản phẩm & Danh mục */}
-        {hasPermission("Permissions.Products.View") && (
-          <div className="mt-1">
-            {!isCollapsed && (
-              <h5 className="text-[10px] uppercase tracking-widest text-muted font-bold mb-2 opacity-70">
-                Sản phẩm & Danh mục
-              </h5>
-            )}
-            {isCollapsed && <div className="h-1 border-b border-foreground/30" />}
-            <ul className="space-y-1 relative py-3">
-              <li>
-                <NavLink to="/admin/product" className={navItemClass} onClick={onClose} title={isCollapsed ? "Sản phẩm" : undefined}>
-                  <ArchiveBoxIcon className={`w-5 h-5 shrink-0 transition-transform duration-300 group-hover:scale-110 ${isCollapsed ? "" : "mr-3"}`} />
-                  {!isCollapsed && <span className="truncate">Sản phẩm</span>}
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/admin/skus" className={navItemClass} onClick={onClose} title={isCollapsed ? "Quản lý SKU" : undefined}>
-                  <QueueListIcon className={`w-5 h-5 shrink-0 transition-transform duration-300 group-hover:scale-110 ${isCollapsed ? "" : "mr-3"}`} />
-                  {!isCollapsed && <span className="truncate">Quản lý SKU</span>}
-                </NavLink>
-              </li>
-              {hasAnyPermission(["Permissions.Products.View", "Permissions.Promotions.View"]) && (
-                <li>
-                  <NavLink to="/admin/catalog-settings" className={navItemClass} onClick={onClose} title={isCollapsed ? "Thiết lập Catalog" : undefined}>
-                    <AdjustmentsHorizontalIcon className={`w-5 h-5 shrink-0 transition-transform duration-300 group-hover:scale-110 ${isCollapsed ? "" : "mr-3"}`} />
-                    {!isCollapsed && <span className="truncate">Thiết lập Catalog</span>}
-                  </NavLink>
-                </li>
-              )}
-            </ul>
-          </div>
-        )}
+                  {!isCollapsed && section.heading && (
+                    <h5 className="text-[11px] font-semibold text-muted-foreground/80 mb-1.5 px-3 font-sans">
+                      {section.heading}
+                    </h5>
+                  )}
 
-        {/* Section: Quản trị hệ thống */}
-        {hasAnyPermission(["Permissions.Users.View", "Permissions.Roles.View"]) && (
-          <div className="mt-1">
-            {!isCollapsed && (
-              <h5 className="text-[10px] uppercase tracking-widest text-muted font-bold mb-2 opacity-70">
-                Quản trị hệ thống
-              </h5>
-            )}
-            {isCollapsed && <div className="h-1 border-b border-foreground/30" />}
-            <ul className="space-y-1 relative py-3">
-              {hasPermission("Permissions.Users.View") && (
-                <li>
-                  <NavLink to="/admin/listUsers" className={navItemClass} onClick={onClose} title={isCollapsed ? "Người dùng" : undefined}>
-                    <UserGroupIcon className={`w-5 h-5 shrink-0 transition-transform duration-300 group-hover:scale-110 ${isCollapsed ? "" : "mr-3"}`} />
-                    {!isCollapsed && <span className="truncate">Người dùng</span>}
-                  </NavLink>
-                </li>
-              )}
-              {hasPermission("Permissions.Roles.View") && (
-                <li>
-                  <NavLink to="/admin/security" className={navItemClass} onClick={onClose} title={isCollapsed ? "Bảo mật & Vai trò" : undefined}>
-                    <ShieldCheckIcon className={`w-5 h-5 shrink-0 transition-transform duration-300 group-hover:scale-110 ${isCollapsed ? "" : "mr-3"}`} />
-                    {!isCollapsed && <span className="truncate">Bảo mật & Vai trò</span>}
-                  </NavLink>
-                </li>
-              )}
-            </ul>
-          </div>
-        )}
-      </nav>
+                  <ul className="space-y-1">
+                    {visibleItems.map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <li key={item.to}>
+                          <NavLink
+                            to={item.to}
+                            end={item.end}
+                            className={navItemClass}
+                            title={isCollapsed ? item.label : undefined}
+                          >
+                            {({ isActive }) => (
+                              <>
+                                <Icon
+                                  className={cn(
+                                    "w-4 h-4 stroke-[1.5] shrink-0",
+                                    !isCollapsed && "mr-2.5",
+                                    isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+                                  )}
+                                />
+                                {!isCollapsed && (
+                                  <span className="truncate flex-1">{item.label}</span>
+                                )}
+                                {isActive && !isCollapsed && (
+                                  <span
+                                    className="w-1.5 h-1.5 bg-primary rounded-full shrink-0 ml-1.5"
+                                  />
+                                )}
+                              </>
+                            )}
+                          </NavLink>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              );
+            })}
+        </nav>
 
-      {/* ── Footer Actions ── */}
-      <div className="mt-auto">
-        <div className={`flex ${isCollapsed ? "flex-col items-center space-y-3" : "items-center justify-between p-3"}`}>
-          {!isCollapsed && <span className="text-xs text-muted font-medium ml-1">Chế độ tối</span>}
-          <div title={isCollapsed ? "Chuyển chế độ tối" : undefined}>
-            <ThemeToggle />
-          </div>
-        </div>
-        <div className="pt-4 px-3 border-t border-foreground/30">
-          <div className={`flex items-center gap-3 p-2 rounded-card border border-foreground/30 bg-foreground/[0.02] ${isCollapsed ? "justify-center " : ""}`}>
-            <div className="p-2 rounded-full bg-background dark:bg-white/[0.03] text-foreground shrink-0 border border-neo-bevel shadow-none mt-0.5 sm:mt-0">
-              {avatarInitials}
-            </div>
-            {!isCollapsed && (
-              <div className="flex-1 min-w-0">
-                <h4 className="text-xs font-bold text-foreground truncate">{userName}</h4>
-                <p className="text-[10px] text-muted truncate">{userEmail}</p>
-              </div>
-            )}
-          </div>
-          
+        {/* ── Sidebar Footer: Collapse Toggle ── */}
+        <div className="p-3 shrink-0 border-t border-border flex flex-col gap-1">
           <button
-            onClick={handleLogout}
-            className={`flex items-center text-[13px] font-medium transition-colors duration-200 w-full group ${
-              isCollapsed 
-                ? "justify-center p-2 rounded-button text-muted-foreground hover:text-red-500 hover:bg-red-500/10" 
-                : "gap-2.5 rounded-button px-3 py-2 text-muted-foreground hover:text-red-500 hover:bg-red-500/10"
-            }`}
-            title={isCollapsed ? "Đăng xuất" : undefined}
+            type="button"
+            onClick={toggleSidebarCollapse}
+            className={cn(
+              "h-[34px] text-xs font-sans font-medium rounded-sm text-muted-foreground hover:text-foreground hover:bg-surface-hover transition-colors flex items-center justify-center gap-2 w-full cursor-pointer",
+              isCollapsed && "px-0"
+            )}
+            title={isCollapsed ? "Mở rộng thanh bên" : "Thu gọn thanh bên"}
+            aria-label={isCollapsed ? "Mở rộng thanh bên" : "Thu gọn thanh bên"}
           >
-            <ArrowRightOnRectangleIcon className="w-5 h-5 shrink-0 transition-transform duration-300 group-hover:translate-x-1" />
-            {!isCollapsed && <span>Đăng xuất</span>}
+            <ChevronLeftIcon
+              className={cn(
+                "w-4 h-4 stroke-[1.5] transition-transform duration-200",
+                isCollapsed && "rotate-180"
+              )}
+            />
+            {!isCollapsed && <span>Thu gọn</span>}
           </button>
         </div>
       </div>

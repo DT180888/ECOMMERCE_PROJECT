@@ -33,14 +33,14 @@ export function ProductFormSkuOptionsEditor({ control, index, variantOptions, ge
   const optsFA = useFieldArray({ control, name: `skus.${index}.options` as const });
 
   return (
-    <div className="rounded-button bg-muted/20 p-4 space-y-2 mt-2">
+    <div className="rounded-[2px] bg-muted/20 p-4 space-y-2 mt-2 border border-border/60">
       <div className="flex items-center justify-between">
         <div className="text-[10px] font-bold text-muted uppercase tracking-wider flex items-center gap-1">
           <SwatchIcon className="w-3 h-3" /> Thuộc tính biến thể
         </div>
         <Button
           type="button"
-          size="sm"
+          size="default"
           variant="ghost"
           onClick={() => optsFA.append({ attributeId: 0, value: "" })}
           className="text-xs h-6 px-2 text-accent hover:bg-accent/10"
@@ -93,7 +93,7 @@ export function ProductFormSkuOptionsEditor({ control, index, variantOptions, ge
               type="button"
               variant="ghost"
               onClick={() => optsFA.remove(oIdx)}
-              className="h-[36px] w-[36px] p-0 text-muted hover:text-destructive hover:bg-destructive/10 rounded-inner"
+              className="h-[36px] w-[36px] p-0 text-muted hover:text-destructive hover:bg-destructive/10 rounded-[2px]"
             >
               <XMarkIcon className="w-3 h-3 md:w-4 md:h-4" />
             </Button>

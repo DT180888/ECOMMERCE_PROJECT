@@ -4,20 +4,22 @@
   "version": "1.0.0",
   "packageManager": "npm@11.2.0",
   "workspaces": [
-    "apps/*",
-    "packages/*"
+    "apps/*"
   ],
   "scripts": {
-    "dev": "turbo dev --filter=@my-project/crm-admin --filter=@my-project/ecommerce-client",
-    "dev:all": "turbo dev",
-    "dev:mobile": "turbo dev --filter=@my-project/E-mobile-app",
-    "dev:web": "turbo dev --filter=@my-project/ecommerce-client",
-    "dev:admin": "turbo dev --filter=@my-project/crm-admin",
+    "dev": "turbo dev",
+    "dev:admin": "npm run dev --workspace=@my-project/crm-admin",
+    "dev:client": "npm run dev --workspace=@my-project/ecommerce-client",
     "build": "turbo build",
+    "build:admin": "npm run build --workspace=@my-project/crm-admin",
+    "build:client": "npm run build --workspace=@my-project/ecommerce-client",
     "lint": "turbo lint",
     "preview": "turbo preview"
   },
   "devDependencies": {
     "turbo": "^2.0.4"
+  },
+  "dependencies": {
+    "@phosphor-icons/react": "^2.1.10"
   }
 }

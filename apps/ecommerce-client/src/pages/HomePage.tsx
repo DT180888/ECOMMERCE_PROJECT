@@ -1,5 +1,6 @@
 import React, { lazy, Suspense } from "react";
 import { Hero, TrustBadges, CategoryQuickNav } from "@components/home";
+import { Skeleton } from "@my-project/ui";
 
 // Tách mã (Code-splitting) cho các khối nội dung lớn bên dưới để tối ưu tốc độ tải trang đầu
 const ProductGridShowcase = lazy(() => import("@components/product/ProductGridShowcase"));
@@ -9,12 +10,12 @@ const LookbookStylingSlider = lazy(() => import("@components/home/LookbookStylin
  * Khung giữ chỗ mượt mà (Skeleton Fallback) khi tải các module con
  */
 const SectionFallback = () => (
-  <div 
+  <Skeleton 
     aria-hidden="true" 
-    className="w-full min-h-[40vh] bg-surface/30 border-b border-border/60 animate-pulse flex items-center justify-center select-none"
+    className="w-full min-h-[40vh] border-b border-border/60 flex items-center justify-center select-none rounded-none"
   >
     <div className="w-8 h-8 rounded-none border border-muted-foreground/30 border-t-foreground animate-spin" />
-  </div>
+  </Skeleton>
 );
 
 /**

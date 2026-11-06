@@ -4,7 +4,7 @@ import { useSmartCart } from "@hooks/useSmartCart";
 import AddressBook from "@components/address/AddressBook";
 import AddressPicker from "@components/address/AddressPicker";
 import { useCheckoutOrder, useCheckoutPreview } from "@hooks/useOrder";
-import { Button } from "@my-project/ui";
+import { Button, Skeleton } from "@my-project/ui";
 import { TextArea } from "@my-project/ui";
 import { Checkbox } from "@my-project/ui";
 import { useToast } from "@my-project/ui";
@@ -83,11 +83,11 @@ export default function CheckoutPage() {
 
   if (isLoading) {
     return (
-      <div className="client-page-container py-10 flex flex-col responsive-gap animate-pulse">
-        <div className="h-10 w-48 bg-muted/10 rounded-button" />
+      <div className="client-page-container py-10 flex flex-col responsive-gap">
+        <Skeleton className="h-10 w-48" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          <div className="h-96 bg-muted/10 rounded-card" />
-          <div className="h-96 bg-muted/10 rounded-card" />
+          <Skeleton className="h-96 w-full" />
+          <Skeleton className="h-96 w-full" />
         </div>
       </div>
     );

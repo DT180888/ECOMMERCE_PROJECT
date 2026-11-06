@@ -1,4 +1,4 @@
-import { cn } from "@my-project/ui";
+import { cn, Skeleton } from "@my-project/ui";
 
 export function SkeletonRow({
   colCount,
@@ -8,17 +8,17 @@ export function SkeletonRow({
   withCheckbox: boolean;
 }) {
   return (
-    <tr className="animate-pulse" aria-hidden="true">
+    <tr aria-hidden="true">
       {withCheckbox && (
-        <td className="px-4 py-3.5 md:py-5 md:px-6 w-10">
-          <div className="h-4 w-4 rounded-inner bg-foreground/8 mx-auto" />
+        <td className="py-2.5 px-3 w-10">
+          <Skeleton className="h-4 w-4 mx-auto rounded-[2px]" />
         </td>
       )}
       {Array.from({ length: colCount }).map((_, i) => (
-        <td key={i} className="px-4 py-3.5 md:py-5 md:px-6">
-          <div
+        <td key={i} className="py-2.5 px-3">
+          <Skeleton
             className={cn(
-              "h-4 rounded-inner bg-foreground/8",
+              "h-3.5 rounded-[2px]",
               i === 0 ? "w-3/4" : i === colCount - 1 ? "w-1/3 ml-auto" : "w-1/2"
             )}
           />

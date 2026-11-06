@@ -3,7 +3,7 @@ import AddressBook from "@components/address/AddressBook";
 import ProfileInfoSection from "./components/ProfileInfoSection";
 import ChangePasswordSection from "./components/ChangePasswordSection";
 import { useMyProfile } from "@hooks/useUser";
-import { Button } from "@my-project/ui";
+import { Button, Skeleton } from "@my-project/ui";
 import { User, MapPin } from "lucide-react";
 
 export default function UserProfilePage() {
@@ -18,12 +18,12 @@ export default function UserProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-6 animate-pulse">
-        <div className="h-10 bg-muted/10 rounded-button w-48" />
-        <div className="h-12 bg-muted/10 rounded-button w-72" />
+      <div className="space-y-6">
+        <Skeleton className="h-10 w-48" />
+        <Skeleton className="h-12 w-72" />
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-7 h-64 bg-muted/10 rounded-card" />
-          <div className="lg:col-span-5 h-64 bg-muted/10 rounded-card" />
+          <Skeleton className="lg:col-span-7 h-64" />
+          <Skeleton className="lg:col-span-5 h-64" />
         </div>
       </div>
     );

@@ -1,9 +1,10 @@
-﻿
-import { useState, useEffect } from "react";
+
+import { useState, useEffect, useMemo } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, Checkbox, Input, Button } from "@my-project/ui";
+import { AdminTable, type AdminTableColumn } from "@shared/ui";
 import { useProductList } from "@hooks/useProduct";
 import { useUpdateCollectionProducts } from "@hooks/useCollection";
-import type { CollectionDto } from "@my-project/api";
+import type { CollectionDto, ProductCard } from "@my-project/api";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 
@@ -80,16 +81,64 @@ export function AssignProductsModal({ isOpen, onClose, collection }: AssignProdu
 
   const isLoading = isCurrentLoading || isAllLoading;
 
+  const columns: AdminTableColumn<ProductCard>[] = useMemo(
+    () => [
+      {
+        key: "product",
+        label: "Sản phẩm",
+        isMain: true,
+        render: (product) => (
+          <div className="flex items-center gap-2">
+            {product.thumbnailUrl ? (
+              <img
+                src={product.thumbnailUrl}
+                alt={product.name}
+                className="w-8 h-8 object-cover rounded-[2px] bg-surface border border-border/40 shrink-0"
+              />
+            ) : (
+              <div className="w-8 h-8 rounded-[2px] bg-surface border border-border/40 shrink-0" />
+            )}
+            <div className="flex flex-col min-w-0">
+              <span className="text-xs font-medium text-foreground truncate">
+                {product.name}
+              </span>
+              <span className="text-[11px] font-mono text-muted-foreground truncate">
+                {product.slug}
+              </span>
+            </div>
+          </div>
+        ),
+      },
+      {
+        key: "price",
+        label: "Giá từ",
+        align: "right",
+        render: (product) => (
+          <span className="font-mono text-xs tabular-nums text-foreground font-medium">
+            {new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(
+              product.minPriceMinor
+            )}
+          </span>
+        ),
+      },
+    ],
+    []
+  );
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[700px] flex flex-col max-h-[90vh]">
-        <DialogHeader>
-          <DialogTitle>Gán sản phẩm - {collection.name}</DialogTitle>
-        </DialogHeader>
+      <DialogContent className="sm:max-w-[720px] flex flex-col max-h-[85vh] p-0 bg-surface border border-border/40 rounded-[2px] shadow-none gap-0 overflow-hidden">
+        {/* Modal Header */}
+        <div className="h-12 px-4 border-b border-border/40 flex items-center justify-between shrink-0 bg-surface">
+          <DialogTitle className="text-xs uppercase tracking-wider font-medium text-foreground">
+            Gán sản phẩm — {collection.name}
+          </DialogTitle>
+        </div>
 
-        <div className="flex-1 overflow-hidden flex flex-col gap-4 py-4 min-h-0">
+        {/* Modal Body */}
+        <div className="flex-1 overflow-hidden flex flex-col gap-3 p-4 min-h-0 bg-background">
           <div className="relative">
-            <MagnifyingGlassIcon className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <MagnifyingGlassIcon className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
             <Input
               value={keyword}
               onChange={(e) => {
@@ -97,116 +146,82 @@ export function AssignProductsModal({ isOpen, onClose, collection }: AssignProdu
                 setPage(1);
               }}
               placeholder="Tìm kiếm sản phẩm theo tên..."
-              className="pl-10 shadow-neo-inset border-border/10"
+              className="pl-8 h-8 text-xs bg-surface border-border/40 rounded-[2px] w-full focus:bg-background transition-colors"
             />
           </div>
 
-          <div className="flex-1 overflow-auto border border-border/10 rounded-card bg-card">
-            <table className="w-full text-sm text-left">
-              <thead className="bg-secondary/10 sticky top-0 z-10 text-muted-foreground">
-                <tr>
-                  <th className="px-4 py-3 w-12 text-center">
-                    <Checkbox
-                      checked={isPageAllChecked}
-                      onChange={(e) => handleToggleAllOnPage(e.target.checked)}
-                      aria-label="Select all on page"
-                    />
-                  </th>
-                  <th className="px-4 py-3 font-medium">Sản phẩm</th>
-                  <th className="px-4 py-3 font-medium text-right">Giá từ</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border/10">
-                {isLoading ? (
-                  <tr>
-                    <td colSpan={3} className="px-4 py-8 text-center text-muted-foreground">
-                      Đang tải dữ liệu...
-                    </td>
-                  </tr>
-                ) : !allProducts?.items.length ? (
-                  <tr>
-                    <td colSpan={3} className="px-4 py-8 text-center text-muted-foreground italic">
-                      Không tìm thấy sản phẩm nào
-                    </td>
-                  </tr>
-                ) : (
-                  allProducts.items.map((product) => {
-                    const isChecked = selectedIds.includes(product.productId);
-                    return (
-                      <tr key={product.productId} className="hover:bg-muted/5 transition-colors group">
-                        <td className="px-4 py-3 text-center">
-                          <Checkbox
-                            checked={isChecked}
-                            onChange={(e) => handleToggleProduct(product.productId, e.target.checked)}
-                            aria-label={`Select ${product.name}`}
-                          />
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-3">
-                            {product.thumbnailUrl ? (
-                              <img src={product.thumbnailUrl} alt={product.name} className="w-10 h-10 object-cover rounded-inner bg-secondary/10" />
-                            ) : (
-                              <div className="w-10 h-10 rounded-inner bg-secondary/10 border border-border/10" />
-                            )}
-                            <div className="flex flex-col">
-                              <span className="font-medium text-foreground line-clamp-1">{product.name}</span>
-                              <span className="text-xs text-muted-foreground">{product.slug}</span>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 text-right whitespace-nowrap text-muted-foreground">
-                          {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.minPriceMinor)}
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
+          <div className="flex-1 overflow-auto min-h-0 border-y border-border/40 bg-background">
+            <AdminTable
+              columns={columns}
+              data={allProducts?.items ?? []}
+              isLoading={isLoading}
+              rowKey="productId"
+              onRowClick={(item) => handleToggleProduct(item.productId, !selectedIds.includes(item.productId))}
+              selection={{
+                selected: new Set(selectedIds),
+                onSelect: (id, checked) => handleToggleProduct(id as number, checked),
+                onSelectAll: handleToggleAllOnPage,
+                getRowKey: (item: any) => item.productId,
+              }}
+              emptyText="Không tìm thấy sản phẩm nào"
+            />
           </div>
 
-          {/* Pagination */}
-          {allProducts && allProducts.total > size && (
-            <div className="flex items-center justify-between mt-2">
-              <span className="text-sm text-muted-foreground">
-                Trang {page} / {Math.ceil(allProducts.total / size)} (Tổng {allProducts.total})
-              </span>
-              <div className="flex gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="hover:bg-secondary/20 shadow-none border border-border/10"
-                  disabled={page === 1}
-                  onClick={() => setPage(p => p - 1)}
-                >
-                  Trước
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="hover:bg-secondary/20 shadow-none border border-border/10"
-                  disabled={page >= Math.ceil(allProducts.total / size)}
-                  onClick={() => setPage(p => p + 1)}
-                >
-                  Sau
-                </Button>
+          {/* Sub-footer inside body */}
+          <div className="flex items-center justify-between text-xs text-muted-foreground shrink-0 pt-1">
+            <span className="text-[11px]">
+              Đã chọn: <span className="font-mono tabular-nums font-medium text-foreground">{selectedIds.length}</span> sản phẩm
+            </span>
+            {allProducts && allProducts.total > size && (
+              <div className="flex items-center gap-2 text-[11px] font-mono tabular-nums">
+                <span>
+                  Trang {page} / {Math.ceil(allProducts.total / size)}
+                </span>
+                <div className="flex gap-1">
+                  <Button
+                    variant="ghost"
+                    size="default"
+                    className="h-6 px-2 text-xs rounded-[2px]"
+                    disabled={page === 1}
+                    onClick={() => setPage((p) => p - 1)}
+                  >
+                    Trước
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="default"
+                    className="h-6 px-2 text-xs rounded-[2px]"
+                    disabled={page >= Math.ceil(allProducts.total / size)}
+                    onClick={() => setPage((p) => p + 1)}
+                  >
+                    Sau
+                  </Button>
+                </div>
               </div>
-            </div>
-          )}
-          
-          <div className="text-sm text-muted-foreground">
-            Đã chọn: <span className="font-medium text-foreground">{selectedIds.length}</span> sản phẩm
+            )}
           </div>
         </div>
 
-        <DialogFooter className="mt-auto">
-          <Button type="button" variant="outline" onClick={onClose} disabled={updateMut.isPending}>
+        {/* Modal Footer */}
+        <div className="h-12 px-4 border-t border-border/40 bg-surface/40 flex items-center justify-center gap-2 shrink-0">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+            disabled={updateMut.isPending}
+            className="h-8 px-3 text-xs font-normal rounded-[2px] border-border/40"
+          >
             Hủy
           </Button>
-          <Button type="button" onClick={handleSubmit} disabled={updateMut.isPending || isCurrentLoading}>
+          <Button
+            type="button"
+            onClick={handleSubmit}
+            disabled={updateMut.isPending || isCurrentLoading}
+            className="h-8 px-4 text-xs font-normal rounded-[2px]"
+          >
             {updateMut.isPending ? "Đang lưu..." : "Lưu thay đổi"}
           </Button>
-        </DialogFooter>
+        </div>
       </DialogContent>
     </Dialog>
   );

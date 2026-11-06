@@ -1,21 +1,25 @@
-﻿import { useState } from "react";
+import { useMemo } from "react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useRevenueChart } from "@hooks/useStats";
 import { formatVND } from "@my-project/shared-utils";
+import type { DateRangeParams } from "@my-project/api";
 import { ChartBarIcon } from "@heroicons/react/24/outline";
-import { cn } from "@my-project/ui";
+import { Skeleton } from "@my-project/ui";
 
-const RANGE_OPTIONS = [7, 14, 30] as const;
+interface RevenueChartProps {
+  dateRange?: DateRangeParams;
+  displayLabel?: string;
+}
 
 /** Bar skeleton while loading */
 function ChartSkeleton() {
-  const bars = [40, 65, 50, 80, 55, 90, 70];
+  const bars = [35, 60, 45, 80, 50, 85, 65];
   return (
-    <div className="w-full h-full flex items-end gap-3 px-4 pb-6 animate-pulse">
+    <div className="w-full h-full flex items-end gap-3 px-4 pb-6">
       {bars.map((h, i) => (
-        <div
+        <Skeleton
           key={i}
-          className="flex-1 rounded-t-sm bg-muted/30"
+          className="flex-1 rounded-t-md"
           style={{ height: `${h}%` }}
         />
       ))}
@@ -23,66 +27,88 @@ function ChartSkeleton() {
   );
 }
 
-export function RevenueChart() {
-  const [days, setDays] = useState<7 | 14 | 30>(7);
-  const { data, isLoading } = useRevenueChart(days);
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{ value: number }>;
+  label?: string;
+}
+
+function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
+  if (!active || !payload || !payload.length) return null;
+  const value = payload[0].value;
+  return (
+    <div className="bg-card border border-border px-3 py-2 rounded-sm shadow-sm text-xs select-none font-sans">
+      <p className="text-xs text-muted-foreground font-medium mb-1">
+        {label}
+      </p>
+      <div className="flex items-center gap-1.5">
+        <span className="w-2 h-2 rounded-full bg-primary" />
+        <span className="text-foreground font-semibold text-xs">
+          {formatVND(value)}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+export function RevenueChart({ dateRange, displayLabel }: RevenueChartProps) {
+  const { data, isLoading } = useRevenueChart({
+    from: dateRange?.from,
+    to: dateRange?.to,
+    interval: "auto",
+  });
+
+  const totalPeriodRevenue = useMemo(() => {
+    if (!data || !data.length) return 0;
+    return data.reduce((acc, curr) => acc + (curr.revenue || 0), 0);
+  }, [data]);
 
   return (
-    <div className="bg-card border border-neo-bevel shadow-none rounded-card p-6 h-full flex flex-col">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-5 gap-3">
-        <div>
-          <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
-            <ChartBarIcon className="w-3 h-3 md:w-4 md:h-4 text-muted-foreground" aria-hidden="true" />
-            Doanh thu theo ngày
+    <div className="bg-card border border-border rounded-sm h-full flex flex-col justify-between overflow-hidden shadow-none font-sans">
+      {/* Header (Aligned to h-11 / 44px baseline) */}
+      <div className="px-4 h-11 flex items-center justify-between border-b border-border bg-surface shrink-0">
+        <div className="flex items-center gap-2 min-w-0">
+          <ChartBarIcon className="w-4 h-4 text-primary stroke-[1.75] shrink-0" aria-hidden="true" />
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-foreground truncate">
+            Dòng tiền Doanh thu
           </h3>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Dòng tiền {days} ngày gần nhất
-          </p>
+          {displayLabel && (
+            <span className="hidden sm:inline-block text-[11px] font-medium text-muted-foreground px-2 py-0.5 rounded-sm bg-surface-tertiary border border-border shrink-0">
+              {displayLabel}
+            </span>
+          )}
         </div>
-
-        {/* Range selector */}
-        <div className="flex bg-foreground/[0.02] border border-neo-bevel p-1 rounded-button gap-1">
-          {RANGE_OPTIONS.map((d) => (
-            <button
-              key={d}
-              onClick={() => setDays(d)}
-              className={cn(
-                "px-3 py-1.5 text-xs font-semibold rounded-button transition-all duration-300 ease-out",
-                days === d
-                  ? "bg-card text-foreground shadow-neo-sm border border-neo-bevel"
-                  : "text-muted hover:text-foreground hover:bg-foreground/[0.02]"
-              )}
-            >
-              {d}N
-            </button>
-          ))}
+        <div className="flex items-center gap-1.5 text-xs shrink-0">
+          <span className="hidden sm:inline-block text-xs text-muted-foreground">Tổng kỳ:</span>
+          <span className="font-bold text-foreground text-xs">
+            {formatVND(totalPeriodRevenue)}
+          </span>
         </div>
       </div>
 
-      {/* Chart area */}
-      <div className="flex-1 min-h-[200px] w-full">
+      {/* Chart Canvas Area */}
+      <div className="flex-1 min-h-[190px] sm:min-h-[220px] w-full p-2 sm:p-4 pt-3">
         {isLoading ? (
           <ChartSkeleton />
         ) : !data || data.length === 0 ? (
-          <div className="w-full h-full flex items-center justify-center border border-dashed border-border/50 rounded-button">
-            <p className="text-sm text-muted-foreground">
-              Chưa có dữ liệu trong khoảng thời gian này
+          <div className="w-full h-full flex items-center justify-center border border-dashed border-border rounded-lg p-8">
+            <p className="text-xs text-muted-foreground font-sans">
+              Không có dữ liệu giao dịch trong kỳ đã chọn
             </p>
           </div>
         ) : (
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+            <AreaChart data={data} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
               <defs>
-                <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.2} />
-                  <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                <linearGradient id="fluentRevenueGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.25} />
+                  <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.0} />
                 </linearGradient>
               </defs>
 
               <CartesianGrid
                 strokeDasharray="3 3"
-                stroke="hsl(var(--border) / 0.4)"
+                stroke="hsl(var(--border))"
                 vertical={false}
               />
 
@@ -91,35 +117,34 @@ export function RevenueChart() {
                 tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
                 tickLine={false}
                 axisLine={false}
-                dy={8}
+                dy={6}
+                interval="preserveStartEnd"
+                tickFormatter={(val: string) => {
+                  if (!val) return "";
+                  const parts = val.split("-");
+                  if (parts.length === 3) {
+                    return `${parts[2]}/${parts[1]}`;
+                  }
+                  return val;
+                }}
               />
 
               <YAxis
                 tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
                 tickFormatter={(v: number) => {
-                  if (v >= 1_000_000) return `${v / 1_000_000}M`;
-                  if (v >= 1_000) return `${v / 1_000}k`;
+                  if (v >= 1_000_000_000) return `${(v / 1_000_000_000).toFixed(1)}B`;
+                  if (v >= 1_000_000) return `${(v / 1_000_000).toFixed(0)}M`;
+                  if (v >= 1_000) return `${(v / 1_000).toFixed(0)}k`;
                   return String(v);
                 }}
                 tickLine={false}
                 axisLine={false}
-                width={44}
+                width={38}
               />
 
               <Tooltip
-                contentStyle={{
-                  backgroundColor: "hsl(var(--card))",
-                  borderColor: "hsl(var(--foreground) / 0.06)",
-                  borderRadius: "8px",
-                  fontSize: "12px",
-                  color: "hsl(var(--foreground))",
-                  boxShadow: "0 8px 16px rgba(0, 0, 0, 0.08)",
-                  padding: "10px 14px",
-                  border: "1px solid hsl(var(--foreground) / 0.06)",
-                }}
-                formatter={(value: number) => [formatVND(value), "Doanh thu"]}
-                labelStyle={{ color: "hsl(var(--muted-foreground))", marginBottom: 4 }}
-                cursor={{ stroke: "hsl(var(--border))", strokeWidth: 1, strokeDasharray: "4 4" }}
+                content={<CustomTooltip />}
+                cursor={{ stroke: "hsl(var(--primary))", strokeWidth: 1, strokeDasharray: "3 3" }}
               />
 
               <Area
@@ -127,9 +152,9 @@ export function RevenueChart() {
                 dataKey="revenue"
                 stroke="hsl(var(--primary))"
                 strokeWidth={2}
-                fill="url(#revenueGrad)"
-                activeDot={{ r: 5, strokeWidth: 0, fill: "hsl(var(--primary))" }}
-                animationDuration={800}
+                fill="url(#fluentRevenueGrad)"
+                activeDot={{ r: 4, strokeWidth: 2, stroke: "hsl(var(--card))", fill: "hsl(var(--primary))" }}
+                animationDuration={300}
               />
             </AreaChart>
           </ResponsiveContainer>
@@ -138,6 +163,4 @@ export function RevenueChart() {
     </div>
   );
 }
-
-
-
+export default RevenueChart;

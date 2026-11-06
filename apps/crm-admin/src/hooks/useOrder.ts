@@ -1,6 +1,21 @@
 import { useMutation, useQuery, useQueryClient, keepPreviousData } from "@tanstack/react-query";
-import { apiCheckoutFromCart, apiGetMyOrders, apiGetOrderDetail, getCheckoutPreview } from "@my-project/api";
-import type { CheckoutReq, MyOrderListRes, OrderDetail, OrderId, CheckoutPreviewDto } from "@my-project/api";
+import { 
+  apiCheckoutFromCart, 
+  apiGetMyOrders, 
+  apiGetOrderDetail, 
+  getCheckoutPreview,
+  apiGetAdminOrders,
+  apiGetAdminOrderDetail,
+  apiUpdateAdminOrderStatus
+} from "@my-project/api";
+import type { 
+  CheckoutReq, 
+  MyOrderListRes, 
+  OrderDetail, 
+  OrderId, 
+  CheckoutPreviewDto,
+  AdminOrderListRes
+} from "@my-project/api";
 
 export const orderKeys = {
   root: ["orders"] as const,
@@ -36,9 +51,14 @@ export function useAdminOrders(params?: { page?: number; size?: number; status?:
   const page = params?.page ?? 1;
   const size = params?.size ?? 10;
 
-  return useQuery<any>({
+  return useQuery<AdminOrderListRes>({
     queryKey: orderKeys.list(params),
-    queryFn: () => apiGetMyOrders({ page, size }),
+    queryFn: () => apiGetAdminOrders({ 
+      page, 
+      size, 
+      status: params?.status, 
+      keyword: params?.search 
+    }),
     placeholderData: keepPreviousData,
   });
 }
@@ -53,13 +73,19 @@ export function useOrderDetail(id?: OrderId, opts?: { enabled?: boolean }) {
 }
 
 export function useAdminOrderDetail(id?: OrderId, opts?: { enabled?: boolean }) {
-  return useOrderDetail(id, opts);
+  return useQuery<OrderDetail>({
+    queryKey: orderKeys.detail(id!),
+    queryFn: () => apiGetAdminOrderDetail(id!),
+    enabled: opts?.enabled ?? !!id,
+    staleTime: 1000 * 60 * 5,
+  });
 }
 
 export function useUpdateAdminOrderStatus() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ orderId, status }: { orderId: number; status: number }) => {
+    mutationFn: async ({ orderId, status, note }: { orderId: number; status: number; note?: string }) => {
+      await apiUpdateAdminOrderStatus(orderId, { status, note });
       return { orderId, status };
     },
     onSuccess: () => {

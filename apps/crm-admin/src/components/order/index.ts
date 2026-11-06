@@ -1,3 +1,3 @@
-export * from "./catalog-list/AdminOrderList";
-export * from "./order-detail/AdminOrderDetail";
-export * from "./OrderStatusBadge";
+export * from "./catalog-list/OrderList";
+export * from "./catalog-list/useOrderColumns";
+export * from "./order-detail/OrderDetail";

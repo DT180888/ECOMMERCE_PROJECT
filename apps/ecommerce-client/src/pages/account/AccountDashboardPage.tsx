@@ -5,7 +5,7 @@ import { useMyOrders } from "@hooks/useOrder";
 import { useAddressList } from "@hooks/useAddress";
 import { useLogout } from "@hooks/useAuth";
 import { getOrderStatusConfig } from "@my-project/shared-utils";
-import { Button } from "@my-project/ui";
+import { Button, Skeleton } from "@my-project/ui";
 
 const formatVND = (minor?: number | null) =>
   new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(
@@ -26,14 +26,14 @@ export default function AccountDashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-8 animate-pulse">
-        <div className="h-10 bg-muted/10 rounded-button w-48" />
+      <div className="space-y-8">
+        <Skeleton className="h-10 w-48" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="h-48 bg-muted/10 rounded-card lg:col-span-1" />
-          <div className="h-48 bg-muted/10 rounded-card lg:col-span-2" />
-          <div className="h-48 bg-muted/10 rounded-card lg:col-span-1" />
-          <div className="h-48 bg-muted/10 rounded-card lg:col-span-1" />
-          <div className="h-48 bg-muted/10 rounded-card lg:col-span-1" />
+          <Skeleton className="h-48 lg:col-span-1" />
+          <Skeleton className="h-48 lg:col-span-2" />
+          <Skeleton className="h-48 lg:col-span-1" />
+          <Skeleton className="h-48 lg:col-span-1" />
+          <Skeleton className="h-48 lg:col-span-1" />
         </div>
       </div>
     );

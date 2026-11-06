@@ -11,6 +11,12 @@
       "@pages/*": ["pages/*"],
       "@components/*": ["components/*"],
       "@hooks/*": ["hooks/*"],
+      "@my-project/ui": ["shared/ui/index.ts"],
+      "@my-project/ui/*": ["shared/ui/*"],
+      "@my-project/api": ["shared/api/index.ts"],
+      "@my-project/api/*": ["shared/api/*"],
+      "@my-project/shared-utils": ["shared/utils/index.ts"],
+      "@my-project/shared-utils/*": ["shared/utils/*"],
       "@schemas/*": ["schemas/*"]
     },
     "types": ["node"],

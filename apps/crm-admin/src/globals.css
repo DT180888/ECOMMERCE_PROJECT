@@ -1,0 +1,269 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Pure Modern Editorial Tri-Anchor Palette (Warm Silk, Walnut Craft & Slate Charcoal) */
+    --background: 43 100% 95%;
+    /* #FFF8E7 Warm Silk / Cosmic Milk Canvas (NO #FFFFFF) */
+    --foreground: 200 20% 15%;
+    /* #1E282D Deep Slate Charcoal Ink (NO #000000) */
+
+    --card: 35 55% 92%;
+    /* #F6EDE0 Sand Surface Card */
+    --card-foreground: 200 20% 15%;
+
+    --surface: 35 55% 92%;
+    /* #F6EDE0 Sand Surface */
+    --surface-hover: 34 47% 88%;
+    /* #EFE3D3 Surface Hover */
+
+    --popover: 35 55% 92%;
+    --popover-foreground: 200 20% 15%;
+
+    --primary: 200 20% 15%;
+    /* #1E282D Deep Slate Primary CTA (10% Focus) */
+    --primary-foreground: 43 100% 95%;
+    /* #FFF8E7 Warm Silk Text (14.2:1 AAA Contrast) */
+    --primary-hover: 200 23% 10%;
+    /* #141C20 Primary Hover */
+
+    --secondary: 35 55% 92%;
+    --secondary-foreground: 200 20% 15%;
+
+    --muted: 35 55% 92%;
+    --muted-foreground: 31 14% 34%;
+    /* #63574A Muted Meta Text */
+
+    --subtle: 36 16% 68%;
+    /* #BAAF9F Subtle Hairline / Placeholder */
+
+    --accent: 33 31% 39%;
+    --accent-foreground: 43 100% 95%;
+
+    --accent-walnut: 33 31% 39%;
+    /* #826644 Muted Walnut / Artisan Leather (30% Craft) */
+    --accent-walnut-foreground: 43 100% 95%;
+    /* #FFF8E7 Warm Silk */
+
+    --accent-linen: 43 100% 95%;
+    /* #FFF8E7 Organic Silk/Linen Accent */
+
+    --destructive: 9 55% 35%;
+    /* #8C3829 Terracotta Red */
+    --destructive-foreground: 43 100% 95%;
+
+    --border: 35 39% 85%;
+    /* #E8DCCB Hairline Border 1px */
+    --input: transparent;
+    --ring: 200 20% 15%;
+
+    --radius: 2px;
+    --radius-card: 0px;
+    --radius-button: 2px;
+    --radius-inner: 2px;
+
+    --success: 139 27% 24%;
+    /* #2D4F38 Pine Moss Green */
+    --success-foreground: 43 100% 95%;
+    --error: 9 55% 35%;
+    /* #8C3829 Terracotta Red */
+    --error-foreground: 43 100% 95%;
+    --error-muted: 9 55% 95%;
+    --warning: 30 65% 36%;
+    /* #965B20 Raw Amber Gold */
+    --warning-foreground: 43 100% 95%;
+    --info: 199 26% 27%;
+    /* #334B56 Slate Info Blue */
+    --info-foreground: 43 100% 95%;
+
+    /* Minimalist UI Badges */
+    --badge-red-bg: 9 55% 93%;
+    --badge-red-fg: 9 55% 30%;
+    --badge-blue-bg: 199 26% 92%;
+    --badge-blue-fg: 199 26% 25%;
+    --badge-green-bg: 139 27% 92%;
+    --badge-green-fg: 139 27% 20%;
+    --badge-yellow-bg: 30 65% 90%;
+    --badge-yellow-fg: 30 65% 25%;
+
+    /* Flat Architecture - Zero Shadows */
+    --shadow-light: transparent;
+    --shadow-dark: transparent;
+    --shadow-light-hover: transparent;
+    --shadow-dark-hover: transparent;
+
+    --shadow-dark-rgb: 30, 40, 45;
+    --shadow-light-rgb: 255, 248, 231;
+    --shadow-dark-opacity: 0;
+    --shadow-light-opacity: 0;
+
+    /* Glassmorphism Hairline Floating Panels */
+    --glass-bg: 43 100% 95% / 0.85;
+    --glass-border: 35 39% 85%;
+    --blur-strength: 12px;
+  }
+
+  .dark {
+    /* Pure Modern Editorial Tri-Anchor Palette (Pure Obsidian & Neutral Graphite Canvas) */
+    --background: 0 0% 7.1%;
+    /* #121212 Pure Obsidian Canvas (NO #000000) */
+    --foreground: 60 11% 95%;
+    /* #F3F3F0 Warm Silk / Kem Trắng Text (NO #FFFFFF) */
+
+    --card: 0 0% 10.2%;
+    /* #1A1A1A Graphite Card */
+    --card-foreground: 60 11% 95%;
+
+    --surface: 0 0% 12.5%;
+    /* #202020 Neutral Surface */
+    --surface-hover: 0 0% 16%;
+    /* #282828 Surface Hover */
+
+    --popover: 0 0% 12.5%;
+    --popover-foreground: 60 11% 95%;
+
+    --primary: 32 38% 62%;
+    /* #C29F78 Golden Walnut Primary CTA */
+    --primary-foreground: 0 0% 7.1%;
+    /* #121212 Obsidian Text */
+    --primary-hover: 32 36% 60%;
+    /* #BC9B75 Primary Hover */
+
+    --secondary: 0 0% 12.5%;
+    --secondary-foreground: 60 11% 95%;
+
+    --muted: 0 0% 12.5%;
+    --muted-foreground: 0 0% 62%;
+    /* #9E9E9C Muted Graphite */
+
+    --subtle: 0 0% 22%;
+    /* #383838 Hairline */
+
+    --accent: 32 28% 53%;
+    --accent-foreground: 0 0% 7.1%;
+
+    --accent-walnut: 32 28% 53%;
+    /* #A88864 Soft Walnut Accent (30% Craft) */
+    --accent-walnut-foreground: 0 0% 7.1%;
+    /* #121212 Obsidian */
+
+    --accent-linen: 60 11% 95%;
+    /* #F3F3F0 Warm Silk */
+
+    --destructive: 9 67% 64%;
+    /* #E07664 Soft Terracotta Red */
+    --destructive-foreground: 0 0% 7.1%;
+
+    --border: 0 0% 16.5%;
+    /* #2A2A2A Pure Hairline Border (0% Blue) */
+    --input: transparent;
+    --ring: 32 38% 62%;
+
+    --radius: 2px;
+    --radius-card: 0px;
+    --radius-button: 2px;
+    --radius-inner: 2px;
+
+    --success: 134 29% 56%;
+    /* #6FAF7E Soft Pine Moss Green */
+    --success-foreground: 0 0% 7.1%;
+    --error: 9 67% 64%;
+    /* #E07664 Soft Terracotta Red */
+    --error-foreground: 0 0% 7.1%;
+    --warning: 33 74% 61%;
+    /* #E5A352 Soft Raw Amber */
+    --warning-foreground: 0 0% 7.1%;
+    --info: 0 0% 60%;
+    /* #999999 Neutral Graphite Info */
+    --info-foreground: 0 0% 7.1%;
+
+    /* Glassmorphism tokens */
+    --glass-bg: 0 0% 7.1% / 0.85;
+    --glass-border: 0 0% 16.5%;
+    --blur-strength: 12px;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-display antialiased selection:bg-foreground selection:text-background;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  /* Global Minimalist Hairline Scrollbar (W3C standard for Firefox) */
+  html,
+  body,
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.25) transparent;
+  }
+
+  /* Global Minimalist Hairline Scrollbar (WebKit for Chrome, Safari, Edge) */
+  *::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground) / 0.25);
+    border-radius: 2px;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.5);
+  }
+
+  *::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+}
+
+@layer utilities {
+  /* Backward-compatible explicit custom scrollbar utility */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.25) transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground) / 0.25);
+    border-radius: 2px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.5);
+  }
+
+  /* Hidden scrollbar (for carousels/sliders) */
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Layout shift prevention utility */
+  .scrollbar-stable {
+    scrollbar-gutter: stable;
+  }
+}

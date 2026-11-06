@@ -2,8 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useAddressList } from "@hooks/useAddress";
 import type { AddressId } from "@my-project/api";
 import AddressBook from "./AddressBook";
-import { Button } from "@my-project/ui";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@my-project/ui";
+import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@my-project/ui";
 
 type AddressPickerProps = {
   selectedId?: AddressId | null;
@@ -68,7 +67,7 @@ export default function AddressPicker({
                   {current.label || "Địa chỉ"}
                 </span>
                 {current.isDefault && (
-                  <span className="text-[9px] font-bold uppercase bg-primary text-primary-foreground px-2 py-0.5 rounded-full tracking-wider shadow-neo-sm">
+                  <span className="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full tracking-wider shadow-neo-sm">
                     Mặc định
                   </span>
                 )}
@@ -107,6 +106,9 @@ export default function AddressPicker({
             <DialogTitle className="font-extrabold text-base text-foreground font-display uppercase tracking-wider">
               Chọn địa chỉ
             </DialogTitle>
+            <DialogDescription className="sr-only">
+              Chọn địa chỉ giao hàng từ danh sách sổ địa chỉ của bạn.
+            </DialogDescription>
           </DialogHeader>
 
           <div className="p-8 overflow-y-auto flex-1 custom-scrollbar">

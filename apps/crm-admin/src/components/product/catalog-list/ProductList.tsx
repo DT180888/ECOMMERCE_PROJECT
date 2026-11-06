@@ -1,12 +1,12 @@
-﻿import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useProductList } from "@hooks/useProduct";
 import type { ProductListParams, ProductCard } from "@my-project/api";
 import { useBrandOptions } from "@hooks/useBrand";
 import { useCategoryOptions } from "@hooks/useCategory";
 import { CubeIcon, ArchiveBoxXMarkIcon } from "@heroicons/react/24/outline";
-import { AdminPageShell, AdminTable, AdminPagination } from "@shared/ui";
-import { useProductColumns } from "../useProductColumns";
+import { AdminPageShell, AdminDataView } from "@shared/ui";
+import { useProductColumns } from "./useProductColumns";
 import { ProductSearchActions, ProductAdvancedPanel } from "./ProductToolbar";
 
 const SORT_OPTIONS = [
@@ -48,7 +48,6 @@ export function ProductList() {
 
   const items = data?.items ?? [];
   const total = data?.total ?? 0;
-  const totalPages = Math.max(1, Math.ceil(total / size));
 
   const brandName = useCallback(
     (bid?: number | null) =>
@@ -101,37 +100,34 @@ export function ProductList() {
   };
 
   return (
-    <AdminPageShell
-      icon={CubeIcon}
-      title="Quản lý Sản phẩm"
-      badge={`${total} sản phẩm`}
-      actions={<ProductSearchActions {...toolbarProps} />}
-      filterBar={<ProductAdvancedPanel {...toolbarProps} />}
-      noCard
-    >
-      <div className="flex flex-col flex-1 min-h-0 bg-card shadow-none rounded-card overflow-hidden">
-        <AdminTable<ProductCard>
+    <AdminPageShell>
+      <AdminPageShell.Header
+        icon={CubeIcon}
+        title="Quản lý Sản phẩm"
+        badge={`${total} sản phẩm`}
+      />
+      <AdminPageShell.Body>
+        <AdminDataView<ProductCard>
           columns={columns}
           data={items}
           isLoading={isLoading}
-          skeletonRows={size}
+          rowKey="productId"
+          enableCardView={true}
+          storageKey="crm_product_view"
+          defaultViewMode="table"
+          actions={<ProductSearchActions {...toolbarProps} />}
+          expandedFilter={<ProductAdvancedPanel {...toolbarProps} />}
+          pagination={{
+            page,
+            total,
+            pageSize: size,
+            onPageChange: goPage,
+          }}
+          emptyText="Không tìm thấy sản phẩm"
           emptyIcon={ArchiveBoxXMarkIcon}
-          emptyTitle="Không tìm thấy sản phẩm"
-          emptyDescription="Thử thay đổi bộ lọc hoặc thêm sản phẩm mới."
           className="border-0 shadow-none rounded-none bg-transparent flex-1"
-          footer={
-            <AdminPagination
-              page={page}
-              totalPages={totalPages}
-              total={total}
-              pageSize={size}
-              onPageChange={goPage}
-            />
-          }
         />
-      </div>
+      </AdminPageShell.Body>
     </AdminPageShell>
   );
 }
-
-

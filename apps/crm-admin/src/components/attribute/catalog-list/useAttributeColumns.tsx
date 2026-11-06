@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { Link } from "react-router-dom";
 import { Button } from "@my-project/ui";
 import { Guard, type AdminTableColumn } from "@shared/ui";
 import { PencilSquareIcon, TrashIcon, CheckIcon, MinusIcon } from "@heroicons/react/24/outline";
@@ -8,20 +7,21 @@ import type { Attribute } from "@my-project/api";
 interface UseAttributeColumnsProps {
   hasEdit: boolean;
   hasDelete: boolean;
+  onEdit?: (id: number) => void;
   onDelete: (a: Attribute) => void;
   isDeleting: boolean;
 }
 
-export function useAttributeColumns({ hasEdit, hasDelete, onDelete, isDeleting }: UseAttributeColumnsProps) {
+export function useAttributeColumns({ hasEdit, hasDelete, onEdit, onDelete, isDeleting }: UseAttributeColumnsProps) {
   return useMemo<AdminTableColumn<Attribute>[]>(() => {
     const cols: AdminTableColumn<Attribute>[] = [
       {
         key: "attributeId",
         label: "ID",
         align: "center",
-        minWidth: "64px",
+        minWidth: "60px",
         render: (a) => (
-          <span className="font-mono text-xs text-muted-foreground">
+          <span className="font-mono tabular-nums text-xs text-muted-foreground">
             #{a.attributeId}
           </span>
         ),
@@ -31,16 +31,16 @@ export function useAttributeColumns({ hasEdit, hasDelete, onDelete, isDeleting }
         label: "Tên thuộc tính",
         isMain: true,
         render: (a) => (
-          <span className="font-medium text-foreground group-hover:text-accent transition-colors">
+          <span className="font-medium text-foreground text-xs">
             {a.name}
           </span>
         ),
       },
       {
         key: "slug",
-        label: "Mã Slug",
+        label: "Đường dẫn",
         render: (a) => (
-          <code className="text-accent/70 font-mono text-xs truncate block max-w-[160px]">
+          <code className="text-muted-foreground font-mono text-xs truncate block max-w-[160px]">
             {a.slug}
           </code>
         ),
@@ -49,7 +49,7 @@ export function useAttributeColumns({ hasEdit, hasDelete, onDelete, isDeleting }
         key: "dataType",
         label: "Kiểu dữ liệu",
         render: (a) => (
-          <span className="text-muted-foreground text-[10px] uppercase bg-foreground/8 px-2 py-1 rounded border border-foreground/5 font-bold tracking-wider">
+          <span className="text-foreground text-[10px] uppercase bg-surface px-1.5 py-0.5 rounded-[2px] font-mono tracking-wider">
             {a.dataType}
           </span>
         ),
@@ -60,7 +60,7 @@ export function useAttributeColumns({ hasEdit, hasDelete, onDelete, isDeleting }
         align: "center",
         render: (a) =>
           a.unit ? (
-            <span className="text-muted-foreground text-xs">{a.unit}</span>
+            <span className="text-muted-foreground text-xs font-mono">{a.unit}</span>
           ) : (
             <span className="text-foreground/20">—</span>
           ),
@@ -72,11 +72,11 @@ export function useAttributeColumns({ hasEdit, hasDelete, onDelete, isDeleting }
         minWidth: "64px",
         render: (a) =>
           a.isFilterable ? (
-            <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500/10 text-emerald-500 mx-auto">
-              <CheckIcon className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center justify-center w-5 h-5 rounded-[2px] bg-success/30 text-success mx-auto">
+              <CheckIcon className="w-3.5 h-3.5 stroke-[1.25]" />
             </div>
           ) : (
-            <MinusIcon className="w-3 h-3 md:w-4 md:h-4 text-foreground/20 mx-auto" />
+            <MinusIcon className="w-3 h-3 text-muted-foreground/30 mx-auto" />
           ),
       },
       {
@@ -86,11 +86,11 @@ export function useAttributeColumns({ hasEdit, hasDelete, onDelete, isDeleting }
         minWidth: "72px",
         render: (a) =>
           a.isVariant ? (
-            <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-purple-500/10 text-purple-400 mx-auto">
-              <CheckIcon className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center justify-center w-5 h-5 rounded-[2px] bg-info/30 text-info mx-auto">
+              <CheckIcon className="w-3.5 h-3.5 stroke-[1.25]" />
             </div>
           ) : (
-            <MinusIcon className="w-3 h-3 md:w-4 md:h-4 text-foreground/20 mx-auto" />
+            <MinusIcon className="w-3 h-3 text-muted-foreground/30 mx-auto" />
           ),
       },
     ];
@@ -99,41 +99,42 @@ export function useAttributeColumns({ hasEdit, hasDelete, onDelete, isDeleting }
       cols.push({
         key: "actions",
         label: "Thao tác",
-        align: "center",
-        minWidth: "100px",
+        align: "right",
+        minWidth: "80px",
         sticky: "right",
+        isAction: true,
         render: (a) => (
-          <>
+          <div className="flex items-center justify-center gap-1">
             <Guard permission="Permissions.Products.Edit">
-              <Link to={`/admin/attribute/${a.attributeId}`}>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 text-muted-foreground hover:text-accent hover:bg-accent/10"
-                  title="Chỉnh sửa"
-                >
-                  <PencilSquareIcon className="w-3 h-3 md:w-4 md:h-4" />
-                </Button>
-              </Link>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                onClick={() => onEdit?.(a.attributeId)}
+                className="text-info hover:text-info hover:bg-info/20"
+                title="Chỉnh sửa thuộc tính"
+              >
+                <PencilSquareIcon className="w-3.5 h-3.5 stroke-[1.25]" />
+              </Button>
             </Guard>
 
             <Guard permission="Permissions.Products.Delete">
               <Button
                 variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-muted-foreground hover:text-red-400 hover:bg-red-500/10"
-                title="Xóa"
+                size="icon-sm"
+                className="text-error hover:text-error hover:bg-error/20"
+                title="Xóa thuộc tính"
                 onClick={() => onDelete(a)}
                 disabled={isDeleting}
               >
-                <TrashIcon className="w-3 h-3 md:w-4 md:h-4" />
+                <TrashIcon className="w-3.5 h-3.5 stroke-[1.25]" />
               </Button>
             </Guard>
-          </>
+          </div>
         ),
       });
     }
 
     return cols;
-  }, [hasEdit, hasDelete, onDelete, isDeleting]);
+  }, [hasEdit, hasDelete, onEdit, onDelete, isDeleting]);
 }
+export default useAttributeColumns;

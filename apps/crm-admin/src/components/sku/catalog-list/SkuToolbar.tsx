@@ -1,7 +1,13 @@
-import { Button, Input, Label } from "@my-project/ui";
-import { MagnifyingGlassIcon, FunnelIcon, AdjustmentsHorizontalIcon } from "@heroicons/react/24/outline";
+import { Button, Input, Label, reactSelectDarkStyles } from "@my-project/ui";
+import {
+  MagnifyingGlassIcon,
+  FunnelIcon,
+  AdjustmentsHorizontalIcon,
+  ArrowPathIcon,
+  ExclamationTriangleIcon,
+} from "@heroicons/react/24/outline";
 import ReactSelect from "react-select";
-import { reactSelectDarkStyles } from "@my-project/ui";
+import { SplitPaneInspector } from "@shared/ui";
 
 export interface SkuToolbarProps {
   skuCode: string;
@@ -30,169 +36,253 @@ export interface SkuToolbarProps {
 }
 
 export function SkuSearchActions(props: SkuToolbarProps) {
-  const activeAdvancedCount = [props.minPrice, props.maxPrice, props.minStock, props.maxStock, props.isActive, props.sort].filter(Boolean).length;
+  const activeAdvancedCount = [
+    props.minPrice,
+    props.maxPrice,
+    props.minStock,
+    props.maxStock,
+    props.isActive,
+    props.sort,
+  ].filter(Boolean).length;
 
   return (
-    <div className="flex flex-wrap items-start sm:items-center gap-3 sm:gap-2 w-full">
+    <div className="flex items-center gap-2 flex-wrap md:flex-nowrap">
       {/* Search Inputs */}
-      <div className="flex flex items-center gap-2 w-full sm:w-auto">
-        <div className="w-full sm:w-40 md:w-44 lg:w-48 relative group">
-          <MagnifyingGlassIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground group-focus-within:text-foreground transition-colors" />
-          <Input
-            value={props.skuCode}
-            onChange={(e) => props.setSkuCode(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && props.apply()}
-            placeholder="Mã SKU..."
-            className="pl-8 h-8 text-xs hover:border-border focus:bg-transparent shadow-none"
-          />
-        </div>
-
-        <div className="w-full sm:w-48 md:w-52 lg:w-56 relative group">
-          <MagnifyingGlassIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground group-focus-within:text-foreground transition-colors" />
-          <Input
-            value={props.productName}
-            onChange={(e) => props.setProductName(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && props.apply()}
-            placeholder="Tên sản phẩm..."
-            className="pl-8 h-8 text-xs hover:border-border focus:bg-transparent shadow-none"
-          />
-        </div>
+      <div className="relative w-full md:w-44 group">
+        <MagnifyingGlassIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground group-focus-within:text-foreground transition-colors pointer-events-none" />
+        <Input
+          value={props.skuCode}
+          onChange={(e) => props.setSkuCode(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && props.apply()}
+          placeholder="Mã SKU..."
+          className="pl-8 text-xs bg-background border-border rounded-[2px] w-full focus:bg-surface shadow-none"
+        />
       </div>
 
-      {/* Buttons */}
-      <div className="flex items-center gap-1.5 w-full w-full sm:w-auto shrink-0 justify-end">
-        <Button
-          onClick={() => props.setIsAdvancedOpen(!props.isAdvancedOpen)}
-          variant="outline"
-          className={`w-full h-8 px-2.5 flex items-center gap-1.5 text-[11px] font-medium transition-colors shadow-none ${
-            props.isAdvancedOpen || activeAdvancedCount > 0 ? "bg-accent/10 border-accent/20 text-accent hover:bg-accent/15" : "bg-transparent text-muted-foreground hover:text-foreground hover:bg-foreground/5"
-          }`}
-        >
-          <AdjustmentsHorizontalIcon className="w-3.5 h-3.5" /> 
-          <span className="hidden lg:inline">Nâng cao</span>
-          {activeAdvancedCount > 0 && (
-            <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full text-[10px] font-bold text-accent-foreground ml-0.5">
-              {activeAdvancedCount}
-            </span>
-          )}
-        </Button>
-        
-        <Button
-          onClick={props.handleLowStockWarning}
-          variant="ghost"
-          className="w-full h-8 px-2 flex items-center gap-1.5 text-[11px] font-medium bg-amber-500/10 border border-amber-500/20 text-amber-500 hover:text-amber-600 hover:bg-amber-500/10 shadow-none"
-          title="Cảnh báo sắp hết hàng (< 10)"
-        >
-          ⚠️ <span className="hidden xl:inline">Sắp hết hàng</span>
-        </Button>
+      <div className="relative w-full md:w-56 group">
+        <MagnifyingGlassIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground group-focus-within:text-foreground transition-colors pointer-events-none" />
+        <Input
+          value={props.productName}
+          onChange={(e) => props.setProductName(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && props.apply()}
+          placeholder="Tên sản phẩm..."
+          className="pl-8 text-xs bg-background border-border rounded-[2px] w-full focus:bg-surface shadow-none"
+        />
+      </div>
 
-        {(activeAdvancedCount > 0 || props.skuCode || props.productName) && (
-          <Button
-            onClick={props.clearFilters}
-            variant="ghost"
-            className="w-full h-8 px-2.5 text-[11px] font-medium text-muted-foreground border border-muted/20 bg-foreground/10 hover:text-foreground hover:bg-foreground/5 shadow-none"
-          >
-            Xóa
-          </Button>
+      {/* Filter Drawer Trigger */}
+      <Button
+        type="button"
+        onClick={() => props.setIsAdvancedOpen(!props.isAdvancedOpen)}
+        variant="outline"
+        size="default"
+        icon={<AdjustmentsHorizontalIcon className="w-3.5 h-3.5" />}
+        className={`px-2.5 flex items-center gap-1 text-xs font-medium rounded-[2px] transition-colors shadow-none ${
+          props.isAdvancedOpen || activeAdvancedCount > 0
+            ? "bg-foreground/10 border-foreground/30 text-foreground"
+            : "bg-surface border-border text-muted-foreground hover:text-foreground"
+        }`}
+      >
+        <span className="hidden md:inline">Bộ lọc</span>
+        {activeAdvancedCount > 0 && (
+          <span className="flex h-4 min-w-[16px] px-1 items-center justify-center rounded-[2px] text-[10px] font-semibold bg-foreground text-background tabular-nums">
+            {activeAdvancedCount}
+          </span>
         )}
+      </Button>
 
+      {/* Quick low stock filter */}
+      <Button
+        type="button"
+        onClick={props.handleLowStockWarning}
+        variant="ghost"
+        size="default"
+        icon={<ExclamationTriangleIcon className="w-3.5 h-3.5" />}
+        className="px-2.5 flex items-center gap-1 text-xs font-medium rounded-[2px] bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 shadow-none shrink-0"
+        title="Lọc nhanh SKU sắp hết hàng (< 10)"
+      >
+        <span className="hidden xl:inline">Sắp hết</span>
+      </Button>
+
+      {/* Clear active filters button */}
+      {(activeAdvancedCount > 0 || props.skuCode || props.productName) && (
         <Button
-          onClick={props.apply}
-          className="w-full h-8 px-3 flex items-center gap-1.5 text-[11px] font-medium shadow-none"
+          type="button"
+          onClick={props.clearFilters}
+          variant="ghost"
+          size="default"
+          icon={<ArrowPathIcon className="w-3.5 h-3.5" />}
+          className="px-2 text-xs font-normal text-muted-foreground hover:text-foreground rounded-[2px]"
+          title="Xóa tất cả bộ lọc"
         >
-          <FunnelIcon className="w-3 h-3" /> <span className="hidden sm:inline">Áp dụng</span>
         </Button>
-      </div>
+      )}
+
+      {/* Apply Search Button */}
+      <Button
+        type="button"
+        onClick={props.apply}
+        variant="default"
+        size="default"
+        icon={<FunnelIcon className="w-3.5 h-3.5" />}
+        className="px-3 flex items-center gap-1 text-xs font-medium rounded-[2px] shadow-none shrink-0"
+      >
+        <span>Lọc</span>
+      </Button>
     </div>
   );
 }
 
-export function SkuAdvancedPanel(props: SkuToolbarProps) {
+export function SkuFilterDrawer(props: SkuToolbarProps) {
   const selectedIsActive = props.STATUS_OPTIONS.find((o) => o.value === props.isActive) || null;
   const selectedSort = props.SORT_OPTIONS.find((o) => o.value === props.sort) || null;
+  const activeCount = [
+    props.minPrice,
+    props.maxPrice,
+    props.minStock,
+    props.maxStock,
+    props.isActive,
+    props.sort,
+  ].filter(Boolean).length;
 
   return (
-    <div 
-      className={`grid overflow-hidden transition-all duration-300 ease-in-out ${
-        props.isAdvancedOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-      }`}
+    <SplitPaneInspector
+      open={props.isAdvancedOpen}
+      onClose={() => props.setIsAdvancedOpen(false)}
+      title="Bộ lọc SKU nâng cao"
+      footer={
+        <div className="flex items-center justify-between w-full">
+          <Button
+            type="button"
+            variant="ghost"
+            size="default"
+            onClick={props.clearFilters}
+            className="h-8 px-3 text-xs text-muted-foreground hover:text-foreground rounded-[2px]"
+          >
+            Đặt lại ({activeCount})
+          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="default"
+              onClick={() => props.setIsAdvancedOpen(false)}
+              className="h-8 px-3 text-xs rounded-[2px]"
+            >
+              Đóng
+            </Button>
+            <Button
+              type="button"
+              variant="default"
+              size="default"
+              onClick={props.apply}
+              className="h-8 px-4 text-xs font-medium rounded-[2px]"
+            >
+              Áp dụng bộ lọc
+            </Button>
+          </div>
+        </div>
+      }
     >
-      <div className="min-h-0 px-2">
-        <div className="p-4 bg-card rounded-br-card rounded-bl-card  border border-foreground/10 border-t-0 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 items-end">
-          {/* Status */}
-          <div className="w-full space-y-1.5">
-            <Label variant="default" className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Trạng thái</Label>
-            <ReactSelect
-              value={selectedIsActive}
-              onChange={(val: any) => props.setIsActive(val?.value ?? "")}
-              options={props.STATUS_OPTIONS}
-              placeholder="Tất cả"
-              styles={reactSelectDarkStyles}
-              menuPortalTarget={document.body}
-              isClearable
-            />
+      <div className="flex flex-col gap-4">
+        {/* Quick Alert Card */}
+        <div className="p-3 bg-surface border border-border rounded-[2px] flex items-center justify-between">
+          <div>
+            <div className="text-xs font-medium text-foreground">Cảnh báo tồn kho thấp</div>
+            <div className="text-[11px] text-muted-foreground">Lọc ngay các SKU có tồn &lt; 10</div>
           </div>
+          <Button
+            type="button"
+            size="default"
+            variant="outline"
+            onClick={props.handleLowStockWarning}
+            className="h-7 text-xs px-2.5 rounded-[2px] bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-400"
+          >
+            Lọc &lt; 10
+          </Button>
+        </div>
 
-          {/* Sort */}
-          <div className="w-full space-y-1.5">
-            <Label variant="default" className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Sắp xếp</Label>
-            <ReactSelect
-              value={selectedSort}
-              onChange={(val: any) => props.setSort(val?.value ?? "")}
-              options={props.SORT_OPTIONS}
-              placeholder="Mặc định"
-              styles={reactSelectDarkStyles}
-              menuPortalTarget={document.body}
-              isClearable
-            />
-          </div>
+        {/* Status */}
+        <div className="flex flex-col gap-1">
+          <Label className="text-xs font-medium text-foreground">Trạng thái SKU</Label>
+          <ReactSelect
+            value={selectedIsActive}
+            onChange={(val: any) => props.setIsActive(val?.value ?? "")}
+            options={props.STATUS_OPTIONS}
+            placeholder="Tất cả trạng thái"
+            styles={reactSelectDarkStyles}
+            menuPortalTarget={document.body}
+            isClearable
+          />
+        </div>
 
-          {/* Price Range */}
-          <div className="w-full space-y-1.5">
-            <Label variant="default" className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Khoảng giá</Label>
-            <div className="flex items-center gap-2">
+        {/* Sort */}
+        <div className="flex flex-col gap-1">
+          <Label className="text-xs font-medium text-foreground">Thứ tự sắp xếp</Label>
+          <ReactSelect
+            value={selectedSort}
+            onChange={(val: any) => props.setSort(val?.value ?? "")}
+            options={props.SORT_OPTIONS}
+            placeholder="Mặc định"
+            styles={reactSelectDarkStyles}
+            menuPortalTarget={document.body}
+            isClearable
+          />
+        </div>
+
+        {/* Price Range */}
+        <div className="flex flex-col gap-1">
+          <Label className="text-xs font-medium text-foreground">Khoảng giá bán (VND)</Label>
+          <div className="grid grid-cols-2 gap-2">
+            <div>
               <Input
                 type="number"
                 value={props.minPrice}
                 onChange={(e) => props.setMinPrice(e.target.value)}
-                placeholder="Từ..."
-                className="h-8 text-xs shadow-none"
+                placeholder="Tối thiểu"
+                className="h-8 text-xs bg-surface border-border rounded-[2px] w-full"
               />
-              <span className="text-muted-foreground text-xs">-</span>
+            </div>
+            <div>
               <Input
                 type="number"
                 value={props.maxPrice}
                 onChange={(e) => props.setMaxPrice(e.target.value)}
-                placeholder="Đến..."
-                className="h-8 text-xs shadow-none"
+                placeholder="Tối đa"
+                className="h-8 text-xs bg-surface border-border rounded-[2px] w-full"
               />
             </div>
           </div>
+        </div>
 
-          {/* Stock Range */}
-          <div className="w-full space-y-1.5">
-            <Label variant="default" className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Số lượng tồn</Label>
-            <div className="flex items-center gap-2">
+        {/* Stock Range */}
+        <div className="flex flex-col gap-1">
+          <Label className="text-xs font-medium text-foreground">Khoảng tồn kho</Label>
+          <div className="grid grid-cols-2 gap-2">
+            <div>
               <Input
                 type="number"
                 value={props.minStock}
                 onChange={(e) => props.setMinStock(e.target.value)}
-                placeholder="Từ..."
-                className="h-8 text-xs shadow-none"
+                placeholder="Tối thiểu"
+                className="h-8 text-xs bg-surface border-border rounded-[2px] w-full"
               />
-              <span className="text-muted-foreground text-xs">-</span>
+            </div>
+            <div>
               <Input
                 type="number"
                 value={props.maxStock}
                 onChange={(e) => props.setMaxStock(e.target.value)}
-                placeholder="Đến..."
-                className="h-8 text-xs shadow-none"
+                placeholder="Tối đa"
+                className="h-8 text-xs bg-surface border-border rounded-[2px] w-full"
               />
             </div>
           </div>
-          
         </div>
       </div>
-    </div>
+    </SplitPaneInspector>
   );
 }
+
+// Backward compatibility export
+export const SkuAdvancedPanel = SkuFilterDrawer;

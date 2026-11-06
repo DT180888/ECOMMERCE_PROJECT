@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { couponClientApi, MyVoucherDto } from "@my-project/api";
 import { Ticket, Clock, Check } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Button } from "@my-project/ui";
+import { Button, Skeleton } from "@my-project/ui";
 
 export default function MyVouchersPage() {
   const [vouchers, setVouchers] = useState<MyVoucherDto[]>([]);
@@ -32,9 +32,9 @@ export default function MyVouchersPage() {
 
   if (loading) {
     return (
-      <div className="space-y-8 animate-pulse">
-        <div className="h-16 bg-muted/10 rounded-card w-64" />
-        <div className="h-[400px] bg-muted/10 rounded-card" />
+      <div className="space-y-8">
+        <Skeleton className="h-16 w-64" />
+        <Skeleton className="h-[400px] w-full" />
       </div>
     );
   }

@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
@@ -112,7 +112,7 @@ export function CategoryForm() {
                 slug: data.slug,
                 parentId: data.parentId ? String(data.parentId) : "",
                 isFeatured: data.isFeatured,
-                imageUrl: data.img,
+                imageUrl: data.imageUrl ?? data.img ?? "",
             });
         }
     }, [isCreate, data, reset]);
@@ -123,7 +123,8 @@ export function CategoryForm() {
             slug: v.slug,
             parentId: v.parentId ? Number(v.parentId) : null,
             isFeatured: v.isFeatured,
-            img: v.imageUrl,
+            imageUrl: v.imageUrl || null,
+            img: v.imageUrl || null,
         };
         
         if (isCreate) await createMut.mutateAsync(payload);
@@ -149,8 +150,8 @@ export function CategoryForm() {
     // ----------------------------------------------------
     return (
         <div
-            className="mx-auto p-3 bg-card border border-foreground/[0.04] dark:border-white/[0.05] shadow-neo-sm h-full w-full overflow-y-auto snap-y snap-mandatory scroll-smooth 
-                      [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] rounded-card"
+            className="mx-auto p-3 bg-card border border-border/60 h-full w-full overflow-y-auto snap-y snap-mandatory scroll-smooth 
+                      [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] rounded-[2px]"
         >
             <div className="p-3 space-y-4">
                 <div className="flex items-center justify-between">

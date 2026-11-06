@@ -1,27 +1,44 @@
 import { useQuery } from "@tanstack/react-query";
-import { getAdminKpis, getRevenueChart, getRecentOrders, getTopSellingProducts, getLowStockAlerts } from "@my-project/api";
+import {
+  getAdminKpis,
+  getRevenueChart,
+  getRecentOrders,
+  getTopSellingProducts,
+  getLowStockAlerts,
+  type DateRangeParams,
+  type RevenueChartParams,
+  type TopSellingParams,
+} from "@my-project/api";
 
 export const statsKeys = {
-  kpis: ["admin", "stats", "kpis"] as const,
-  chart: (days: number) => ["admin", "stats", "chart", days] as const,
+  kpis: (params?: DateRangeParams) => ["admin", "stats", "kpis", params] as const,
+  chart: (params?: RevenueChartParams | number) => ["admin", "stats", "chart", params] as const,
+  topSelling: (params?: TopSellingParams | number) => ["admin", "stats", "top-selling", params] as const,
   recentOrders: (count: number) => ["admin", "stats", "recent-orders", count] as const,
-  topSelling: (limit: number) => ["admin", "stats", "top-selling", limit] as const,
   lowStockAlerts: (limit: number) => ["admin", "stats", "low-stock-alerts", limit] as const,
 };
 
-export function useAdminKpis() {
+export function useAdminKpis(params?: DateRangeParams) {
   return useQuery({
-    queryKey: statsKeys.kpis,
-    queryFn: getAdminKpis,
+    queryKey: statsKeys.kpis(params),
+    queryFn: () => getAdminKpis(params),
     staleTime: 5 * 60 * 1000,
   });
 }
 
-export function useRevenueChart(days: number = 7) {
+export function useRevenueChart(params?: RevenueChartParams | number) {
   return useQuery({
-    queryKey: statsKeys.chart(days),
-    queryFn: () => getRevenueChart(days),
-    staleTime: 10 * 60 * 1000,
+    queryKey: statsKeys.chart(params),
+    queryFn: () => getRevenueChart(params),
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+export function useTopSellingProducts(params?: TopSellingParams | number) {
+  return useQuery({
+    queryKey: statsKeys.topSelling(params),
+    queryFn: () => getTopSellingProducts(params),
+    staleTime: 5 * 60 * 1000,
   });
 }
 
@@ -29,15 +46,7 @@ export function useRecentOrders(count = 5) {
   return useQuery({
     queryKey: statsKeys.recentOrders(count),
     queryFn: () => getRecentOrders(count),
-    refetchInterval: 30_000, 
-  });
-}
-
-export function useTopSellingProducts(limit = 5) {
-  return useQuery({
-    queryKey: statsKeys.topSelling(limit),
-    queryFn: () => getTopSellingProducts(limit),
-    staleTime: 5 * 60 * 1000,
+    refetchInterval: 30_000,
   });
 }
 

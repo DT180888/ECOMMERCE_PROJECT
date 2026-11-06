@@ -1,0 +1,184 @@
+/* ── YouTube Pure Charcoal Cinematic CRM Admin Theme Specification ── */
+@layer base {
+  :root {
+    /* ── Tailwind HSL Semantic Mapping (Light Mode: Milk White & Dark Ink) ── */
+    /* Canvas (Chìm): #FAF9F6 */
+    --background: 45 25% 97.3%;
+    /* Foreground / Text Primary: #161616 */
+    --foreground: 0 0% 8.6%;
+
+    /* Card & Main Surface: #FFFFFF */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 8.6%;
+
+    /* Surface (Sidebar, Toolbars, Secondary): #F3F2EE */
+    --surface: 45 14% 94.3%;
+    --surface-hover: 45 14% 89%;
+
+    /* Popover & Elevated Surfaces: #FFFFFF */
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 5.9%;
+
+    /* Primary CTA: YouTube Blue #065FD4 */
+    --primary: 214 95% 43%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 214 95% 36%;
+
+    /* Secondary: #E5E5E5 */
+    --secondary: 0 0% 89.8%;
+    --secondary-foreground: 0 0% 5.9%;
+
+    --muted: 0 0% 84.7%;
+    --muted-foreground: 0 0% 37.6%;
+
+    --subtle: 0 0% 89.8%;
+
+    /* Accent */
+    --accent: 214 95% 43%;
+    --accent-foreground: 0 0% 100%;
+    --accent-soft: 214 95% 43% / 0.1;
+
+    --accent-walnut: 214 95% 43%;
+    --accent-walnut-foreground: 0 0% 100%;
+    --accent-linen: 0 0% 94.5%;
+
+    --destructive: 359 68% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Borders: 10% Alpha light-catching */
+    --border: 0 0% 0% / 0.10;
+    --input: 0 0% 0% / 0.20;
+    --ring: 214 95% 43%;
+
+    /* Standard Geometry (Pure Minimalism: 0px / 4px / 6px) */
+    --radius: 4px;
+    --radius-card: 4px;
+    --radius-button: 4px;
+    --radius-inner: 2px;
+
+    /* Semantic Status Colors */
+    --success: 123 46% 34%;
+    --success-foreground: 0 0% 100%;
+
+    --error: 359 68% 51%;
+    --error-foreground: 0 0% 100%;
+    --error-muted: 359 68% 95%;
+
+    --warning: 38 92% 44%;
+    --warning-foreground: 0 0% 100%;
+
+    --info: 214 95% 43%;
+    --info-foreground: 0 0% 100%;
+
+    /* Status Badges */
+    --badge-red-bg: 359 68% 51% / 0.1;
+    --badge-red-fg: 359 68% 45%;
+
+    --badge-blue-bg: 214 95% 43% / 0.1;
+    --badge-blue-fg: 214 95% 43%;
+
+    --badge-green-bg: 123 46% 34% / 0.1;
+    --badge-green-fg: 123 46% 34%;
+
+    --badge-yellow-bg: 38 92% 44% / 0.12;
+    --badge-yellow-fg: 38 92% 35%;
+
+    /* Flat 100% Elevation (Hairline & Micro-Shadow) */
+    --shadow-elevation-1: 0 0 0 1px rgba(0, 0, 0, 0.05);
+    --shadow-elevation-2: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-elevation-3: 0 4px 12px rgba(0, 0, 0, 0.06);
+    --shadow-elevation-4: 0 8px 24px rgba(0, 0, 0, 0.08);
+
+    --shadow-light: var(--shadow-elevation-1);
+    --shadow-dark: var(--shadow-elevation-2);
+    --shadow-light-hover: var(--shadow-elevation-2);
+    --shadow-dark-hover: var(--shadow-elevation-3);
+  }
+
+  [data-theme="dark"],
+  .dark {
+    /* ── Tailwind HSL Semantic Mapping (Dark Mode: Obsidian & Warm White) ── */
+    /* Canvas: #121212 */
+    --background: 0 0% 7.1%;
+    /* Foreground / Text Primary: #F3F3F0 */
+    --foreground: 60 11% 94.7%;
+
+    /* Card & Surface Elevated: #1A1A1A */
+    --card: 0 0% 10.2%;
+    --card-foreground: 60 11% 94.7%;
+
+    /* Surface (Sidebar, Header, Base Working Panel): #161616 */
+    --surface: 0 0% 8.6%;
+    --surface-hover: 0 0% 15%;
+
+    /* Popover & Elevated Modal: #282828 */
+    --popover: 0 0% 15.7%;
+    --popover-foreground: 0 0% 94.5%;
+
+    /* Primary CTA: YouTube Blue #3EA6FF */
+    --primary: 208 100% 62.2%;
+    --primary-foreground: 0 0% 5.9%;
+    --primary-hover: 208 100% 69%;
+
+    /* Secondary: #212121 */
+    --secondary: 0 0% 12.9%;
+    --secondary-foreground: 0 0% 94.5%;
+
+    --muted: 0 0% 12.9%;
+    --muted-foreground: 0 0% 44.3%;
+
+    --subtle: 0 0% 8.6%;
+
+    /* Accent */
+    --accent: 208 100% 62.2%;
+    --accent-foreground: 0 0% 5.9%;
+    --accent-soft: 208 100% 62.2% / 0.15;
+
+    --accent-walnut: 208 100% 62.2%;
+    --accent-walnut-foreground: 0 0% 5.9%;
+    --accent-linen: 0 0% 12.9%;
+
+    --destructive: 359 59% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Borders: 10% Alpha neutral light-catching (Dark Mode) */
+    --border: 0 0% 100% / 0.10;
+    --input: 0 0% 100% / 0.20;
+    --ring: 208 100% 62.2%;
+
+    /* Standard Geometry */
+    --radius: 4px;
+    --radius-card: 4px;
+    --radius-button: 4px;
+    --radius-inner: 2px;
+
+    --success: 123 46% 45%;
+    --success-foreground: 0 0% 100%;
+    --error: 359 59% 55%;
+    --error-foreground: 0 0% 100%;
+    --warning: 38 92% 55%;
+    --warning-foreground: 0 0% 5.9%;
+    --info: 208 100% 62.2%;
+    --info-foreground: 0 0% 5.9%;
+
+    --badge-red-bg: 359 59% 55% / 0.15;
+    --badge-red-fg: 359 59% 65%;
+    --badge-blue-bg: 208 100% 62.2% / 0.15;
+    --badge-blue-fg: 208 100% 62.2%;
+    --badge-green-bg: 123 46% 45% / 0.15;
+    --badge-green-fg: 123 46% 55%;
+    --badge-yellow-bg: 38 92% 44% / 0.15;
+    --badge-yellow-fg: 38 92% 58%;
+
+    /* Flat 100% Elevation (Dark Mode) */
+    --shadow-elevation-1: 0 0 0 1px rgba(255, 255, 255, 0.05);
+    --shadow-elevation-2: 0 1px 2px rgba(0, 0, 0, 0.5);
+    --shadow-elevation-3: 0 4px 12px rgba(0, 0, 0, 0.6);
+    --shadow-elevation-4: 0 8px 24px rgba(0, 0, 0, 0.7);
+
+    --shadow-light: var(--shadow-elevation-1);
+    --shadow-dark: var(--shadow-elevation-2);
+    --shadow-light-hover: var(--shadow-elevation-2);
+    --shadow-dark-hover: var(--shadow-elevation-3);
+  }
+}

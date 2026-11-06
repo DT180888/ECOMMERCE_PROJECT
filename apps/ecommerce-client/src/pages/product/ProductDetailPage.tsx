@@ -7,10 +7,11 @@ import SkuSelector from "@components/product/SkuSelector";
 import { DEFAULT_PRODUCT_IMAGE_URL } from "@my-project/shared-utils";
 import { useToast } from "@my-project/ui";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
-import { Button } from "@my-project/ui";
+import { Button, Skeleton } from "@my-project/ui";
 import { useInView } from "react-intersection-observer";
 import { Truck, RotateCcw, ShieldCheck, Headphones } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@my-project/ui";
+import ProductReviewsTab from "@components/product/ProductReviewsTab";
 
 const formatVND = (minor: number) =>
   new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(minor);
@@ -34,7 +35,7 @@ export default function ProductDetailPage() {
   const [selectedSkuPrice, setSelectedSkuPrice] = useState<number | undefined>(undefined);
   const [selectedSkuCode, setSelectedSkuCode] = useState<string | undefined>(undefined);
   const [activeImageId, setActiveImageId] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState<"description" | "specs">("description");
+  const [activeTab, setActiveTab] = useState<"description" | "specs" | "reviews">("description");
 
   const { addToCart, isActionPending } = useSmartCart();
 
@@ -114,13 +115,13 @@ export default function ProductDetailPage() {
   if (isLoading) {
     return (
       <div className="client-page-container space-y-8 mt-4">
-        <div className="h-4 w-40 bg-muted/20 rounded animate-pulse" />
+        <Skeleton className="h-4 w-40" />
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-5 aspect-square bg-muted/20 rounded-card animate-pulse max-w-[480px] w-full mx-auto" />
+          <Skeleton className="lg:col-span-5 aspect-square max-w-[480px] w-full mx-auto" />
           <div className="lg:col-span-7 space-y-4">
-            <div className="h-10 w-3/4 bg-muted/20 rounded animate-pulse" />
-            <div className="h-6 w-1/4 bg-muted/20 rounded animate-pulse" />
-            <div className="h-32 w-full bg-muted/20 rounded animate-pulse" />
+            <Skeleton className="h-10 w-3/4" />
+            <Skeleton className="h-6 w-1/4" />
+            <Skeleton className="h-32 w-full" />
           </div>
         </div>
       </div>
@@ -146,7 +147,7 @@ export default function ProductDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           
           <section className="w-full lg:col-span-5 lg:sticky lg:top-24 self-start space-y-4">
-            <div className="aspect-square w-full max-w-[480px] mx-auto rounded-card overflow-hidden bg-background shadow-neo-sm p-6 flex items-center justify-center">
+            <div className="aspect-square w-full max-w-[480px] mx-auto rounded-[2px] border border-border/60 overflow-hidden bg-surface/30 p-6 flex items-center justify-center">
               <img
                 src={displayImageUrl}
                 alt={p.name}
@@ -164,12 +165,12 @@ export default function ProductDetailPage() {
                     <button
                       key={img.imageId}
                       onClick={() => setActiveImageId(img.imageId)}
-                      className={`w-16 h-16 shrink-0 rounded-inner p-1 bg-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
-                        isActive ? "shadow-neo-inset-sm" : "shadow-neo-sm hover:shadow-neo-hover"
+                      className={`w-16 h-16 shrink-0 rounded-[2px] p-1 border transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-foreground ${
+                        isActive ? "border-foreground bg-surface" : "border-border/60 hover:border-foreground/50 bg-background"
                       }`}
                       aria-label={`Xem hình ảnh ${idx + 1}`}
                     >
-                      <div className="w-full h-full overflow-hidden rounded-gallery bg-background flex items-center justify-center p-1">
+                      <div className="w-full h-full overflow-hidden rounded-[2px] bg-background flex items-center justify-center p-1">
                         <img
                           src={thumbSrc}
                           alt={`${p.name} thumbnail ${idx + 1}`}
@@ -215,9 +216,9 @@ export default function ProductDetailPage() {
               </div>
             )}
 
-            <div ref={mainBtnRef} className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+            <div ref={mainBtnRef} className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 md:gap-3 pt-2">
               <Button
-                className="h-12 rounded-button font-bold text-sm w-full"
+                className="h-11 rounded-[2px] font-display uppercase tracking-widest text-xs font-medium w-full"
                 disabled={!selectedSkuId || isActionPending}
                 onClick={handleAddToCart}
               >
@@ -226,7 +227,7 @@ export default function ProductDetailPage() {
  
               <Button
                 variant="outline"
-                className="h-12 rounded-button font-bold text-sm w-full"
+                className="h-11 rounded-[2px] font-display uppercase tracking-widest text-xs font-medium w-full"
                 disabled={isActionPending}
                 onClick={handleBuyNow}
               >
@@ -280,11 +281,12 @@ export default function ProductDetailPage() {
         </div>
 
         <section className="w-full mt-16 pt-10">
-          <div className="h-[3px] w-full rounded-full bg-background shadow-neo-inset-sm mb-10" />
-          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "description" | "specs")}>
+          <div className="h-px w-full bg-border/60 mb-10" />
+          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "description" | "specs" | "reviews")}>
             <TabsList className="mb-8">
               <TabsTrigger value="description">Mô tả sản phẩm</TabsTrigger>
               <TabsTrigger value="specs">Thông số kỹ thuật</TabsTrigger>
+              <TabsTrigger value="reviews">Đánh giá & Nhận xét</TabsTrigger>
             </TabsList>
             
             <TabsContent value="description" className="animate-in fade-in duration-300">
@@ -301,7 +303,7 @@ export default function ProductDetailPage() {
               {p.attributes && p.attributes.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl">
                   {p.attributes.map((a) => (
-                    <div key={a.attributeId} className="flex justify-between py-3 px-4 bg-background shadow-neo-inset-sm rounded-inner text-xs">
+                    <div key={a.attributeId} className="flex justify-between py-3 px-4 bg-surface/40 border border-border/40 rounded-[2px] text-xs">
                       <span className="text-muted font-medium">{a.attributeName}</span>
                       <span className="text-foreground font-bold">{a.valueText ?? a.valueNumber ?? (a.valueBool ? "Có" : "Không")}</span>
                     </div>
@@ -311,18 +313,22 @@ export default function ProductDetailPage() {
                 <p className="text-muted italic text-sm">Chưa có thông số kỹ thuật cho sản phẩm này.</p>
               )}
             </TabsContent>
+
+            <TabsContent value="reviews" className="animate-in fade-in duration-300">
+              {p.productId && <ProductReviewsTab productId={p.productId} />}
+            </TabsContent>
           </Tabs>
         </section>
       </div>
 
       <div
-        className={`fixed bottom-0 left-0 right-0 z-50 glass-panel shadow-neo py-3 px-4 transition-transform duration-300 ${
+        className={`fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-border/60 py-3 px-4 transition-transform duration-300 ${
           !mainBtnInView && p && !isLoading ? "translate-y-0" : "translate-y-full"
         }`}
       >
         <div className="client-page-container flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-inner overflow-hidden bg-background shadow-neo-inset-sm p-1 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-[2px] overflow-hidden border border-border/60 p-1 flex items-center justify-center shrink-0">
               <img
                 src={displayImageUrl}
                 alt={p.name}

@@ -8,11 +8,13 @@ const compactSelectStyles = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: (base: any, state: any) => ({
     ...reactSelectDarkStyles.control!(base, state),
-    minHeight: "36px",
-    height: "36px",
-    fontSize: "0.875rem",
+    minHeight: "32px",
+    height: "32px",
+    fontSize: "0.75rem",
     backgroundColor: "hsl(var(--card))",
-    borderColor: state.isFocused ? "hsl(var(--accent))" : "hsl(var(--border) / 0.4)",
+    borderColor: state.isFocused ? "hsl(var(--foreground))" : "hsl(var(--border) / 0.6)",
+    borderRadius: "2px",
+    boxShadow: "none",
   }),
 };
 
@@ -71,9 +73,11 @@ export function SkuMatrixGenerator({ variantOptions, productSlug, onGenerate, to
   };
 
   return (
-    <div className="bg-muted/20 border border-foreground/[0.04] dark:border-white/[0.05] p-5 rounded-card mb-6 space-y-4 animate-in slide-in-from-top-3 duration-200">
-      <div className="flex items-center justify-between border-b border-foreground/[0.04] dark:border-white/[0.05] pb-2">
-        <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">Trình tạo ma trận biến thể</h4>
+    <div className="bg-surface/50 border border-border/60 p-4 rounded-[2px] mb-4 space-y-3 animate-in slide-in-from-top-3 duration-200">
+      <div className="flex items-center justify-between border-b border-border/60 pb-2">
+        <h4 className="text-xs font-medium font-sans text-foreground uppercase tracking-[0.16em]">
+          Trình tạo ma trận biến thể
+        </h4>
         <Button
           type="button"
           variant="ghost"
@@ -109,7 +113,7 @@ export function SkuMatrixGenerator({ variantOptions, productSlug, onGenerate, to
                   setMatrixVariants(updated);
                 }}
                 placeholder="Nhập các giá trị phân tách bằng dấu phẩy (VD: Đỏ, Xanh, Vàng)"
-                className="bg-card text-xs h-9 border-foreground/[0.08]"
+                className="bg-card text-xs h-8 border-border/60"
               />
             </div>
             <div className="md:col-span-1 flex justify-end">
@@ -118,9 +122,9 @@ export function SkuMatrixGenerator({ variantOptions, productSlug, onGenerate, to
                 variant="ghost"
                 onClick={() => setMatrixVariants((prev) => prev.filter((_, i) => i !== mIdx))}
                 disabled={matrixVariants.length <= 1}
-                className="h-9 w-9 p-0 text-muted hover:text-error hover:bg-error/10 rounded-button"
+                className="h-8 w-8 p-0 text-muted-foreground hover:text-error hover:bg-error/10 rounded-[2px]"
               >
-                <TrashIcon className="w-4 h-4" />
+                <TrashIcon className="w-3.5 h-3.5" />
               </Button>
             </div>
           </div>

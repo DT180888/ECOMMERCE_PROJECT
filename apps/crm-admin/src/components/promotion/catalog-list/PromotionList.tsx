@@ -1,21 +1,28 @@
 import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { promotionApi, ActivePromotionDto as PromotionDto } from "@my-project/api";
 import { TagIcon, ArchiveBoxXMarkIcon } from "@heroicons/react/24/outline";
 import {
   AdminPageShell,
   AdminTable,
-  AdminPagination,
 } from "@shared/ui";
 import { useToast } from "@my-project/ui";
 import { useQuery } from "@tanstack/react-query";
+import { useDrawerSearchParams } from "@hooks/useDrawerSearchParams";
 import { usePromotionColumns } from "./usePromotionColumns";
-import { PromotionSearchActions } from "./PromotionToolbar";
+import { PromotionDrawerForm } from "../promotion-form/PromotionDrawerForm";
 
 export function PromotionList() {
-  const navigate = useNavigate();
   const [sp, setSp] = useSearchParams();
   const toast = useToast();
+
+  const {
+    isOpen: isDrawerOpen,
+    editingId,
+    openCreate,
+    openEdit,
+    closeDrawer,
+  } = useDrawerSearchParams();
 
   const [search, setSearch] = useState(sp.get("search") ?? "");
   const page = Number(sp.get("page") ?? "1");
@@ -43,7 +50,10 @@ export function PromotionList() {
     }
   };
 
-  const columns = usePromotionColumns({ onDelete: handleDelete });
+  const columns = usePromotionColumns({
+    onDelete: handleDelete,
+    onEdit: (id) => openEdit(id),
+  });
 
   const apply = () => {
     const next = new URLSearchParams(sp);
@@ -63,46 +73,59 @@ export function PromotionList() {
     setSp(next);
   };
 
-
-
-  const toolbarProps = {
-    search,
-    setSearch,
-    apply,
-    onAdd: () => navigate("/admin/promotion/new"),
+  const handlePageSizeChange = (newSize: number) => {
+    const next = new URLSearchParams(sp);
+    next.set("page", "1");
+    next.set("size", String(newSize));
+    setSp(next);
   };
 
   return (
-    <AdminPageShell
-      icon={TagIcon}
-      title="Danh sách Khuyến mãi"
-      badge={`${total} chương trình`}
-      noCard
-      actions={<PromotionSearchActions {...toolbarProps} />}
-    >
-      <div className="flex flex-col flex-1 min-h-0 bg-card shadow-none rounded-card overflow-hidden">
+    <AdminPageShell>
+      <AdminPageShell.Header
+        icon={TagIcon}
+        title="Danh sách Khuyến mãi"
+        badge={`${total} chương trình`}
+        createAction={{
+          onClick: openCreate,
+          label: "Thêm khuyến mãi",
+        }}
+      />
+      <AdminPageShell.Body>
         <AdminTable<PromotionDto>
           columns={columns}
           data={items}
           isLoading={isLoading}
-          skeletonRows={size}
-          onRowClick={(row) => navigate(`/admin/promotion/${row.promotionId}`)}
+          rowKey="promotionId"
+          activeRowKey={editingId}
+          enableCardView={true}
+          storageKey="crm_promotion_view_mode"
+          search={{
+            query: search,
+            onChange: setSearch,
+            onSubmit: apply,
+            placeholder: "Tìm kiếm chương trình khuyến mãi...",
+          }}
+          onRowClick={(row) => openEdit(row.promotionId)}
+          pagination={{
+            page,
+            total,
+            pageSize: size,
+            onPageChange: goPage,
+            onPageSizeChange: handlePageSizeChange,
+          }}
+          emptyText="Không tìm thấy Khuyến mãi phù hợp"
           emptyIcon={ArchiveBoxXMarkIcon}
-          emptyTitle="Không tìm thấy Khuyến mãi phù hợp"
-          emptyDescription="Thử chỉnh lại bộ lọc tìm kiếm."
           className="border-0 shadow-none rounded-none bg-transparent flex-1"
-          footer={
-            <AdminPagination
-              page={page}
-              totalPages={totalPages}
-              total={total}
-              pageSize={size}
-              onPageChange={goPage}
-            />
-          }
         />
-      </div>
+      </AdminPageShell.Body>
+      <AdminPageShell.Inspector>
+        <PromotionDrawerForm
+          open={isDrawerOpen}
+          promotionId={editingId ? Number(editingId) : null}
+          onClose={closeDrawer}
+        />
+      </AdminPageShell.Inspector>
     </AdminPageShell>
   );
 }
-

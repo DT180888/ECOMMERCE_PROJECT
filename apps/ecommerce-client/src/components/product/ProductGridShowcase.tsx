@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useProductList } from "@hooks/useProduct";
-import { useToast, EditorialProductCard } from "@my-project/ui";
+import { useToast, EditorialProductCard, Skeleton } from "@my-project/ui";
 import { buildImgSrc, DEFAULT_PRODUCT_IMAGE_URL } from "@my-project/shared-utils";
 import ProductCardSkeleton from "./ProductCardSkeleton";
 
@@ -114,10 +114,10 @@ export default function ProductGridShowcase({ limit = 12 }: ProductGridShowcaseP
         <div className="w-full px-4 sm:px-8 lg:px-12 2xl:px-16">
           {/* Skeleton Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 sm:mb-12 gap-6 pb-4 border-b border-border/40">
-            <div className="h-8 w-44 bg-surface animate-pulse rounded-[2px]" />
+            <Skeleton className="h-8 w-44" />
             <div className="flex items-center gap-6">
               {CATEGORIES_TABS.map((tab) => (
-                <div key={tab.id} className="h-4 w-14 bg-surface animate-pulse rounded-[2px]" />
+                <Skeleton key={tab.id} className="h-4 w-14" />
               ))}
             </div>
           </div>

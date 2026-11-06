@@ -1,5 +1,4 @@
-﻿import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { useMemo, useState, useCallback } from "react";
 import {
   useCategoryTree,
   useDeleteCategory,
@@ -10,26 +9,23 @@ import type {
   CategoryId,
   Category,
 } from "@my-project/api";
-import { Button } from "@my-project/ui";
-import { Switch } from "@my-project/ui";
+import { Button, Switch, cn } from "@my-project/ui";
 import {
-  PlusIcon,
   PencilSquareIcon,
   TrashIcon,
   ChevronRightIcon,
   ChevronDownIcon,
-  FolderIcon,
   FolderOpenIcon,
-  ListBulletIcon,
   PhotoIcon,
   CalendarDaysIcon,
 } from "@heroicons/react/24/outline";
-import { buildImgSrc } from "@my-project/shared-utils";
-import { DEFAULT_PRODUCT_IMAGE_URL } from "@my-project/shared-utils";
-import { AdminPageShell, Guard } from "@shared/ui";
+import { buildImgSrc, DEFAULT_PRODUCT_IMAGE_URL } from "@my-project/shared-utils";
+import { Guard, AdminPageShell, AdminTable, type AdminTableColumn } from "@shared/ui";
 import usePermission from "@hooks/usePermission";
+import { useDrawerSearchParams } from "@hooks/useDrawerSearchParams";
+import { CategoryDrawerForm } from "../category-form/CategoryDrawerForm";
 
-// --- Types & Helper (Giữ nguyên) ---
+// --- Types & Helper ---
 type FlatNode = {
   node: CategoryNode;
   depth: number;
@@ -52,7 +48,6 @@ function flattenTree(
   return out;
 }
 
-// Hàm format ngày tháng (đơn giản)
 const formatDate = (dateStr?: string) => {
   if (!dateStr) return "—";
   return new Date(dateStr).toLocaleDateString("vi-VN", {
@@ -62,7 +57,7 @@ const formatDate = (dateStr?: string) => {
   });
 };
 
-export function CategoryList({ isNested = false }: { isNested?: boolean }) {
+export function CategoryList() {
   const { hasPermission } = usePermission();
   const hasEdit = hasPermission("Permissions.Products.Edit");
   const hasDelete = hasPermission("Permissions.Products.Delete");
@@ -73,16 +68,16 @@ export function CategoryList({ isNested = false }: { isNested?: boolean }) {
   const toggleFeaturedMut = useToggleCategoryFeatured();
   const [openSet, setOpenSet] = useState<Set<string>>(new Set());
 
-  const isVisible = (path: number[]) => {
+  const isVisible = useCallback((path: number[]) => {
     if (path.length <= 1) return true;
     for (let i = 1; i < path.length; i++) {
       const ancestorPath = path.slice(0, i).join(",");
       if (!openSet.has(ancestorPath)) return false;
     }
     return true;
-  };
+  }, [openSet]);
 
-  const toggleOpen = (path: number[]) => {
+  const toggleOpen = useCallback((path: number[]) => {
     const key = path.join(",");
     setOpenSet((prev) => {
       const next = new Set(prev);
@@ -90,233 +85,228 @@ export function CategoryList({ isNested = false }: { isNested?: boolean }) {
       else next.add(key);
       return next;
     });
-  };
+  }, []);
 
-  const handleToggleFeatured = (id: CategoryId, isFeatured: boolean) => {
+  const handleToggleFeatured = useCallback((id: CategoryId, isFeatured: boolean) => {
     toggleFeaturedMut.mutate({ id, isFeatured });
-  };
+  }, [toggleFeaturedMut]);
 
-  const handleDelete = (name: string, id: CategoryId) => {
+  const handleDelete = useCallback((name: string, id: CategoryId) => {
     if (confirm(`Bạn có chắc muốn xóa vĩnh viễn danh mục "${name}"?`)) {
       delMut.mutate(id);
     }
-  };
+  }, [delMut]);
+
+  const {
+    isOpen: isDrawerOpen,
+    editingId,
+    openCreate,
+    openEdit,
+    closeDrawer,
+  } = useDrawerSearchParams();
 
   const flat = useMemo(() => flattenTree(tree ?? []), [tree]);
 
-  const nameColClass = canPerformActions
-    ? "col-span-6 lg:col-span-5"
-    : "col-span-10 md:col-span-8 lg:col-span-7";
+  const visibleNodes = useMemo(() => {
+    return flat.filter(({ path }) => isVisible(path));
+  }, [flat, isVisible]);
+
+  const columns = useMemo<AdminTableColumn<FlatNode>[]>(
+    () => [
+      {
+        key: "name",
+        label: "Tên danh mục",
+        isMain: true,
+        render: ({ node, depth, path }) => {
+          const key = path.join(",");
+          const hasChildren = Boolean(node.children?.length);
+          const isOpen = openSet.has(key);
+          const category = node as Category;
+
+          return (
+            <div
+              className="flex items-center overflow-hidden py-1"
+              style={{ paddingLeft: depth * 22 }}
+            >
+              {/* Expand / Collapse Toggle Button */}
+              {hasChildren ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-xs"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleOpen(path);
+                  }}
+                  className="mr-1.5 h-5 w-5 p-0 text-muted-foreground hover:text-foreground hover:bg-foreground/10 border-0 shadow-none shrink-0"
+                  aria-label={isOpen ? "Thu gọn danh mục" : "Mở rộng danh mục"}
+                  icon={
+                    isOpen ? (
+                      <ChevronDownIcon className="w-3.5 h-3.5" />
+                    ) : (
+                      <ChevronRightIcon className="w-3.5 h-3.5" />
+                    )
+                  }
+                />
+              ) : (
+                <span className="w-5 mr-1.5 shrink-0" />
+              )}
+
+              {/* Thumbnail Image */}
+              <div className="w-7 h-7 rounded-[2px] bg-surface border border-border mr-2.5 shrink-0 flex items-center justify-center overflow-hidden">
+                {category.imageUrl || category.img ? (
+                  <img
+                    src={buildImgSrc(category.imageUrl || category.img!)}
+                    alt={category.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = DEFAULT_PRODUCT_IMAGE_URL;
+                      e.currentTarget.onerror = null;
+                    }}
+                  />
+                ) : (
+                  <PhotoIcon className="w-3.5 h-3.5 text-muted-foreground stroke-[1.25]" />
+                )}
+              </div>
+
+              {/* Category Name */}
+              <div className="flex flex-col min-w-0">
+                <span
+                  className={cn(
+                    "text-xs truncate transition-colors",
+                    depth === 0
+                      ? "text-foreground font-medium"
+                      : "text-muted-foreground group-hover:text-foreground font-normal"
+                  )}
+                >
+                  {node.name}
+                </span>
+              </div>
+            </div>
+          );
+        },
+      },
+      {
+        key: "createdAt",
+        label: "Ngày tạo",
+        width: "140px",
+        isSub: true,
+        render: ({ node }) => {
+          const category = node as Category;
+          return (
+            <span className="text-xs text-muted-foreground inline-flex items-center gap-1 font-mono tabular-nums">
+              <CalendarDaysIcon className="w-3.5 h-3.5 text-muted-foreground/60 stroke-[1.25]" />
+              {formatDate(category.createdAt)}
+            </span>
+          );
+        },
+      },
+      {
+        key: "productCount",
+        label: "Sản phẩm",
+        align: "center",
+        width: "90px",
+        render: ({ node }) => {
+          const category = node as Category;
+          return (
+            <span className="text-[11px] font-mono tabular-nums text-foreground px-2 py-0.5 rounded-[2px] bg-surface">
+              {category.productCount ?? 0}
+            </span>
+          );
+        },
+      },
+      {
+        key: "isFeatured",
+        label: "Nổi bật",
+        align: "center",
+        width: "90px",
+        render: ({ node }) => {
+          const category = node as Category;
+          return (
+            <div className="flex justify-center" onClick={(e) => e.stopPropagation()}>
+              <Switch
+                checked={category.isFeatured}
+                onCheckedChange={(checked) =>
+                  handleToggleFeatured(category.categoryId, checked)
+                }
+                disabled={toggleFeaturedMut.isPending}
+                className="data-[state=checked]:bg-foreground"
+              />
+            </div>
+          );
+        },
+      },
+      {
+        key: "actions",
+        label: "Thao tác",
+        align: "right",
+        isAction: true,
+        width: "80px",
+        render: ({ node }) => {
+          if (!canPerformActions) return null;
+          return (
+            <div className="flex items-center justify-center gap-1" onClick={(e) => e.stopPropagation()}>
+              <Guard permission="Permissions.Products.Edit">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9 text-info hover:text-info hover:bg-info/10 rounded-[2px]"
+                  title="Chỉnh sửa"
+                  onClick={() => openEdit(node.categoryId)}
+                >
+                  <PencilSquareIcon className="w-3.5 h-3.5 stroke-[1.25]" />
+                </Button>
+              </Guard>
+              <Guard permission="Permissions.Products.Delete">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9 text-error hover:text-error hover:bg-error/10 rounded-[2px]"
+                  title="Xóa danh mục"
+                  onClick={() => handleDelete(node.name, node.categoryId)}
+                  disabled={delMut.isPending}
+                >
+                  <TrashIcon className="w-3.5 h-3.5 stroke-[1.25]" />
+                </Button>
+              </Guard>
+            </div>
+          );
+        },
+      },
+    ],
+    [openSet, toggleOpen, canPerformActions, delMut.isPending, toggleFeaturedMut.isPending, handleToggleFeatured, handleDelete, openEdit]
+  );
 
   return (
-    <AdminPageShell
-      icon={ListBulletIcon}
-      title="Danh mục sản phẩm"
-      badge="Tree View"
-      isNested={isNested}
-      actions={
-        <Link to="/admin/category/new">
-          <Button variant="default">
-            <PlusIcon className="w-3 h-3 md:w-4 md:h-4 mr-1.5" /> Thêm danh mục
-          </Button>
-        </Link>
-      }
-      noCard
-    >
-      {/* --- TREE TABLE SECTION --- */}
-      <div className="flex-1 rounded-card flex flex-col overflow-hidden relative border border-foreground/5 bg-card">
-        {/* Sticky Header (Đã chỉnh lại Grid) */}
-        <div className="grid grid-cols-12 gap-4 px-4 py-3 md:px-6 md:py-5 bg-secondary/10 text-xs text-muted-foreground font-semibold tracking-wider sticky top-0 z-20 uppercase border-b border-border/10">
-          {/* Cột Tên mở rộng: 5 phần */}
-          <div className={`${nameColClass} pl-2`}>Tên danh mục</div>
-
-          {/* Cột Ngày tạo (Mới): 2 phần - Ẩn trên Mobile */}
-          <div className="col-span-2 hidden lg:block pl-2">Ngày tạo</div>
-
-          {/* Cột Thống kê: 1 phần - Ẩn trên Mobile */}
-          <div className="col-span-1 hidden md:block text-center">SP</div>
-
-          {/* Cột Nổi bật: 2 phần */}
-          <div className="col-span-2 text-center">Nổi bật</div>
-
-          {/* Cột Thao tác: 2 phần */}
-          {canPerformActions && (
-            <div className="col-span-4 md:col-span-2 text-right pr-2">
-              Thao tác
-            </div>
-          )}
-        </div>
-
-        {/* Scrollable List */}
-        <div className="overflow-y-auto flex-1 p-2 custom-scrollbar">
-          {isLoading ? (
-            <div className="flex flex-col items-center justify-center h-64 gap-3 text-muted-foreground animate-pulse">
-              <FolderIcon className="w-10 h-10 opacity-50" />
-              <span>Đang tải cấu trúc cây...</span>
-            </div>
-          ) : !flat.length ? (
-            <div className="flex flex-col items-center justify-center h-64 gap-3 text-muted-foreground">
-              <FolderOpenIcon className="w-12 h-12 opacity-20" />
-              <span className="italic">Chưa có danh mục nào được tạo.</span>
-            </div>
-          ) : (
-            <ul className="space-y-1 pb-10">
-              {flat.map(({ node, depth, path }) => {
-                const key = path.join(",");
-                const category = node as Category; // Đảm bảo type Category có imageUrl, createdAt
-                const hasChildren = !!node.children?.length;
-                const isOpen = openSet.has(key);
-
-                if (!isVisible(path)) return null;
-
-                return (
-                  <li
-                    key={key}
-                    className="grid grid-cols-12 gap-4 px-3 py-2.5 rounded-button hover:bg-foreground/5 transition-colors items-center group border border-transparent hover:border-foreground/5"
-                  >
-                    {/* 1. Name Column + Image + Tree Indentation */}
-                    <div
-                      className={`${nameColClass} flex items-center overflow-hidden`}
-                      style={{ paddingLeft: depth * 24 }}
-                    >
-                      {/* Toggle Button */}
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          hasChildren && toggleOpen(path);
-                        }}
-                        disabled={!hasChildren}
-                        className={`mr-1 p-1 rounded-inner transition-all shrink-0 ${
-                          hasChildren
-                            ? "hover:bg-foreground/10 text-muted-foreground hover:text-foreground cursor-pointer"
-                            : "opacity-0 pointer-events-none w-6"
-                        }`}
-                      >
-                        {isOpen ? (
-                          <ChevronDownIcon className="w-3.5 h-3.5" />
-                        ) : (
-                          <ChevronRightIcon className="w-3.5 h-3.5" />
-                        )}
-                      </button>
-
-                      {/* --- MỚI: Thumbnail Image --- */}
-                      <div className="w-8 h-8 rounded-inner bg-secondary/10 border border-border/10 mr-3 shrink-0 flex items-center justify-center overflow-hidden relative">
-                        {category.img ? (
-                          <img
-                            // 1. Dùng buildImgSrc để xử lý đường dẫn (thêm base URL nếu cần)
-                            src={buildImgSrc(category.img)}
-                            alt={category.name}
-                            className="w-full h-full object-cover"
-                            // 2. (Quan trọng) Xử lý fallback nếu ảnh bị lỗi 404
-                            onError={(e) => {
-                              e.currentTarget.src = DEFAULT_PRODUCT_IMAGE_URL;
-                              // Hoặc nếu bạn muốn ẩn ảnh đi để hiện PhotoIcon phía sau (nếu có logic state),
-                              // nhưng gán ảnh default là cách nhanh nhất.
-                              e.currentTarget.onerror = null; // Tránh loop vô hạn nếu ảnh default cũng lỗi
-                            }}
-                          />
-                        ) : (
-                          <PhotoIcon className="w-3 h-3 md:w-4 md:h-4 text-muted-foreground" />
-                        )}
-                      </div>
-
-                      {/* Category Name & Slug */}
-                      <div className="flex flex-col min-w-0">
-                        <span
-                          className={`font-medium text-sm truncate ${
-                            depth === 0
-                              ? "text-foreground font-semibold"
-                              : "text-muted-foreground group-hover:text-foreground transition-colors"
-                          }`}
-                        >
-                          {node.name}
-                        </span>
-                        {/* Mobile only stats */}
-                        <div className="md:hidden flex gap-2 text-[10px] text-muted-foreground">
-                          <span>{category.productCount ?? 0} SP</span>
-                          {hasChildren && (
-                            <span>• {node.children?.length} con</span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* 2. MỚI: Created Date Column */}
-                    <div className="col-span-2 hidden lg:flex items-center text-xs text-muted-foreground pl-2">
-                      <CalendarDaysIcon className="w-3.5 h-3.5 mr-1.5 opacity-50" />
-                      {formatDate(category.createdAt)}
-                    </div>
-
-                    {/* 3. Stats Column (Desktop only) */}
-                    <div className="col-span-1 hidden md:flex flex-col items-center justify-center text-xs">
-                      <span className="bg-secondary/10 text-foreground px-2 py-0.5 rounded border border-border/10 min-w-[30px] text-center">
-                        {category.productCount ?? 0}
-                      </span>
-                    </div>
-
-                    {/* 4. Featured Switch */}
-                    <div className="col-span-2 flex justify-center">
-                      <Switch
-                        checked={category.isFeatured}
-                        onCheckedChange={(checked) =>
-                          handleToggleFeatured(category.categoryId, checked)
-                        }
-                        disabled={toggleFeaturedMut.isPending}
-                        className="data-[state=checked]:bg-accent bg-secondary/20"
-                      />
-                    </div>
-
-                    {/* 5. Actions */}
-                    {canPerformActions && (
-                      <div className="col-span-4 md:col-span-2 flex justify-end items-center gap-1 md:gap-2">
-                        <div className="flex items-center bg-secondary/10 rounded-button p-0.5 border border-border/10 group-hover:border-border/20 transition-colors">
-                          <Guard permission="Permissions.Products.Edit">
-                            <Link to={`/admin/category/${node.categoryId}`}>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-7 w-7 text-muted-foreground hover:text-accent hover:bg-accent/10"
-                                title="Chỉnh sửa"
-                              >
-                                <PencilSquareIcon className="w-3 h-3 md:w-4 md:h-4" />
-                              </Button>
-                            </Link>
-                          </Guard>
-
-                          <Guard permission="Permissions.Products.Edit">
-                            <Guard permission="Permissions.Products.Delete">
-                              <div className="w-[1px] h-4 bg-border/20 mx-0.5"></div>
-                            </Guard>
-                          </Guard>
-
-                          <Guard permission="Permissions.Products.Delete">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-7 w-7 text-muted-foreground hover:text-red-400 hover:bg-red-500/10"
-                              title="Xóa danh mục"
-                              onClick={() =>
-                                handleDelete(node.name, node.categoryId)
-                              }
-                              disabled={delMut.isPending}
-                            >
-                              <TrashIcon className="w-3 h-3 md:w-4 md:h-4" />
-                            </Button>
-                          </Guard>
-                        </div>
-                      </div>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-        </div>
-      </div>
+    <AdminPageShell>
+      <AdminPageShell.Header
+        title="Danh mục sản phẩm"
+        badge={`${flat.length} danh mục`}
+        createAction={{
+          onClick: openCreate,
+          label: "Thêm danh mục",
+          canCreate: hasPermission("Permissions.Products.Create"),
+        }}
+      />
+      <AdminPageShell.Body>
+        <AdminTable<FlatNode>
+          columns={columns}
+          data={visibleNodes}
+          isLoading={isLoading}
+          rowKey={(item) => item.path.join(",")}
+          isRowActive={(item) => editingId !== null && item.node.categoryId === Number(editingId)}
+          emptyText="Chưa có danh mục nào được tạo."
+          emptyIcon={FolderOpenIcon}
+          className="border-0 rounded-none"
+        />
+      </AdminPageShell.Body>
+      <AdminPageShell.Inspector>
+        <CategoryDrawerForm
+          open={isDrawerOpen}
+          categoryId={typeof editingId === "number" ? (editingId as CategoryId) : null}
+          onClose={closeDrawer}
+        />
+      </AdminPageShell.Inspector>
     </AdminPageShell>
   );
 }
-
-
-

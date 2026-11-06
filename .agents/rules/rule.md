@@ -26,7 +26,7 @@ trigger: always_on
 - **Parent-Child Spacing Governance (Luật Quản Trị Cha - Con):**
   - **Zero Outer Margin:** Thẻ root của component con (Product Card, Article Unit) KHÔNG ĐƯỢC phép có margin ngoài (`m-0`).
   - **Single Source of Truth:** Cha quản lý vị trí, `gap-x`, `gap-y`, `px-*`, `py-*`. Con quản lý xếp lớp nội bộ (8px `mt-2` từ ảnh xuống tiêu đề, 4px `mt-1` từ tiêu đề xuống giá).
-  - **Asymmetric Editorial Gutter:** Row Gap (dọc) luôn gấp đôi hoặc hơn Col Gap (ngang) (`gap-x-4 lg:gap-x-8` đi kèm `gap-y-12 lg:gap-y-20`).
+  - **Asymmetric Editorial Gutter:** Row Gap (dọc) luôn gấp đôi hoặc hơn Col Gap (ngang) (Chuẩn Optimal: `gap-x-3 sm:gap-x-5 lg:gap-x-6` đi kèm `gap-y-6 sm:gap-y-8 lg:gap-y-10`, Sidebar gutter: `gap-6 lg:gap-8`).
 - **Tech Stack Guardrails:** Tuân thủ Node.js v22+, React 19+, Tailwind CSS 3.4+, TypeScript 5.9+, Vite 5.4+. Không dùng syntax đã deprecated.
 
 ## 3. QUOTA, BUDGET CONTROL & EXECUTION PIPELINE

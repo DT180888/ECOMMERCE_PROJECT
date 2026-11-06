@@ -1,4 +1,4 @@
-﻿import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useHeroSlides, useDeleteHeroSlide, useToggleHeroSlideStatus } from "@hooks/useHeroSlide";
 import type { HeroSlideDto } from "@my-project/api";
@@ -7,13 +7,12 @@ import { PhotoIcon, ArchiveBoxXMarkIcon, PlusIcon } from "@heroicons/react/24/ou
 import {
   AdminPageShell,
   AdminTable,
-  AdminPagination,
 } from "@shared/ui";
 import { useHeroSlideColumns } from "./useHeroSlideColumns";
 import { Button } from "@my-project/ui";
 import { Link } from "react-router-dom";
 
-export function HeroSlideList({ isNested = false }: { isNested?: boolean }) {
+export function HeroSlideList() {
   const [sp, setSp] = useSearchParams();
   const { hasPermission } = usePermission();
   const hasEdit = hasPermission("Permissions.Products.Edit");
@@ -62,42 +61,42 @@ export function HeroSlideList({ isNested = false }: { isNested?: boolean }) {
   });
 
   return (
-    <AdminPageShell
-      icon={PhotoIcon}
-      title="Quản lý Banner (Hero Slides)"
-      badge={`${total} banner`}
-      isNested={isNested}
-      actions={
-        <div className="flex items-center gap-3">
-          {hasEdit && (
-            <Link to="/admin/hero-slides/new">
-              <Button size="sm" className="shadow-neo-sm">
-                <PlusIcon className="w-4 h-4 mr-2" />
-                Thêm banner mới
-              </Button>
-            </Link>
-          )}
-        </div>
-      }
-    >
-      <AdminTable<HeroSlideDto>
-        columns={columns}
-        data={items}
-        isLoading={isLoading}
-        skeletonRows={size}
-        emptyIcon={ArchiveBoxXMarkIcon}
-        emptyTitle="Không có banner nào"
-        emptyDescription="Thêm banner đầu tiên để hiển thị lên trang chủ."
-        footer={
-          <AdminPagination
-            page={page}
-            totalPages={totalPages}
-            total={total}
-            pageSize={size}
-            onPageChange={goPage}
-          />
+    <AdminPageShell>
+      <AdminPageShell.Header
+        icon={PhotoIcon}
+        title="Quản lý Banner (Hero Slides)"
+        badge={`${total} banner`}
+        actions={
+          <div className="flex items-center gap-3">
+            {hasEdit && (
+              <Link to="/admin/hero-slides/new">
+                <Button size="default" className="shadow-neo-sm">
+                  <PlusIcon className="w-4 h-4 mr-2" />
+                  Thêm banner mới
+                </Button>
+              </Link>
+            )}
+          </div>
         }
       />
+      <AdminPageShell.Body>
+        <AdminTable<HeroSlideDto>
+          columns={columns}
+          data={items}
+          isLoading={isLoading}
+          rowKey="id"
+          enableCardView={true}
+          storageKey="crm_heroslide_view_mode"
+          pagination={{
+            page,
+            total,
+            pageSize: size,
+            onPageChange: goPage,
+          }}
+          emptyText="Không có banner nào"
+          emptyIcon={ArchiveBoxXMarkIcon}
+        />
+      </AdminPageShell.Body>
     </AdminPageShell>
   );
 }

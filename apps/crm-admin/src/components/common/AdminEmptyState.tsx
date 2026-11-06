@@ -29,8 +29,8 @@ export function AdminEmptyState({
       )}
     >
       {Icon && (
-        <div className="w-12 h-12 rounded-full bg-foreground/[0.03] flex items-center justify-center mb-2">
-          <Icon className="w-6 h-6 text-muted-foreground/80" aria-hidden="true" />
+        <div className="w-10 h-10 rounded-[2px] bg-surface border border-border flex items-center justify-center mb-1">
+          <Icon className="w-5 h-5 text-muted-foreground/80 stroke-[1.25]" aria-hidden="true" />
         </div>
       )}
       <p className="text-sm font-medium text-foreground">{title}</p>

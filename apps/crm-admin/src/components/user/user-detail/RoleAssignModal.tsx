@@ -1,7 +1,7 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import ReactSelect from "react-select";
 import { reactSelectDarkStyles } from "@my-project/ui";
-import { Button } from "@my-project/ui";
+import { Button, Checkbox } from "@my-project/ui";
 import { useAssignRole } from "@hooks/useUser";
 import { useToast } from "@my-project/ui";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@my-project/ui";
@@ -12,6 +12,9 @@ import {
   useRoles,
 } from "@hooks/useSecurity";
 import { useQueryClient } from "@tanstack/react-query";
+
+const EMPTY_ROLES: string[] = [];
+const EMPTY_PERMISSIONS: string[] = [];
 
 type Props = {
   userId: string | null;
@@ -31,18 +34,22 @@ export function RoleAssignModal({ userId, currentRoles, isOpen, onClose }: Props
   const toast = useToast();
   const qc = useQueryClient();
 
-  const { data: systemPermissions = [] } = useSystemPermissions();
-  const { data: activeUserPermissions = [] } = useUserPermissions(userId);
-  const { data: roles = [] } = useRoles();
+  const { data: systemPermissions = EMPTY_PERMISSIONS } = useSystemPermissions();
+  const { data: activeUserPermissions } = useUserPermissions(userId);
+  const { data: roles = EMPTY_ROLES } = useRoles();
 
-  const roleOptions = roles.map((r) => ({
-    value: r,
-    label: r,
-  }));
+  const roleOptions = useMemo(
+    () =>
+      roles.map((r) => ({
+        value: r,
+        label: r,
+      })),
+    [roles]
+  );
 
   // Đồng bộ quyền trực tiếp của user khi fetch xong
   useEffect(() => {
-    if (activeUserPermissions.length > 0) {
+    if (activeUserPermissions && activeUserPermissions.length > 0) {
       setLocalPermissions(activeUserPermissions);
     }
   }, [activeUserPermissions]);
@@ -120,7 +127,7 @@ export function RoleAssignModal({ userId, currentRoles, isOpen, onClose }: Props
             <label className="text-sm font-medium text-foreground mb-2 block">
               Quyền hạn đặc biệt (Được ưu tiên cộng thêm cho user)
             </label>
-            <div className="border border-border/10 bg-surface/50 rounded-card p-3 max-h-[220px] overflow-y-auto space-y-2">
+            <div className="border border-border bg-surface rounded-[2px] p-3 max-h-[220px] overflow-y-auto space-y-2">
               {systemPermissions.length === 0 ? (
                 <p className="text-xs text-muted-foreground italic">Không có quyền nào trong hệ thống</p>
               ) : (
@@ -129,13 +136,11 @@ export function RoleAssignModal({ userId, currentRoles, isOpen, onClose }: Props
                   return (
                     <label
                       key={perm}
-                      className="flex items-center gap-2.5 p-1.5 rounded hover:bg-surface cursor-pointer select-none transition-colors"
+                      className="flex items-center gap-2 p-1.5 rounded hover:bg-surface cursor-pointer select-none transition-colors"
                     >
-                      <input
-                        type="checkbox"
+                      <Checkbox
                         checked={isChecked}
                         onChange={() => handleTogglePermission(perm)}
-                        className="w-3.5 h-3.5 accent-primary rounded border-border"
                       />
                       <span className="text-xs text-foreground font-mono truncate">{perm}</span>
                     </label>

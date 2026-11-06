@@ -123,7 +123,7 @@ export const VietQRPaymentModal: React.FC<VietQRPaymentModalProps> = ({
             </div>
             <Button
               onClick={handleCopyContent}
-              className="px-3 py-1.5 text-xs font-bold bg-primary text-primary-foreground rounded-button shadow-neo-sm hover:opacity-90 transition-all"
+              className="px-3 py-1.5 text-xs font-bold rounded-button shadow-neo-sm hover:opacity-90 transition-all"
             >
               {copied ? '✓ Đã chép' : 'Sao chép'}
             </Button>

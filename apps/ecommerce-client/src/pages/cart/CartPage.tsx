@@ -10,7 +10,7 @@ import {
   ShoppingBagIcon,
 } from "@heroicons/react/24/outline";
 import { useToast } from "@my-project/ui";
-import { Button } from "@my-project/ui";
+import { Button, Skeleton } from "@my-project/ui";
 import { Checkbox } from "@my-project/ui";
 import { useState, useMemo, useEffect } from "react";
 
@@ -73,15 +73,15 @@ export default function CartPage() {
 
   if (isLoading) {
     return (
-      <div className="client-page-container py-8 flex flex-col responsive-gap animate-pulse">
-        <div className="h-10 w-64 bg-black/5 rounded-inner" />
+      <div className="client-page-container py-8 flex flex-col responsive-gap">
+        <Skeleton className="h-10 w-64" />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-4">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-40 bg-black/5 rounded-card" />
+              <Skeleton key={i} className="h-40 w-full" />
             ))}
           </div>
-          <div className="h-96 bg-black/5 rounded-card" />
+          <Skeleton className="h-96 w-full" />
         </div>
       </div>
     );
@@ -147,30 +147,33 @@ export default function CartPage() {
           <h1 className="responsive-h2 text-foreground tracking-tight">Giỏ hàng của bạn</h1>
           <p className="text-muted text-[10px] font-bold uppercase tracking-[0.2em]">Cửa hàng Minimalism • {cart.items.length} sản phẩm</p>
         </div>
-        <button
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
           onClick={handleClearCart}
-          className="text-[10px] font-bold text-muted uppercase tracking-widest hover:text-error transition-colors flex items-center gap-2 px-3 py-2 bg-background rounded-button shadow-neo-sm hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-neo-inset-sm transition-all duration-300"
+          className="gap-2 text-[11px] rounded-[2px]"
         >
           <TrashIcon className="w-3.5 h-3.5" />
-          Xoá toàn bộ
-        </button>
+          <span>Xóa Toàn Bộ</span>
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 responsive-gap items-start">
-        <section className="lg:col-span-2 bg-background rounded-card p-6 transition-all duration-300 space-y-6">
+        <section className="lg:col-span-2 bg-card border border-border/60 rounded-[2px] p-6 transition-all duration-300 space-y-6">
           <div className="flex items-center gap-4 px-6 py-2">
             <Checkbox
-              checked={selectedSkuIds.length === cart.items.length}
+              checked={selectedSkuIds.length === cart.items.length && cart.items.length > 0}
               onChange={toggleSelectAll}
             />
-            <span className="text-[10px] font-bold uppercase tracking-widest text-muted">Chọn tất cả ({cart.items.length})</span>
+            <span className="text-[10px] font-display font-medium uppercase tracking-widest text-muted-foreground">Chọn tất cả ({cart.items.length})</span>
           </div>
 
           {cart.items.map((item) => (
             <div
               key={item.skuId}
-              className={`group bg-background rounded-inner shadow-neo p-5 sm:p-6 flex flex-col sm:flex-row gap-6 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-neo-inset-hover ${
-                selectedSkuIds.includes(item.skuId) ? "shadow-neo-inset" : ""
+              className={`group bg-surface/30 border border-border/60 rounded-[2px] p-5 sm:p-6 flex flex-col sm:flex-row gap-6 transition-colors ${
+                selectedSkuIds.includes(item.skuId) ? "border-foreground/60 bg-surface/50" : "hover:border-foreground/30"
               }`}
             >
               <div className="flex items-center">
@@ -180,7 +183,7 @@ export default function CartPage() {
                 />
               </div>
 
-              <Link to={`/product/${item.skuId}`} className="shrink-0 relative overflow-hidden rounded-gallery bg-background aspect-square w-full sm:w-32 shadow-neo-inset-sm p-2 flex items-center justify-center">
+              <Link to={`/product/${item.skuId}`} className="shrink-0 relative overflow-hidden rounded-[2px] bg-background border border-border/40 aspect-square w-full sm:w-32 p-2 flex items-center justify-center">
                 <img
                   src={item.primaryImageUrl ? buildImgSrc(item.primaryImageUrl) : DEFAULT_PRODUCT_IMAGE_URL}
                   alt={item.name}
@@ -188,7 +191,7 @@ export default function CartPage() {
                 />
                 {updatingSkuId === item.skuId && (
                   <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm">
-                    <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                    <div className="w-6 h-6 border-2 border-foreground border-t-transparent rounded-full animate-spin" />
                   </div>
                 )}
               </Link>
@@ -197,50 +200,57 @@ export default function CartPage() {
                 <div className="space-y-2">
                   <div className="flex justify-between items-start gap-4">
                     <div className="space-y-1">
-                      <h3 className="text-base font-bold text-foreground leading-tight">
-                        <Link to={`/product/${item.skuId}`} className="hover:text-primary transition-colors">
+                      <h3 className="text-base font-display font-medium text-foreground leading-tight">
+                        <Link to={`/product/${item.skuId}`} className="hover:text-muted-foreground transition-colors">
                           {item.name}
                         </Link>
                       </h3>
                       {item.skuCode && (
-                        <p className="text-[10px] font-mono text-muted uppercase tracking-wider">{item.skuCode}</p>
+                        <p className="text-[10px] font-display text-muted-foreground uppercase tracking-wider">{item.skuCode}</p>
                       )}
                     </div>
-                    <p className="text-base font-extrabold text-foreground">{formatVND(item.priceMinor)}</p>
+                    <p className="text-sm font-display font-medium text-foreground tabular-nums">{formatVND(item.priceMinor)}</p>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between mt-6">
-                  <div className="flex items-center gap-2 bg-background p-1 rounded-inner shadow-neo-inset-sm">
+                  {/* Flat Hairline Stepper */}
+                  <div className="flex items-center border border-border/60 rounded-[2px] h-9 bg-surface/40">
                     <button
-                      className="w-8 h-8 flex items-center justify-center rounded-inner hover:bg-background hover:shadow-neo transition-all disabled:opacity-20"
+                      type="button"
+                      className="w-8 h-full flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors disabled:opacity-20 cursor-pointer"
                       onClick={() => handleUpdateQuantity(item.skuId, Math.max(1, item.quantity - 1))}
                       disabled={item.quantity <= 1 || updatingSkuId === item.skuId}
+                      aria-label="Giảm số lượng"
                     >
-                      <MinusIcon className="w-3.5 h-3.5 text-foreground" />
+                      <MinusIcon className="w-3.5 h-3.5" />
                     </button>
-                    <span className="w-8 text-center text-xs font-bold text-foreground tabular-nums">
+                    <span className="w-8 text-center text-xs font-display font-medium text-foreground tabular-nums">
                       {updatingSkuId === item.skuId ? "..." : item.quantity}
                     </span>
                     <button
-                      className="w-8 h-8 flex items-center justify-center rounded-inner hover:bg-background hover:shadow-neo transition-all disabled:opacity-20"
+                      type="button"
+                      className="w-8 h-full flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors disabled:opacity-20 cursor-pointer"
                       onClick={() => handleUpdateQuantity(item.skuId, item.quantity + 1)}
                       disabled={updatingSkuId === item.skuId}
+                      aria-label="Tăng số lượng"
                     >
-                      <PlusIcon className="w-3.5 h-3.5 text-foreground" />
+                      <PlusIcon className="w-3.5 h-3.5" />
                     </button>
                   </div>
 
                   <div className="flex items-center gap-6">
                     <div className="text-right hidden xs:block">
-                      <p className="text-[9px] font-bold text-muted uppercase tracking-widest mb-0.5">Thành tiền</p>
-                      <p className="font-extrabold text-foreground">{formatVND(item.priceMinor * item.quantity)}</p>
+                      <p className="text-[9px] font-display uppercase tracking-widest text-muted-foreground mb-0.5">Thành tiền</p>
+                      <p className="font-display font-medium text-foreground tabular-nums">{formatVND(item.priceMinor * item.quantity)}</p>
                     </div>
                     <button
+                      type="button"
                       onClick={() => handleRemove(item.skuId, item.name)}
-                      className="w-8 h-8 flex items-center justify-center rounded-full bg-background text-muted hover:text-error shadow-neo-sm hover:shadow-neo hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-neo-inset-sm transition-all"
+                      className="w-8 h-8 flex items-center justify-center rounded-[2px] border border-border/60 text-muted-foreground hover:text-error hover:border-error/40 transition-colors"
+                      aria-label={`Xóa ${item.name}`}
                     >
-                      <TrashIcon className="w-3 h-3 md:w-4 md:h-4" />
+                      <TrashIcon className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>
@@ -250,51 +260,48 @@ export default function CartPage() {
         </section>
 
         <aside className="lg:sticky lg:top-24 space-y-6">
-          <div className="bg-background rounded-card shadow-neo-inset p-8 space-y-6">
-            <h2 className="text-lg font-bold font-display text-foreground tracking-tight pb-2 border-b border-muted/10">Tóm tắt đơn hàng</h2>
+          <div className="bg-card border border-border/60 rounded-[2px] p-6 sm:p-8 space-y-6">
+            <h2 className="text-base font-display font-medium text-foreground tracking-tight pb-3 border-b border-border/60">Tóm Tắt Đơn Hàng</h2>
             
-            <div className="space-y-4 text-xs">
+            <div className="space-y-4 text-xs font-display">
               <div className="flex justify-between items-center">
-                <span className="text-muted">Tạm tính ({selectedItems.length} sản phẩm)</span>
-                <span className="font-bold text-foreground">{formatVND(subtotal)}</span>
+                <span className="text-muted-foreground">Tạm tính ({selectedItems.length} sản phẩm)</span>
+                <span className="font-medium text-foreground tabular-nums">{formatVND(subtotal)}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-muted">Ước tính phí giao hàng</span>
-                <span className="text-success uppercase text-[9px] font-bold tracking-widest">Miễn phí</span>
+                <span className="text-muted-foreground">Ước tính phí giao hàng</span>
+                <span className="text-success uppercase text-[10px] font-medium tracking-widest">Miễn phí</span>
               </div>
-              <div className="pt-4 border-t border-muted/10 flex justify-between items-end">
+              <div className="pt-4 border-t border-border/60 flex justify-between items-end">
                 <div className="space-y-0.5">
-                   <p className="text-xs font-bold text-foreground uppercase tracking-wider">Tổng cộng</p>
-                   <p className="text-[10px] text-muted">Bao gồm thuế VAT</p>
+                   <p className="text-xs font-medium text-foreground uppercase tracking-wider">Tổng cộng</p>
+                   <p className="text-[10px] text-muted-foreground">Đã bao gồm thuế</p>
                 </div>
-                <p className="text-xl font-extrabold text-foreground tracking-tight">{formatVND(subtotal)}</p>
+                <p className="text-lg font-medium text-foreground tracking-tight tabular-nums">{formatVND(subtotal)}</p>
               </div>
             </div>
 
             <Button
               onClick={handleCheckoutClick}
               disabled={selectedItems.length === 0}
-              className="w-full h-14 rounded-button font-bold text-xs uppercase tracking-widest"
+              className="w-full h-11 rounded-[2px] font-display font-medium text-xs uppercase tracking-[0.18em]"
             >
               {isLoggedIn ? `Thanh toán (${selectedItems.length})` : "Đăng nhập để mua"}
               <ArrowRightIcon className="w-3.5 h-3.5 ml-2" />
             </Button>
 
             <div className="text-center pt-2">
-               <Link to="/catalog" className="text-[9px] font-bold text-muted uppercase tracking-widest hover:text-foreground transition-colors">
-                  Tiếp tục mua sắm
+               <Link to="/catalog" className="text-[10px] font-display font-medium text-muted-foreground uppercase tracking-widest hover:text-foreground transition-colors">
+                  Tiếp tục mua sắm →
                </Link>
             </div>
           </div>
 
-          <div className="p-5 rounded-card bg-background shadow-neo-inset-sm space-y-3">
-             <div className="flex items-center gap-3 text-foreground">
-                <div className="w-8 h-8 rounded-full bg-background flex items-center justify-center shadow-neo text-sm">
-                   🚚
-                </div>
-                <p className="text-xs font-bold uppercase tracking-tight">Giao hàng dự kiến: 2-4 ngày</p>
+          <div className="p-5 rounded-[2px] bg-surface/30 border border-border/40 space-y-2 text-xs font-display">
+             <div className="flex items-center gap-2 text-foreground font-medium uppercase tracking-wider text-[11px]">
+                <span>✓ Giao hàng tiêu chuẩn 2-4 ngày</span>
              </div>
-             <p className="text-[10px] text-muted leading-relaxed font-medium">Chính sách trả hàng trong vòng 30 ngày nếu không hài lòng về sản phẩm.</p>
+             <p className="text-[11px] text-muted-foreground leading-relaxed font-light">Chính sách đổi trả 14 ngày chuẩn Studio nếu sản phẩm chưa qua sử dụng.</p>
           </div>
         </aside>
 

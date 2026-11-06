@@ -198,7 +198,7 @@ export default function AddressBook({
                         {addr.label || "Địa chỉ"}
                       </span>
                       {addr.isDefault && (
-                        <span className="text-[9px] font-bold uppercase bg-primary text-primary-foreground px-2.5 py-0.5 rounded-full tracking-wider shadow-neo-sm">
+                        <span className="text-[9px] font-bold uppercase px-2.5 py-0.5 rounded-full tracking-wider shadow-neo-sm">
                           Mặc định
                         </span>
                       )}

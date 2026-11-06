@@ -23,8 +23,7 @@ export default function ProductCard({ item, onAddToCart, onToggleWishlist, isWis
       name={item.name}
       price={item.minPriceMinor}
       imageUrl={finalSrc}
-      brandName={item.brandName || "Luxury Collection"}
-      variantsText="Tuyển chọn hữu cơ"
+      brandName={item.brandName || undefined}
       detailUrl={to}
       isOutOfStock={isOutOfStock}
       isWishlisted={isWishlisted}

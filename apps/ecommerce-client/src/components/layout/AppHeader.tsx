@@ -14,7 +14,6 @@ import {
   ClipboardDocumentListIcon
 } from '@heroicons/react/24/outline';
 import { ThemeToggle } from "@my-project/ui";
-import AnnouncementBar from "@components/home/AnnouncementBar";
 
 export default function AppHeader() {
   const nav = useNavigate();
@@ -34,8 +33,6 @@ export default function AppHeader() {
 
   const searchInputRef = useRef<HTMLInputElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
-
-  const isHome = location.pathname === "/";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -76,8 +73,6 @@ export default function AppHeader() {
     return cart?.items?.reduce((total, item) => total + item.quantity, 0) ?? 0;
   }, [cart?.items]);
 
-  const isTransparent = isHome && !isScrolled;
-
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     `text-xs font-display uppercase tracking-[0.2em] transition-colors duration-200 py-1 border-b ${
       isActive
@@ -88,23 +83,14 @@ export default function AppHeader() {
   const iconActionClass = "p-2 text-foreground hover:text-muted-foreground focus:outline-none transition-colors duration-200";
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${
-      isTransparent 
-        ? "bg-gradient-to-b from-background/90 via-background/40 to-transparent" 
-        : "bg-background/85 backdrop-blur-md border-b border-border/60"
-    }`}>
-      {/* Top Announcement Bar (Tự động thu gọn khi cuộn trên desktop để giữ header thanh thoát) */}
-      <div className={`transition-all duration-300 ${isScrolled ? "hidden" : "block"}`}>
-        <AnnouncementBar />
-      </div>
-
-      <div className="w-full px-4 sm:px-8 lg:px-12 2xl:px-16 h-16 flex items-center justify-between">
+    <header className="sticky top-0 left-0 right-0 z-50 w-full bg-background/85 backdrop-blur-md border-b border-border/60 transition-colors duration-300">
+      <div className="w-full px-4 sm:px-6 lg:px-10 2xl:px-16 h-16 flex items-center justify-between">
         
         {/* Left: Mobile Menu Toggle & Brand Logo */}
         <div className="flex items-center gap-4 lg:gap-8">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 text-foreground hover:text-muted-foreground focus:outline-none"
+            className="lg:hidden  text-foreground hover:text-muted-foreground focus:outline-none"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? (

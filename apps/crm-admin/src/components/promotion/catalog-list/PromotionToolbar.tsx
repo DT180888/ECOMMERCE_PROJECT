@@ -26,7 +26,7 @@ export function PromotionSearchActions(props: PromotionToolbarProps) {
       </div>
 
       {/* Buttons */}
-      <div className="flex items-center gap-1.5 w-auto shrink-0 justify-end">
+      <div className="flex items-center gap-2 w-auto shrink-0 justify-end">
         {props.search && (
           <Button
             onClick={() => {
@@ -41,7 +41,7 @@ export function PromotionSearchActions(props: PromotionToolbarProps) {
         )}
         <Button
           onClick={props.onAdd}
-          className="h-8 px-3 flex items-center gap-1.5 text-xs font-semibold shadow-none whitespace-nowrap"
+          className="h-8 px-3 flex items-center gap-1 text-xs font-semibold shadow-none whitespace-nowrap"
         >
           <PlusIcon className="w-3.5 h-3.5" />
           Thêm mới

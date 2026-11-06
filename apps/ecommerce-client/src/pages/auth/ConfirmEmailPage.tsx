@@ -34,7 +34,7 @@ export default function ConfirmEmailPage() {
         footerText="Bảo mật Minimalism đồng hành cùng bạn"
       >
         <div className="space-y-6 text-center animate-in fade-in slide-in-from-bottom-2 duration-500">
-          <Link to="/" className="h-10 w-full flex items-center justify-center rounded-button bg-primary text-primary-foreground font-medium text-xs uppercase tracking-widest transition-all active:scale-[0.98]">
+          <Link to="/" className="h-10 w-full flex items-center justify-center rounded-button font-medium text-xs uppercase tracking-widest transition-all active:scale-[0.98]">
               Về trang chủ
           </Link>
         </div>

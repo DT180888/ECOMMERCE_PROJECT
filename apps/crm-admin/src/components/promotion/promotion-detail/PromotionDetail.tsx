@@ -90,63 +90,59 @@ export function PromotionDetail() {
 
   return (
     <Tabs value={currentTab} onValueChange={handleTabChange} className="flex flex-col h-full w-full">
-      <AdminPageShell
-        title={promotionName || "Chi tiết Khuyến mãi"}
-        badge={`ID: #${id}`}
-        noCard={true}
-        actions={
-          <div className="flex items-center gap-2 sm:gap-4 flex-nowrap overflow-hidden w-auto">
-            <div className="flex-1 overflow-x-auto custom-scrollbar flex items-center">
-              <TabsList className="h-9 sm:h-10 flex items-center bg-foreground/[0.03] dark:bg-white/[0.03] p-1 gap-1 w-max border border-neo-bevel rounded-button">
-                <TabsTrigger
-                  value="config"
-                  className="px-3 sm:px-4 py-1.5 text-xs font-semibold transition-all duration-300 data-[state=active]:shadow-sm data-[state=active]:bg-card data-[state=active]:border data-[state=active]:  data-[state=active]:text-foreground text-muted-foreground hover:text-foreground rounded-inner"
-                >
-                  <Cog6ToothIcon className="w-3.5 h-3.5 sm:mr-1.5 inline-block" /> <span className="hidden sm:inline-block whitespace-nowrap">Cấu hình</span>
-                </TabsTrigger>
-                
-                <TabsTrigger
-                  value="coupons"
-                  className="px-3 sm:px-4 py-1.5 text-xs font-semibold transition-all duration-300 data-[state=active]:shadow-sm data-[state=active]:bg-card data-[state=active]:border data-[state=active]:  data-[state=active]:text-foreground text-muted-foreground hover:text-foreground rounded-inner"
-                >
-                  <TicketIcon className="w-3.5 h-3.5 sm:mr-1.5 inline-block" /> <span className="hidden sm:inline-block whitespace-nowrap">Mã giảm giá</span>
-                </TabsTrigger>
-              </TabsList>
-            </div>
-            
-            <div className="flex items-center gap-2 shrink-0">
-              {currentTab === "config" && !isEditing && (
-                <Button 
-                  className="h-9 px-3 text-xs font-semibold shadow-none rounded-button bg-primary text-primary-foreground hover:bg-primary/90 border-transparent"
-                  onClick={() => setIsEditing(true)}
-                >
-                  <PencilSquareIcon className="w-4 h-4 mr-1.5" /> Chỉnh sửa
-                </Button>
-              )}
-              <Link to="/admin/promotion">
-                <Button variant="outline" className="h-9 px-2 sm:px-3 text-xs font-semibold shadow-none rounded-button">
-                  <ArrowLeftIcon className="w-4 h-4" />
-                </Button>
-              </Link>
-            </div>
-          </div>
-        }
-      >
-        <div className="flex-1 overflow-y-auto xl:overflow-hidden overflow-x-hidden relative w-full custom-scrollbar" >
-          <TabsContent value="config" keepMounted className="lg:h-full m-0 p-0 outline-none ring-0 data-[state=active]:animate-in data-[state=active]:fade-in data-[state=active]:zoom-in-95 duration-200">
-            {initialData ? (
-              <PromotionSharedForm initialData={initialData} onSave={handleSave} loading={loading} submitLabel="Lưu Thay Đổi" readOnly={!isEditing} />
-            ) : (
-              <div className="flex items-center justify-center h-40">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <AdminPageShell>
+        <AdminPageShell.Header
+          title={promotionName || "Chi tiết Khuyến mãi"}
+          badge={`ID: #${id}`}
+          actions={
+            <div className="flex items-center gap-2 sm:gap-4 flex-nowrap overflow-hidden w-auto">
+              <div className="flex-1 overflow-x-auto custom-scrollbar flex items-center">
+                <TabsList className="h-8">
+                  <TabsTrigger value="config">
+                    <Cog6ToothIcon className="w-3.5 h-3.5 inline-block" /> <span className="hidden sm:inline-block">Cấu hình</span>
+                  </TabsTrigger>
+                  
+                  <TabsTrigger value="coupons">
+                    <TicketIcon className="w-3.5 h-3.5 inline-block" /> <span className="hidden sm:inline-block">Mã giảm giá</span>
+                  </TabsTrigger>
+                </TabsList>
               </div>
-            )}
-          </TabsContent>
+              
+              <div className="flex items-center gap-2 shrink-0">
+                {currentTab === "config" && !isEditing && (
+                  <Button 
+                    className="h-9 px-3 text-xs font-semibold shadow-none rounded-button hover:bg-primary/90 border-transparent"
+                    onClick={() => setIsEditing(true)}
+                  >
+                    <PencilSquareIcon className="w-4 h-4 mr-1.5" /> Chỉnh sửa
+                  </Button>
+                )}
+                <Link to="/admin/promotion">
+                  <Button variant="outline" className="h-9 px-2 sm:px-3 text-xs font-semibold shadow-none rounded-button">
+                    <ArrowLeftIcon className="w-4 h-4" />
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          }
+        />
+        <AdminPageShell.Body>
+          <div className="flex-1 overflow-y-auto xl:overflow-hidden overflow-x-hidden relative w-full custom-scrollbar" >
+            <TabsContent value="config" keepMounted className="lg:h-full m-0 p-0 outline-none ring-0 data-[state=active]:animate-in data-[state=active]:fade-in data-[state=active]:zoom-in-95 duration-200">
+              {initialData ? (
+                <PromotionSharedForm initialData={initialData} onSave={handleSave} loading={loading} submitLabel="Lưu Thay Đổi" readOnly={!isEditing} />
+              ) : (
+                <div className="flex items-center justify-center h-40">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                </div>
+              )}
+            </TabsContent>
 
-          <TabsContent value="coupons" keepMounted className="lg:h-full m-0 p-0 outline-none ring-0 data-[state=active]:animate-in data-[state=active]:fade-in data-[state=active]:zoom-in-95 duration-200">
-            <CouponsManager promotionId={Number(id)} />
-          </TabsContent>
-        </div>
+            <TabsContent value="coupons" keepMounted className="lg:h-full m-0 p-0 outline-none ring-0 data-[state=active]:animate-in data-[state=active]:fade-in data-[state=active]:zoom-in-95 duration-200">
+              <CouponsManager promotionId={Number(id)} />
+            </TabsContent>
+          </div>
+        </AdminPageShell.Body>
       </AdminPageShell>
     </Tabs>
   );

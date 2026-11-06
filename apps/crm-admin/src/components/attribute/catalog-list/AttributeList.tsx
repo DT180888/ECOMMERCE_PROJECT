@@ -1,13 +1,14 @@
-import { useMemo, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useAttributeList, useDeleteAttribute } from "@hooks/useAttribute";
-import type { AttributeListQuery, Attribute } from "@my-project/api";
+import type { AttributeListQuery, Attribute, AttributeId } from "@my-project/api";
 import usePermission from "@hooks/usePermission";
-import { SwatchIcon, ArchiveBoxXMarkIcon } from "@heroicons/react/24/outline";
-import { AdminPageShell, AdminTable, AdminPagination } from "@shared/ui";
+import { ArchiveBoxXMarkIcon } from "@heroicons/react/24/outline";
+import { AdminPageShell, AdminTable } from "@shared/ui";
+import { useDrawerSearchParams } from "@hooks/useDrawerSearchParams";
 import { useAttributeColumns } from "./useAttributeColumns";
-import { AttributeToolbar } from "./AttributeToolbar";
+import { AttributeDrawerForm } from "../attribute-form/AttributeDrawerForm";
 
-export function AttributeList({ isNested = false }: { isNested?: boolean }) {
+export function AttributeList() {
   const [q, setQ] = useState<AttributeListQuery>({ keyword: "", page: 1, size: 10 });
   const [keywordInput, setKeywordInput] = useState(q.keyword ?? "");
   const { hasPermission } = usePermission();
@@ -16,12 +17,16 @@ export function AttributeList({ isNested = false }: { isNested?: boolean }) {
   const { data, isLoading } = useAttributeList(q);
   const del = useDeleteAttribute();
 
+  const {
+    isOpen: isDrawerOpen,
+    editingId,
+    openCreate,
+    openEdit,
+    closeDrawer,
+  } = useDrawerSearchParams();
+
   const items = data?.items ?? [];
   const total = data?.total ?? 0;
-  const pages = useMemo(
-    () => Math.max(1, Math.ceil(total / (q.size || 10))),
-    [total, q.size]
-  );
 
   const applyKeyword = useCallback(() => {
     setQ((old: AttributeListQuery) => ({ ...old, keyword: keywordInput, page: 1 }));
@@ -39,43 +44,53 @@ export function AttributeList({ isNested = false }: { isNested?: boolean }) {
   const columns = useAttributeColumns({
     hasEdit,
     hasDelete,
+    onEdit: (id) => openEdit(id),
     onDelete: handleDelete,
     isDeleting: del.isPending,
   });
 
   return (
-    <AdminPageShell
-      icon={SwatchIcon}
-      title="Thuộc tính sản phẩm"
-      badge={`${total} thuộc tính`}
-      isNested={isNested}
-      actions={
-        <AttributeToolbar
-          keyword={keywordInput}
-          setKeyword={setKeywordInput}
-          applyKeyword={applyKeyword}
-        />
-      }
-    >
-      <AdminTable<Attribute>
-        columns={columns}
-        data={items}
-        isLoading={isLoading}
-        skeletonRows={q.size}
-        emptyIcon={ArchiveBoxXMarkIcon}
-        emptyTitle="Không tìm thấy thuộc tính nào"
-        emptyDescription="Tạo thuộc tính để phân loại sản phẩm theo màu sắc, kích thước..."
-        footer={
-          <AdminPagination
-            page={q.page ?? 1}
-            totalPages={pages}
-            total={total}
-            pageSize={q.size}
-            onPageChange={(p) => setQ((old: AttributeListQuery) => ({ ...old, page: p }))}
-          />
-        }
+    <AdminPageShell>
+      <AdminPageShell.Header
+        title="Thuộc tính sản phẩm"
+        badge={`${total} thuộc tính`}
+        createAction={{
+          onClick: openCreate,
+          label: "Thêm mới",
+          canCreate: hasEdit,
+        }}
       />
+      <AdminPageShell.Body>
+        <AdminTable<Attribute>
+          columns={columns}
+          data={items}
+          isLoading={isLoading}
+          rowKey="attributeId"
+          activeRowKey={editingId}
+          search={{
+            query: keywordInput,
+            onChange: setKeywordInput,
+            onSubmit: applyKeyword,
+            placeholder: "Tìm kiếm thuộc tính...",
+          }}
+          pagination={{
+            page: q.page ?? 1,
+            total,
+            pageSize: q.size,
+            onPageChange: (p) => setQ((old: AttributeListQuery) => ({ ...old, page: p })),
+            onPageSizeChange: (s) => setQ((old: AttributeListQuery) => ({ ...old, size: s, page: 1 })),
+          }}
+          emptyText="Không tìm thấy thuộc tính nào"
+          emptyIcon={ArchiveBoxXMarkIcon}
+        />
+      </AdminPageShell.Body>
+      <AdminPageShell.Inspector>
+        <AttributeDrawerForm
+          open={isDrawerOpen}
+          attributeId={typeof editingId === "number" ? (editingId as AttributeId) : null}
+          onClose={closeDrawer}
+        />
+      </AdminPageShell.Inspector>
     </AdminPageShell>
   );
 }
-
