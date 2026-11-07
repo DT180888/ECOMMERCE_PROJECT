@@ -297,7 +297,7 @@ export const TabsList = React.memo(function TabsList({
           type="button"
           data-state="active"
           className={cn(
-            "h-[34px] sm:h-7 min-w-[120px] px-3 inline-flex items-center justify-between gap-2 rounded-[2px] transition-colors cursor-pointer select-none font-sans",
+            "h-[34px] min-w-[120px] px-3 inline-flex items-center justify-between gap-2 rounded-[2px] transition-colors cursor-pointer select-none font-sans",
             "bg-card text-foreground border border-border shadow-sm hover:bg-surface-hover",
             "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary",
             "text-[13px] font-medium",
@@ -420,8 +420,7 @@ export const TabsList = React.memo(function TabsList({
     <div
       ref={containerRef}
       className={cn(
-        "relative flex items-center w-full"
-        // className?.includes("w-full") ? "w-full" : "w-auto max-w-full"
+        "relative flex items-center h-[34px] w-full"
       )}
     >
       {/* Offscreen measurement target to track content width without affecting layout */}
@@ -530,7 +529,7 @@ export const TabsTrigger = React.memo(function TabsTrigger({
   const sizeClass = React.useMemo(() => {
     switch (size) {
       case "sm":
-        return "h-[34px] sm:h-7 px-2.5 text-xs";
+        return "h-[28px] px-2.5 text-xs";
       case "md":
         return variant === "line" ? "h-[28px] px-3 text-[13px]" : "h-7 sm:h-[28px] px-3 text-[13px]";
       case "lg":

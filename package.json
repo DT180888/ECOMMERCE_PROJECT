@@ -18,8 +18,5 @@
   },
   "devDependencies": {
     "turbo": "^2.0.4"
-  },
-  "dependencies": {
-    "@phosphor-icons/react": "^2.1.10"
   }
 }

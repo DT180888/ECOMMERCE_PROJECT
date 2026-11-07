@@ -119,9 +119,9 @@ export function AutomationPage() {
 
       <AdminPageShell.Body padded>
         <div className="space-y-6">
-          {/* ── Operational Metric Strip (Pure Editorial Tonal Contrast - border-0) ── */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 select-none">
-            <div className="p-4 bg-card border-0 rounded-sm shadow-none flex flex-col justify-between gap-1 hover:bg-surface-hover/80 transition-colors">
+          {/* ── Operational Metric Strip (Direction 1: Monolithic Integrated Ticker) ── */}
+          <div className="w-full bg-card border border-border rounded-sm shadow-none overflow-hidden select-none grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
+            <div className="p-3.5 sm:p-4 flex flex-col justify-between gap-1 hover:bg-surface-hover/60 transition-colors">
               <span className="text-xs text-muted-foreground font-medium">
                 Kịch bản đang chạy
               </span>
@@ -136,7 +136,7 @@ export function AutomationPage() {
               </span>
             </div>
 
-            <div className="p-4 bg-card border-0 rounded-sm shadow-none flex flex-col justify-between gap-1 hover:bg-surface-hover/80 transition-colors">
+            <div className="p-3.5 sm:p-4 flex flex-col justify-between gap-1 hover:bg-surface-hover/60 transition-colors">
               <span className="text-xs text-muted-foreground font-medium">
                 Lịch quét hệ thống
               </span>
@@ -151,7 +151,7 @@ export function AutomationPage() {
               </span>
             </div>
 
-            <div className="p-4 bg-card border-0 rounded-sm shadow-none flex flex-col justify-between gap-1 hover:bg-surface-hover/80 transition-colors">
+            <div className="p-3.5 sm:p-4 flex flex-col justify-between gap-1 hover:bg-surface-hover/60 transition-colors">
               <span className="text-xs text-muted-foreground font-medium">
                 Trạng thái Worker
               </span>

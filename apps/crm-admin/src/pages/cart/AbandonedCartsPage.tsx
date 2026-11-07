@@ -89,62 +89,62 @@ export default function AbandonedCartsPage() {
 
         <AdminPageShell.Body>
           <div className="flex flex-col gap-4 min-h-full">
-            {/* ── KPI Cards Strip (Pure Editorial Tonal Contrast - border-0) ── */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 select-none">
-              <div className="p-4 bg-card border-0 rounded-sm shadow-none flex flex-col justify-between gap-1 hover:bg-surface-hover/80 transition-colors">
-                <span className="text-xs text-muted-foreground font-medium">
+            {/* ── KPI Strip (Direction 1: Monolithic Integrated Ticker) ── */}
+            <div className="w-full bg-card border border-border rounded-sm shadow-none overflow-hidden select-none grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-border">
+              <div className="p-3.5 sm:p-4 flex flex-col justify-between gap-1 hover:bg-surface-hover/60 transition-colors">
+                <span className="text-[11px] sm:text-xs text-muted-foreground font-medium">
                   Tổng tiền giỏ đang treo
                 </span>
                 <div className="flex items-baseline gap-2 mt-1">
-                  <span className="text-lg sm:text-xl font-semibold font-mono tabular-nums text-error">
+                  <span className="text-md sm:text-xl font-semibold font-mono tabular-nums text-error">
                     {formatVND(stats.totalPending)}
                   </span>
                 </div>
-                <span className="text-[10px] text-muted-foreground/70 font-sans">
+                <span className="hidden sm:block text-[10px] text-muted-foreground/70 font-sans">
                   Tính trên 15 giỏ trang hiện tại
                 </span>
               </div>
 
-              <div className="p-4 bg-card border-0 rounded-sm shadow-none flex flex-col justify-between gap-1 hover:bg-surface-hover/80 transition-colors">
-                <span className="text-xs text-muted-foreground font-medium">
+              <div className="p-3.5 sm:p-4 flex flex-col justify-between gap-1 hover:bg-surface-hover/60 transition-colors">
+                <span className="text-[11px] sm:text-xs text-muted-foreground font-medium">
                   Số giỏ cần cứu
                 </span>
                 <div className="flex items-baseline gap-2 mt-1">
-                  <span className="text-lg sm:text-xl font-semibold font-mono tabular-nums text-foreground">
+                  <span className="text-md sm:text-xl font-semibold font-mono tabular-nums text-foreground">
                     {total}
                   </span>
                   <span className="text-xs text-muted-foreground">giỏ hàng</span>
                 </div>
-                <span className="text-[10px] text-muted-foreground/70 font-sans">
+                <span className="hidden sm:block text-[10px] text-muted-foreground/70 font-sans">
                   Tổng phát sinh trong kỳ
                 </span>
               </div>
 
-              <div className="p-4 bg-card border-0 rounded-sm shadow-none flex flex-col justify-between gap-1 hover:bg-surface-hover/80 transition-colors">
-                <span className="text-xs text-muted-foreground font-medium">
+              <div className="p-3.5 sm:p-4 flex flex-col justify-between gap-1 hover:bg-surface-hover/60 transition-colors">
+                <span className="text-[11px] sm:text-xs text-muted-foreground font-medium">
                   Đã khôi phục
                 </span>
                 <div className="flex items-baseline gap-2 mt-1">
-                  <span className="text-lg sm:text-xl font-semibold font-mono tabular-nums text-success">
+                  <span className="text-md sm:text-xl font-semibold font-mono tabular-nums text-success">
                     {stats.recoveredCount}
                   </span>
                   <span className="text-xs text-muted-foreground">đơn</span>
                 </div>
-                <span className="text-[10px] text-muted-foreground/70 font-sans">
+                <span className="hidden sm:block text-[10px] text-muted-foreground/70 font-sans">
                   Tính trên trang hiện tại
                 </span>
               </div>
 
-              <div className="p-4 bg-card border-0 rounded-sm shadow-none flex flex-col justify-between gap-1 hover:bg-surface-hover/80 transition-colors">
-                <span className="text-xs text-muted-foreground font-medium">
+              <div className="p-3.5 sm:p-4 flex flex-col justify-between gap-1 hover:bg-surface-hover/60 transition-colors">
+                <span className="text-[11px] sm:text-xs text-muted-foreground font-medium">
                   Tỷ lệ cứu giỏ (Recovery Rate)
                 </span>
                 <div className="flex items-baseline gap-2 mt-1">
-                  <span className="text-lg sm:text-xl font-semibold font-mono tabular-nums text-primary">
+                  <span className="text-md sm:text-xl font-semibold font-mono tabular-nums text-primary">
                     {stats.recoveryRate}%
                   </span>
                 </div>
-                <span className="text-[10px] text-muted-foreground/70 font-sans">
+                <span className="hidden sm:block text-[10px] text-muted-foreground/70 font-sans">
                   Hiệu quả chuyển đổi
                 </span>
               </div>
@@ -167,38 +167,24 @@ export default function AbandonedCartsPage() {
                 placeholder: "Tìm theo tên, email, sđt...",
               }}
               filterBar={
-                <div className="flex items-center gap-3 w-full">
-                       <div className="max-w-1/3 flex items-center justify-end gap-2">
-                    {/* <span className="text-xs whitespace-nowrap text-muted-foreground font-medium hidden md:inline">Lọc giá trị:</span> */}
-                    <Select
-                      value={minTotal ? String(minTotal) : "ALL"}
-                      onValueChange={(val) => {
-                        setMinTotal(val === "ALL" ? undefined : Number(val));
-                        setPage(1);
-                      }}
-                    >
-                      <SelectTrigger className="h-[34px] w-40 sm:w-44 bg-card text-xs rounded-sm border-border shadow-none">
-                        <SelectValue placeholder="Tất cả giá trị" />
-                      </SelectTrigger>
-                      <SelectContent className="rounded-sm border-border bg-card shadow-md">
-                        <SelectItem value="ALL">Tất cả giá trị</SelectItem>
-                        <SelectItem value="500000">&gt;= 500.000 đ</SelectItem>
-                        <SelectItem value="1000000">&gt;= 1.000.000 đ</SelectItem>
-                        <SelectItem value="2000000">&gt;= 2.000.000 đ</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  {/* <div className="w-2/3">
-                    <DashboardDateFilter
-                      value={dateFilter}
-                      onChange={(v) => {
-                        setDateFilter(v);
-                        setPage(1);
-                      }}
-                    />
-                  </div> */}
-
-             
+                <div className="flex items-center gap-3">
+                  <Select
+                    value={minTotal ? String(minTotal) : "ALL"}
+                    onValueChange={(val) => {
+                      setMinTotal(val === "ALL" ? undefined : Number(val));
+                      setPage(1);
+                    }}
+                  >
+                    <SelectTrigger className="h-[34px] w-40 sm:w-44 bg-card text-xs rounded-sm border-border shadow-none">
+                      <SelectValue placeholder="Tất cả giá trị" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-sm border-border bg-card shadow-md">
+                      <SelectItem value="ALL">Tất cả giá trị</SelectItem>
+                      <SelectItem value="500000">&gt;= 500.000 đ</SelectItem>
+                      <SelectItem value="1000000">&gt;= 1.000.000 đ</SelectItem>
+                      <SelectItem value="2000000">&gt;= 2.000.000 đ</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               }
               emptyText="Không có giỏ hàng bị bỏ quên nào phù hợp."

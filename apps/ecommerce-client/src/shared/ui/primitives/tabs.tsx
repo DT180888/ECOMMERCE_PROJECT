@@ -297,7 +297,7 @@ export const TabsList = React.memo(function TabsList({
           type="button"
           data-state="active"
           className={cn(
-            "h-[34px] sm:h-7 min-w-[120px] px-3 inline-flex items-center justify-between gap-2 rounded-[2px] transition-colors cursor-pointer select-none font-sans",
+            "h-[34px] min-w-[120px] px-3 inline-flex items-center justify-between gap-2 rounded-[2px] transition-colors cursor-pointer select-none font-sans",
             "bg-card text-foreground border border-border shadow-sm hover:bg-surface-hover",
             "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary",
             "text-[13px] font-medium",

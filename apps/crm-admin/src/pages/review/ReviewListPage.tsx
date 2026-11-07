@@ -136,33 +136,33 @@ export default function ReviewListPage() {
 
         <AdminPageShell.Body>
           <div className="flex flex-col gap-4 min-h-full">
-            {/* ── KPI Strip (Pure Editorial Tonal Contrast - border-0) ── */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 select-none">
-              <div className="p-4 bg-card border-0 rounded-sm shadow-none flex flex-col justify-between gap-1 hover:bg-surface-hover/80 transition-colors">
-                <span className="text-xs text-muted-foreground font-medium">
+            {/* ── KPI Strip (Direction 1: Monolithic Integrated Ticker) ── */}
+            <div className="w-full bg-card border border-border rounded-sm shadow-none overflow-hidden select-none grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
+              <div className="p-3.5 sm:p-4 flex flex-col justify-between gap-1 hover:bg-surface-hover/60 transition-colors">
+                <span className="text-[9px] sm:text-xs text-muted-foreground sm:font-medium">
                   Điểm đánh giá TB
                 </span>
                 <div className="flex items-baseline gap-2 mt-1">
-                  <span className="text-lg sm:text-xl font-semibold font-mono tabular-nums text-amber-500">
+                  <span className="text-md sm:text-xl font-mono tabular-nums text-amber-500">
                     ★ {avgRating}
                   </span>
                   <span className="text-[11px] font-mono text-muted-foreground">
                     / 5.0
                   </span>
                 </div>
-                <span className="text-[10px] text-muted-foreground/70 font-sans">
+                <span className="hidden sm:block text-[10px] text-muted-foreground/70 font-sans">
                   Tính trên trang hiện tại
                 </span>
               </div>
 
-              <div className="p-4 bg-card border-0 rounded-sm shadow-none flex flex-col justify-between gap-1 hover:bg-surface-hover/80 transition-colors">
-                <span className="text-xs text-muted-foreground font-medium">
+              <div className="p-3.5 sm:p-4 flex flex-col justify-between gap-1 hover:bg-surface-hover/60 transition-colors">
+                <span className="text-[9px] sm:text-xs text-muted-foreground sm:font-medium">
                   Hàng đợi chờ duyệt
                 </span>
                 <div className="flex items-baseline gap-2 mt-1">
                   <span
                     className={cn(
-                      "text-lg sm:text-xl font-semibold font-mono tabular-nums",
+                      "text-md sm:text-xl font-mono tabular-nums",
                       pendingCount > 0 ? "text-warning" : "text-foreground"
                     )}
                   >
@@ -172,24 +172,24 @@ export default function ReviewListPage() {
                     đánh giá
                   </span>
                 </div>
-                <span className="text-[10px] text-muted-foreground/70 font-sans">
+                <span className="hidden sm:block text-[10px] text-muted-foreground/70 font-sans">
                   Cần kiểm duyệt nội dung
                 </span>
               </div>
 
-              <div className="p-4 bg-card border-0 rounded-sm shadow-none flex flex-col justify-between gap-1 hover:bg-surface-hover/80 transition-colors">
-                <span className="text-xs text-muted-foreground font-medium">
+              <div className="p-3.5 sm:p-4 flex flex-col justify-between gap-1 hover:bg-surface-hover/60 transition-colors">
+                <span className="text-[9px] sm:text-xs text-muted-foreground sm:font-medium">
                   Đã có phản hồi
                 </span>
                 <div className="flex items-baseline gap-2 mt-1">
-                  <span className="text-lg sm:text-xl font-semibold font-mono tabular-nums text-primary">
+                  <span className="text-md sm:text-xl font-mono tabular-nums text-primary">
                     {repliedCount} / {items.length}
                   </span>
                   <span className="text-[11px] font-mono text-muted-foreground">
                     ({replyPercentage}%)
                   </span>
                 </div>
-                <span className="text-[10px] text-muted-foreground/70 font-sans">
+                <span className="hidden sm:block text-[10px] text-muted-foreground/70 font-sans">
                   Tương tác chăm sóc khách hàng
                 </span>
               </div>
